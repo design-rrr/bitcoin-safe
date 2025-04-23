@@ -35,7 +35,7 @@ from typing import Any, List
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
 from PyQt6 import QtCore, QtWidgets
-from PyQt6.QtCore import QSize, Qt, pyqtSignal
+from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import (
     QFileDialog,
     QFormLayout,
@@ -44,9 +44,6 @@ from PyQt6.QtWidgets import (
     QPushButton,
     QSizePolicy,
     QSpacerItem,
-    QStyle,
-    QStyleOptionButton,
-    QStylePainter,
     QTabWidget,
     QToolButton,
     QVBoxLayout,
@@ -70,21 +67,6 @@ from .invisible_scroll_area import InvisibleScrollArea
 from .spinbox import BTCSpinBox
 
 logger = logging.getLogger(__name__)
-
-
-class CloseButton(QPushButton):
-    def __init__(self, parent=None) -> None:
-        super().__init__(parent)
-        self.setFixedSize(QSize(16, 16))  # Adjust the size as needed
-
-    def paintEvent(self, event) -> None:
-        painter = QStylePainter(self)
-        option = QStyleOptionButton()
-        option.initFrom(self)
-        option.features = QStyleOptionButton.ButtonFeature.None_
-        option.icon = (self.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_TabCloseButton)  # type: ignore[attr-defined]
-        option.iconSize = QSize(14, 14)  # Adjust icon size as needed
-        painter.drawControl(QStyle.ControlElement.CE_PushButton, option)
 
 
 class RecipientWidget(QWidget):

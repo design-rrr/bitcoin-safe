@@ -1333,7 +1333,7 @@ class MainWindow(QMainWindow):
         # add to tabs
         self.tab_wallets.add_tab(
             tab=qt_protowallet,
-            icon=SvgTools.get_QIcon("file.png"),
+            icon=SvgTools.get_QIcon("file.svg"),
             description=qt_protowallet.protowallet.id,
             focus=True,
             data=qt_protowallet,

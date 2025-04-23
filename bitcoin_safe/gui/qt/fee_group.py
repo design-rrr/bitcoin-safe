@@ -32,7 +32,7 @@ from typing import List, Optional
 
 import bdkpython as bdk
 from PyQt6.QtCore import QObject, Qt, pyqtSignal
-from PyQt6.QtGui import QColor, QIcon
+from PyQt6.QtGui import QColor
 from PyQt6.QtWidgets import (
     QDoubleSpinBox,
     QGroupBox,
@@ -43,8 +43,8 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.fx import FX
+from bitcoin_safe.gui.qt.icons import SvgTools
 from bitcoin_safe.gui.qt.notification_bar import NotificationBar
-from bitcoin_safe.gui.qt.util import icon_path
 from bitcoin_safe.html_utils import html_f, link
 from bitcoin_safe.network_config import ProxyInfo
 from bitcoin_safe.psbt_util import FeeInfo
@@ -72,7 +72,7 @@ class FeeWarningBar(NotificationBar):
             has_close_button=False,
         )
         self.set_background_color(adjust_bg_color_for_darkmode(QColor("#FFDF00")))
-        self.set_icon(QIcon(icon_path("warning.png")))
+        self.set_icon(SvgTools.get_QIcon("warning.svg"))
 
         self.optionalButton.setVisible(False)
 

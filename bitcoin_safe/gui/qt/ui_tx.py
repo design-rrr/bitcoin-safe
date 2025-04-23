@@ -142,7 +142,7 @@ class LinkingWarningBar(NotificationBar):
         self.category_dict: Dict[str, Set[str]] = {}
         self.signals_min = signals_min
         self.set_background_color(adjust_bg_color_for_darkmode(QColor("#FFDF00")))
-        self.set_icon(SvgTools.get_QIcon("warning.png"))
+        self.set_icon(SvgTools.get_QIcon("warning.svg"))
 
         self.optionalButton.setVisible(False)
         self.textLabel.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)

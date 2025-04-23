@@ -333,8 +333,8 @@ class KeyStoreUI(QObject):
                 self.edit_xpub.input_field,
             ],
             icon_OK=SvgTools.get_pixmap("checkmark.svg", size=(50, 50)),
-            icon_warning=SvgTools.get_pixmap("warning.png", size=(50, 50)),
-            icon_error=SvgTools.get_pixmap("error.png", size=(50, 50)),
+            icon_warning=SvgTools.get_pixmap("warning.svg", size=(50, 50)),
+            icon_error=SvgTools.get_pixmap("error.svg", size=(50, 50)),
             hide_if_all_empty=True,
         )
         self.analyzer_indicator.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Preferred)

@@ -99,7 +99,7 @@ class NewWalletWelcomeScreen(QWidget):
     def add_new_wallet_welcome_tab(self, main_tabs: DataTabWidget[object]) -> None:
         main_tabs.add_tab(
             tab=self,
-            icon=SvgTools.get_QIcon("file.png"),
+            icon=SvgTools.get_QIcon("file.svg"),
             description=self.tr("Create new wallet"),
             focus=True,
             data=self,

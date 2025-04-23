@@ -114,12 +114,12 @@ TRANSACTION_FILE_EXTENSION_FILTER_SEPARATE = (
 
 
 TX_ICONS: List[str] = [
-    "unconfirmed.svg",
-    "clock1.png",
-    "clock2.png",
-    "clock3.png",
-    "clock4.png",
-    "clock5.png",
+    "clock0.svg",
+    "clock1.svg",
+    "clock2.svg",
+    "clock3.svg",
+    "clock4.svg",
+    "clock5.svg",
     "confirmed.svg",
 ]
 
@@ -130,7 +130,7 @@ class QtWalletBase(QWidget):
 
 def sort_id_to_icon(sort_id: int) -> str:
     if sort_id < 0:
-        return "offline_tx.png"
+        return "offline_tx.svg"
     if sort_id > len(TX_ICONS) - 1:
         sort_id = len(TX_ICONS) - 1
 

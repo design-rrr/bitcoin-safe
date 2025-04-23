@@ -432,7 +432,7 @@ class NetworkSettingsUI(QDialog):
         self._layout.addWidget(self.groupbox_proxy)
         self.proxy_warning_label = NotificationBar("")
         self.proxy_warning_label.set_background_color(adjust_bg_color_for_darkmode(QColor("#FFDF00")))
-        self.proxy_warning_label.set_icon(SvgTools.get_QIcon("warning.png"))
+        self.proxy_warning_label.set_icon(SvgTools.get_QIcon("warning.svg"))
         self._layout.addWidget(self.proxy_warning_label)
 
         # Create buttons and layout
