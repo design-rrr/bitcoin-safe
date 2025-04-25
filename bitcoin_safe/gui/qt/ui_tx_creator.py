@@ -42,7 +42,6 @@ from PyQt6.QtWidgets import (
     QMessageBox,
     QPushButton,
     QSplitter,
-    QStyle,
     QTabWidget,
     QVBoxLayout,
     QWidget,
@@ -52,6 +51,7 @@ from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.block_change_signals import BlockChangesSignals
 from bitcoin_safe.gui.qt.dialogs import question_dialog
 from bitcoin_safe.gui.qt.fee_group import FeeGroup
+from bitcoin_safe.gui.qt.icons import SvgTools
 from bitcoin_safe.gui.qt.spinning_button import SpinningButton
 from bitcoin_safe.gui.qt.ui_tx_base import UITx_Base
 from bitcoin_safe.gui.qt.warning_bars import LinkingWarningBar
@@ -149,11 +149,10 @@ class UITx_Creator(UITx_Base):
         self.widget_right_hand_side_layout.addWidget(self.widget_right_top)
 
         self.button_box = QDialogButtonBox()
-        ok_icon = (self.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_DialogOkButton)
         self.button_ok = SpinningButton(
             "",
             enable_signal=self.signals.wallet_signals[self.wallet.id].finished_psbt_creation,
-            enabled_icon=ok_icon,
+            enabled_icon=SvgTools.get_QIcon("checkmark.svg"),
         )
         self.button_box.addButton(self.button_ok, QDialogButtonBox.ButtonRole.AcceptRole)
         if self.button_ok:
