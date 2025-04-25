@@ -486,6 +486,7 @@ class MyTreeView(QTreeView):
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.customContextMenuRequested.connect(self.create_menu)
         self.setUniformRowHeights(True)
+        self.setIconSize(QSize(32, 32))
 
         # Control which columns are editable
         if editable_columns is None:
