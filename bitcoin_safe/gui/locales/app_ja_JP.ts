@@ -217,6 +217,21 @@
     </message>
 </context>
 <context>
+    <name>BaseDeviceItem</name>
+    <message>
+        <source>Rename</source>
+        <translation>名前を変更  </translation>
+    </message>
+    <message>
+        <source>Enter a name of device with {npub}</source>
+        <translation>{npub}を持つデバイスの名前を入力してください  </translation>
+    </message>
+    <message>
+        <source>Device name</source>
+        <translation>デバイス名  </translation>
+    </message>
+</context>
+<context>
     <name>BaseHardwareSignerInteractionWidget</name>
     <message>
         <source>Help</source>
@@ -236,6 +251,17 @@
     <message>
         <source>To complete the connection, accept my {id} request on the other device {other}.</source>
         <translation>他のデバイス{other}で私の{id}のリクエストを受け入れることで接続を完了してください。  </translation>
+    </message>
+    <message>
+        <source>Enter a name of device with {npub}</source>
+        <translation>{npub}を持つデバイスの名前を入力してください  </translation>
+    </message>
+</context>
+<context>
+    <name>BitcoinDmChatGui</name>
+    <message>
+        <source>Me</source>
+        <translation>私</translation>
     </message>
 </context>
 <context>
@@ -291,7 +317,7 @@
     <name>CategoryEditor</name>
     <message>
         <source>KYC Exchange</source>
-        <translation>KYC 取引所  </translation>
+        <translation>KYC 取引所</translation>
     </message>
     <message>
         <source>Private</source>
@@ -330,10 +356,6 @@
     <message>
         <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
         <translation>選択されたファイル：{file_path}</translation>
-    </message>
-    <message>
-        <source>Me: {text}</source>
-        <translation>私：{text}  </translation>
     </message>
 </context>
 <context>
@@ -393,6 +415,22 @@
         <translation>必要な署名者</translation>
     </message>
     <message>
+        <source>Import from Clipboard</source>
+        <translation>クリップボードからインポート</translation>
+    </message>
+    <message>
+        <source>Input corrected</source>
+        <translation>入力が修正されました</translation>
+    </message>
+    <message>
+        <source>Descriptor unchanged</source>
+        <translation>記述子は変更されていません  </translation>
+    </message>
+    <message>
+        <source>New descriptor entered</source>
+        <translation>新しいデスクリプターが入力されました  </translation>
+    </message>
+    <message>
         <source>Scan Addresses ahead</source>
         <translation>先にアドレスをスキャン  </translation>
     </message>
@@ -406,12 +444,24 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>この「ディスクリプター」にはウォレットを再構築するためのすべての情報が含まれています。資金を回復するためにこのディスクリプターのバックアップを取ってください！</translation>
     </message>
     <message>
-        <source>Descriptor unchanged</source>
-        <translation>記述子は変更されていません  </translation>
+        <source>Wallet Properties</source>
+        <translation>ウォレットのプロパティ  </translation>
     </message>
     <message>
-        <source>New descriptor entered</source>
-        <translation>新しいデスクリプターが入力されました  </translation>
+        <source>Address Type</source>
+        <translation>アドレスタイプ</translation>
+    </message>
+    <message>
+        <source>Wallet Descriptor</source>
+        <translation>ウォレットディスクリプタ</translation>
+    </message>
+    <message>
+        <source>Import</source>
+        <translation>手動</translation>
+    </message>
+    <message>
+        <source>Read QR Code</source>
+        <translation>QRコードを読み取る</translation>
     </message>
 </context>
 <context>
@@ -514,22 +564,6 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>手数料</translation>
     </message>
     <message>
-        <source>High fee ratio: {ratio}%</source>
-        <translation>高い手数料比率：{ratio}%</translation>
-    </message>
-    <message>
-        <source>The estimated transaction fee is:
-{fee}, which is {percent}% of
-the sending value {sent}</source>
-        <translation>推定トランザクション手数料は{fee}で、送信値{sent}の{percent}%です</translation>
-    </message>
-    <message>
-        <source>The transaction fee is:
-{fee}, which is {percent}% of
-the sending value {sent}</source>
-        <translation>トランザクション手数料は{fee}で、送信値{sent}の{percent}%です</translation>
-    </message>
-    <message>
         <source>... is the minimum to replace the existing transactions.</source>
         <translation>...は既存のトランザクションを置き換える最小限です。</translation>
     </message>
@@ -545,14 +579,20 @@ the sending value {sent}</source>
         <source>{rate} is the minimum for {rbf}</source>
         <translation>{rate}は{rbf}のための最小限です</translation>
     </message>
+</context>
+<context>
+    <name>FeeRateWarningBar</name>
     <message>
         <source>High fee rate!</source>
         <translation>高い手数料率！</translation>
     </message>
     <message>
-        <source>The high prio mempool fee rate is {rate}</source>
-        <translation>高優先メンプール手数料率は{rate}</translation>
+        <source>The high priority mempool fee rate is {rate}</source>
+        <translation>高優先度メンプール手数料率は {rate}</translation>
     </message>
+</context>
+<context>
+    <name>FeeWarningBar</name>
     <message>
         <source>{sent} is sent!</source>
         <translation>{sent}が送信されました！  </translation>
@@ -561,6 +601,22 @@ the sending value {sent}</source>
         <source>The transaction fee is:
 {fee}, and {sent} is sent!</source>
         <translation>取引手数料は{fee}で、{sent}が送信されました！  </translation>
+    </message>
+    <message>
+        <source>The estimated transaction fee is:
+{fee}, which is {percent}% of
+the sending value {sent}</source>
+        <translation>推定トランザクション手数料は{fee}で、送信値{sent}の{percent}%です</translation>
+    </message>
+    <message>
+        <source>The transaction fee is:
+{fee}, which is {percent}% of
+the sending value {sent}</source>
+        <translation>トランザクション手数料は{fee}で、送信値{sent}の{percent}%です</translation>
+    </message>
+    <message>
+        <source>High fee ratio: {ratio}%.</source>
+        <translation>手数料の割合が高いです: {ratio}%。</translation>
     </message>
 </context>
 <context>
@@ -782,8 +838,8 @@ the sending value {sent}</source>
         <translation>提供されたアカウント {provided_account} はデフォルトのアカウント {default_account} と異なります。  </translation>
     </message>
     <message>
-        <source>Unexpected key origin</source>
-        <translation>予期せぬキーの起源  </translation>
+        <source>Unexpected xpub origin</source>
+        <translation>予期しない xpub の元情報</translation>
     </message>
 </context>
 <context>
@@ -1084,6 +1140,34 @@ Do you want to proceed anyway?</source>
         <translation>&amp;ログを表示  </translation>
     </message>
     <message>
+        <source>&amp;Feedback / Contact</source>
+        <translation>フィードバック / お問い合わせ</translation>
+    </message>
+    <message>
+        <source>&amp;Contact via Nostr</source>
+        <translation>Nostrで連絡する</translation>
+    </message>
+    <message>
+        <source>&amp;Open issue in github</source>
+        <translation>githubで問題を開く</translation>
+    </message>
+    <message>
+        <source>&amp;Mail feedback</source>
+        <translation>メールでフィードバックする</translation>
+    </message>
+    <message>
+        <source>&amp;Documentation</source>
+        <translation>ドキュメント</translation>
+    </message>
+    <message>
+        <source>&amp;Knowledge</source>
+        <translation>ナレッジベース</translation>
+    </message>
+    <message>
+        <source>&amp;New Wallet</source>
+        <translation>&amp;ウォレットを開く</translation>
+    </message>
+    <message>
         <source>Please select the wallet</source>
         <translation>テスト</translation>
     </message>
@@ -1108,10 +1192,6 @@ Do you want to proceed anyway?</source>
         <translation>ファイルが選択されていません  </translation>
     </message>
     <message>
-        <source>&amp;New Wallet</source>
-        <translation>&amp;ウォレットを開く</translation>
-    </message>
-    <message>
         <source>Selected file: {file_path}</source>
         <translation>ウォレットが開かれていません。このトランザクションを編集するために送信者のウォレットを開いてください。</translation>
     </message>
@@ -1128,8 +1208,12 @@ Do you want to proceed anyway?</source>
         <translation>この文字列をデコードできませんでした  </translation>
     </message>
     <message>
-        <source>Signed Message</source>
-        <translation>署名されたメッセージ  </translation>
+        <source>&amp;Open Wallet</source>
+        <translation>最近開いた&amp;ウォレット</translation>
+    </message>
+    <message>
+        <source>QR Scanner</source>
+        <translation>QRスキャナー</translation>
     </message>
     <message>
         <source>Open Transaction or PSBT</source>
@@ -1152,10 +1236,6 @@ Do you want to proceed anyway?</source>
         <translation>ウォレットを開く</translation>
     </message>
     <message>
-        <source>&amp;Open Wallet</source>
-        <translation>最近開いた&amp;ウォレット</translation>
-    </message>
-    <message>
         <source>PSBT {txid}</source>
         <translation>ウォレットファイル (.wallet)</translation>
     </message>
@@ -1170,6 +1250,10 @@ Do you want to proceed anyway?</source>
     <message>
         <source>The wallet {file_path} is already open.</source>
         <translation>ウォレットはすでに開いています</translation>
+    </message>
+    <message>
+        <source>Open &amp;Recent</source>
+        <translation>現在のウォレットを&amp;保存</translation>
     </message>
     <message>
         <source>The wallet {file_path} is already open.  Do you want to open the wallet anyway?</source>
@@ -1196,10 +1280,6 @@ Do you want to proceed anyway?</source>
         <translation>KYC-Exchange</translation>
     </message>
     <message>
-        <source>Open &amp;Recent</source>
-        <translation>現在のウォレットを&amp;保存</translation>
-    </message>
-    <message>
         <source>A wallet with id {name} is already open.  </source>
         <translation>ウォレット {id} を閉じますか？</translation>
     </message>
@@ -1214,6 +1294,10 @@ Do you want to proceed anyway?</source>
     <message>
         <source>Close wallet</source>
         <translation>タブ {name} を閉じる</translation>
+    </message>
+    <message>
+        <source>&amp;Save Current Wallet</source>
+        <translation>&amp;変更/エクスポート</translation>
     </message>
     <message>
         <source>Closing wallet {id}</source>
@@ -1232,10 +1316,6 @@ Do you want to proceed anyway?</source>
         <translation>{n} ブロック</translation>
     </message>
     <message>
-        <source>&amp;Save Current Wallet</source>
-        <translation>&amp;変更/エクスポート</translation>
-    </message>
-    <message>
         <source>&amp;Search</source>
         <translation>&amp;検索  </translation>
     </message>
@@ -1246,6 +1326,10 @@ Do you want to proceed anyway?</source>
 </context>
 <context>
     <name>MempoolButtons</name>
+    <message>
+        <source>Fetch new mempool data</source>
+        <translation>新しいメンプールデータを取得</translation>
+    </message>
     <message>
         <source>Next Block</source>
         <translation>未確認</translation>
@@ -1264,13 +1348,6 @@ Do you want to proceed anyway?</source>
     <message>
         <source>~{n}. Block</source>
         <translation>コピー</translation>
-    </message>
-</context>
-<context>
-    <name>MultiLineListView</name>
-    <message>
-        <source>Delete all messages</source>
-        <translation>すべてのメッセージを削除する  </translation>
     </message>
 </context>
 <context>
@@ -1347,6 +1424,22 @@ Do you want to proceed anyway?</source>
     <message>
         <source>Automatic</source>
         <translation>接続をテスト</translation>
+    </message>
+    <message>
+        <source>Please remove the &apos;{scheme}&apos; from the electrum url</source>
+        <translation>electrumのURLから&apos;{scheme}&apos;を削除してください  </translation>
+    </message>
+    <message>
+        <source>Are you sure &apos;{scheme}&apos; is correct in the esplora url?</source>
+        <translation>esploraのURLの&apos;{scheme}&apos;が正しいことを確認していますか？  </translation>
+    </message>
+    <message>
+        <source>The format for tor addresses should be &apos;{scheme}&apos;</source>
+        <translation>torアドレスの形式は&apos;{scheme}&apos;である必要があります  </translation>
+    </message>
+    <message>
+        <source>Please try &apos;{scheme}&apos; at the beginning of the mempool url</source>
+        <translation>mempoolのURLの始めに&apos;{scheme}&apos;を試してください  </translation>
     </message>
     <message>
         <source>Error in server connection.
@@ -1558,6 +1651,13 @@ Do you want to proceed anyway?</source>
     </message>
 </context>
 <context>
+    <name>PoisoningWarningBar</name>
+    <message>
+        <source>Warning! This transaction involves deceptively similar addresses. It may be an address poisoning attack. Similar addresses are  &lt;br&gt;{addresses}.&lt;br&gt; Double-check all transaction details carefully!</source>
+        <translation>警告！この取引は騙しやすい類似のアドレスを含んでいます。これはアドレスポイズニング攻撃である可能性があります。類似のアドレスは &lt;br&gt;{addresses}.&lt;br&gt; すべての取引の詳細を慎重に確認してください！</translation>
+    </message>
+</context>
+<context>
     <name>QTProtoWallet</name>
     <message>
         <source>Setup wallet</source>
@@ -1757,9 +1857,9 @@ Do you want to proceed anyway?</source>
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.     
                     &lt;br&gt;
                     &lt;br&gt;
-                    &lt;b&gt;Do NOT send in large funds into the wallet before you didn&apos;t complete all send tests!&lt;/b&gt;   
+                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   
                     </source>
-        <translation>このウォレットの1つのアドレスに&lt;b&gt;少額&lt;/b&gt;（{test_amount}未満）を受け取ります。&lt;br&gt;&lt;br&gt;&lt;b&gt;なぜ？&lt;/b&gt;&lt;br&gt;資金を管理しているか確認するために、ウォレットからの支出をテストする必要があります。&lt;br&gt;したがって、ウォレットに多額のビットコインを送る前に、ウォレットから支出し、すべての署名者をテストすることが&lt;b&gt;重要&lt;/b&gt;です。&lt;br&gt;&lt;br&gt;&lt;b&gt;すべての送信テストを完了するまで、ウォレットに多額の資金を送らないでください！&lt;/b&gt;</translation>
+        <translation>このウォレットの1つのアドレスに&lt;b&gt;少額&lt;/b&gt;（{test_amount}未満）を受け取ってください。                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;なぜ？&lt;/b&gt; &lt;br&gt;                     資金をコントロールしているかどうかを知るためには、ウォレットからの支出をテストする必要があります。                      &lt;br&gt;                     そのため、大量のビットコインをウォレットに送る前に、ウォレットから支出し、すべての署名者をテストすることが&lt;b&gt;重要&lt;/b&gt;です。                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;まだ大きな資金をウォレットに送らないでください。すべての送金テストを最初に完了してください！&lt;/b&gt;  </translation>
     </message>
     <message>
         <source>Next step</source>
@@ -1920,8 +2020,8 @@ Do you want to proceed anyway?</source>
 <context>
     <name>RegisterMultisigInteractionWidget</name>
     <message>
-        <source>Register Multisig</source>
-        <translation>マルチシグを登録する  </translation>
+        <source>Register {wallet_name}</source>
+        <translation>{wallet_name} を登録する</translation>
     </message>
 </context>
 <context>
@@ -2173,8 +2273,8 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
         <translation>{author}からの{name}を開く</translation>
     </message>
     <message>
-        <source>Received message &apos;{description}&apos; from {author}</source>
-        <translation>{author}からのメッセージ &apos;{description}&apos; を受け取った</translation>
+        <source>{author}: {description}</source>
+        <translation>{author}: {description}  </translation>
     </message>
 </context>
 <context>
@@ -2379,6 +2479,10 @@ below {rate}</source>
     <message>
         <source>Invalid Signatures</source>
         <translation>無効な署名</translation>
+    </message>
+    <message>
+        <source>Failed to broadcast {txid}. Consider broadcasting via {url}</source>
+        <translation>{txid} のブロードキャストに失敗しました。{url} を介してブロードキャストを試みてください。</translation>
     </message>
     <message>
         <source>Import file</source>
@@ -2901,32 +3005,10 @@ below {rate}</source>
     </message>
 </context>
 <context>
-    <name>descriptor</name>
-    <message>
-        <source>Wallet Properties</source>
-        <translation>ウォレットのプロパティ  </translation>
-    </message>
-    <message>
-        <source>Address Type</source>
-        <translation>アドレスタイプ</translation>
-    </message>
-    <message>
-        <source>Wallet Descriptor</source>
-        <translation>ウォレットディスクリプタ</translation>
-    </message>
-</context>
-<context>
     <name>dynamic_lib_load</name>
     <message>
         <source>libsecp256k1 could not be found. Please install libsecp256k1 in your OS.</source>
         <translation>libsecp256k1が見つかりませんでした。OSにlibsecp256k1をインストールしてください。  </translation>
-    </message>
-</context>
-<context>
-    <name>ensure_pyzbar_works</name>
-    <message>
-        <source>Trying to import pyzbar to see if Visual C++ Redistributable is installed. </source>
-        <translation>pyzbar をインポートして Visual C++ 再頒布可能パッケージがインストールされているか確認しようとしています。  </translation>
     </message>
 </context>
 <context>
@@ -3033,14 +3115,6 @@ below {rate}</source>
     <message>
         <source>Import Signature</source>
         <translation>署名をインポート</translation>
-    </message>
-</context>
-<context>
-    <name>lib_load</name>
-    <message>
-        <source>You are missing the {link}
-Please install it.</source>
-        <translation>{link}が見つかりません。インストールしてください。</translation>
     </message>
 </context>
 <context>
@@ -3194,12 +3268,12 @@ It is best to use your own server, such as {link}.</source>
         <translation>このウォレットを再スキャンする場合、少なくともアドレスインデックス{max_tip}までスキャンして、すべての資金提供されたアドレスを発見してください。  </translation>
     </message>
     <message>
-        <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;
+        <source>1. Attach the &apos;Recovery sheet&apos; ({number} words) to this paper or duplicate the 12/24 words onto this paper.&lt;br/&gt;
                 2. Fold this  paper at the line below &lt;br/&gt;
                 3. Put this paper in a secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
-        <translation>1. 回復シート（{number}語）を以下の表に貼り付けるかテープで固定する&lt;br/&gt;2. 以下の線でこの紙を折りたたむ&lt;br/&gt;3. この紙をあなただけがアクセスできる安全な場所に保管する&lt;br/&gt;4. ハードウェア署名者をa) 紙のシードバックアップと一緒に、またはb) 利用可能な場合は別の安全な場所に置くことができます  </translation>
+        <translation>1. この紙に「リカバリーシート」（{number}語）を添付するか、12/24語をこの紙に複写してください。&lt;br/&gt;                 2. 下の線でこの紙を折ります&lt;br/&gt;                 3. この紙を自分だけがアクセスできる安全な場所に置きます&lt;br/&gt;                 4. ハードウェア署名者を a) 紙のシードバックアップと一緒に、または b) 別の安全な場所に置くことができます（利用可能な場合）  </translation>
     </message>
     <message>
         <source>Label syncronization backup key: {label_sync_nsec}</source>
@@ -3214,12 +3288,12 @@ It is best to use your own server, such as {link}.</source>
         <translation>&quot;{id}&quot;の残高明細書  </translation>
     </message>
     <message>
-        <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;
+        <source>1. Attach the &apos;Recovery sheet&apos; ({number} words) to this paper or duplicate the 12/24 words onto this paper.&lt;br/&gt;
                 2. Fold this  paper at the line below &lt;br/&gt;
                 3. Put each paper in a different secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signers either a) together with the corresponding paper seed backup, or b)   each  in yet another secure  location (if available)   
                 </source>
-        <translation>1. 下の表に「リカバリーシート」（{number}語）を糊やテープで貼り付ける&lt;br/&gt;2. 下の線でこの紙を折りたたむ&lt;br/&gt;3. 各紙をあなたのみがアクセスできる別々の安全な場所に置く&lt;br/&gt;4. ハードウェア署名者をa)対応する紙のシードバックアップと一緒に、またはb)それぞれ別の安全な場所に置くことができます（可能な場合）</translation>
+        <translation>1. この紙に「リカバリーシート」（{number}語）を添付するか、12/24語をこの紙に複写してください。&lt;br/&gt;                 2. 下の線でこの紙を折ります&lt;br/&gt;                 3. 各紙を別々の安全な場所に置きます。アクセスできるのはあなただけです&lt;br/&gt;                 4. ハードウェア署名者を a) 対応する紙のシードバックアップと一緒に、または b) 別の安全な場所に置くことができます（利用可能な場合）</translation>
     </message>
     <message>
         <source>Secret seed words for a hardware signer: Never type into a computer. Never make a picture.</source>

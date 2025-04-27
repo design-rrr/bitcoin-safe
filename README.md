@@ -115,12 +115,12 @@
 ## Installation from Git repository
 
 
-### Ubuntu, Debian, Windows
+### Ubuntu, Debian
 
-Install dependencies: 
+- Install dependencies: 
 
   ```sh
-  sudo apt install  qt6-tools-dev-tools libqt6*
+  sudo apt-get install qt6-tools-dev-tools libxcb-cursor0 '^libsecp256k1-.*$' '^libqt6.*$'
   ```
 
 - Install `poetry` and run `bitcoin_safe`
@@ -141,13 +141,18 @@ Install dependencies:
   python3 -m pip install poetry && python3 -m poetry install && python3 -m poetry run python3 -m bitcoin_safe
   ```
 
+- `libsecp256k1`
+  ```sh
+  /bin/bash ./tools/make_libsecp256k1.sh
+  ```
+
 - *Optional*: dependency `zbar`
   
   ```sh
   xcode-select --install
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   brew install zbar 
-  ```
+  ``` 
 
 ## Development
 
@@ -157,7 +162,7 @@ Install dependencies:
 poetry run pre-commit run --all-files
 ```
 
-#### Regtest docker environement with electrs and mempool
+### Regtest docker environement with electrs and mempool
 
 * install docker
 
@@ -228,7 +233,16 @@ nigiri faucet bcrt1qgsnt3d4sny4w4zd5zl9x6jufc5rankqmgphyms9vz0ds73q4xfms655y4c 0
   python3 -m bitcoin_safe
   ``` -->
 
+### Qt designer
 
+Qt componets can be explored with the qt designer:
+
+```sh
+virtualenv .env-qt-designer
+source .env-qt-designer/bin/activate
+pip install pyqt6-tools 
+pyqt6-tools designer 
+```
 
 ## Code signing policy
 

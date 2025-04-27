@@ -217,6 +217,21 @@
     </message>
 </context>
 <context>
+    <name>BaseDeviceItem</name>
+    <message>
+        <source>Rename</source>
+        <translation>เปลี่ยนชื่อ  </translation>
+    </message>
+    <message>
+        <source>Enter a name of device with {npub}</source>
+        <translation>ใส่ชื่ออุปกรณ์ที่มี {npub}  </translation>
+    </message>
+    <message>
+        <source>Device name</source>
+        <translation>ชื่ออุปกรณ์  </translation>
+    </message>
+</context>
+<context>
     <name>BaseHardwareSignerInteractionWidget</name>
     <message>
         <source>Help</source>
@@ -236,6 +251,17 @@
     <message>
         <source>To complete the connection, accept my {id} request on the other device {other}.</source>
         <translation>เพื่อทำการเชื่อมต่อให้เสร็จสมบูรณ์ ยอมรับคำขอ {id} ของฉันบนอุปกรณ์อื่น {other}  </translation>
+    </message>
+    <message>
+        <source>Enter a name of device with {npub}</source>
+        <translation>ใส่ชื่ออุปกรณ์ที่มี {npub}  </translation>
+    </message>
+</context>
+<context>
+    <name>BitcoinDmChatGui</name>
+    <message>
+        <source>Me</source>
+        <translation>ฉัน</translation>
     </message>
 </context>
 <context>
@@ -291,7 +317,7 @@
     <name>CategoryEditor</name>
     <message>
         <source>KYC Exchange</source>
-        <translation>กระดานเทรดที่ต้องยืนยันตัวตน</translation>
+        <translation>แลกเปลี่ยน KYC</translation>
     </message>
     <message>
         <source>Private</source>
@@ -330,10 +356,6 @@
     <message>
         <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
         <translation>ไฟล์ทั้งหมด (*);;PSBT (*.psbt);;ธุรกรรม (*.tx)  </translation>
-    </message>
-    <message>
-        <source>Me: {text}</source>
-        <translation>ฉัน: {text}  </translation>
     </message>
 </context>
 <context>
@@ -393,6 +415,22 @@
         <translation>ต้องการผู้ลงนาม  </translation>
     </message>
     <message>
+        <source>Import from Clipboard</source>
+        <translation>นำเข้าจากคลิปบอร์ด</translation>
+    </message>
+    <message>
+        <source>Input corrected</source>
+        <translation>แก้ไขข้อมูลที่ป้อนแล้ว</translation>
+    </message>
+    <message>
+        <source>Descriptor unchanged</source>
+        <translation>ตัวบ่งชี้ไม่มีการเปลี่ยนแปลง  </translation>
+    </message>
+    <message>
+        <source>New descriptor entered</source>
+        <translation>ใส่ตัวบ่งชี้ใหม่  </translation>
+    </message>
+    <message>
         <source>Scan Addresses ahead</source>
         <translation>สแกนที่อยู่ข้างหน้า  </translation>
     </message>
@@ -406,12 +444,24 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>&quot;ตัวบ่งชี้&quot; นี้มีข้อมูลทั้งหมดเพื่อสร้างกระเป๋าเงินใหม่ กรุณาสำรองตัวบ่งชี้นี้เพื่อสามารถกู้คืนเงินได้!  </translation>
     </message>
     <message>
-        <source>Descriptor unchanged</source>
-        <translation>ตัวบ่งชี้ไม่มีการเปลี่ยนแปลง  </translation>
+        <source>Wallet Properties</source>
+        <translation>คุณสมบัติของกระเป๋าเงิน  </translation>
     </message>
     <message>
-        <source>New descriptor entered</source>
-        <translation>ใส่ตัวบ่งชี้ใหม่  </translation>
+        <source>Address Type</source>
+        <translation>ประเภทที่อยู่  </translation>
+    </message>
+    <message>
+        <source>Wallet Descriptor</source>
+        <translation>ตัวบ่งชี้กระเป๋าเงิน  </translation>
+    </message>
+    <message>
+        <source>Import</source>
+        <translation>นำเข้า  </translation>
+    </message>
+    <message>
+        <source>Read QR Code</source>
+        <translation>อ่านรหัส QR</translation>
     </message>
 </context>
 <context>
@@ -514,22 +564,6 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>ค่าธรรมเนียม  </translation>
     </message>
     <message>
-        <source>High fee ratio: {ratio}%</source>
-        <translation>อัตราค่าธรรมเนียมสูง: {ratio}%  </translation>
-    </message>
-    <message>
-        <source>The estimated transaction fee is:
-{fee}, which is {percent}% of
-the sending value {sent}</source>
-        <translation>ค่าธรรมเนียมการทำธุรกรรมโดยประมาณคือ: {fee}, ซึ่งเป็น {percent}% ของมูลค่าที่ส่ง {sent}  </translation>
-    </message>
-    <message>
-        <source>The transaction fee is:
-{fee}, which is {percent}% of
-the sending value {sent}</source>
-        <translation>ค่าธรรมเนียมการทำธุรกรรมคือ: {fee}, ซึ่งเป็น {percent}% ของมูลค่าที่ส่ง {sent}  </translation>
-    </message>
-    <message>
         <source>... is the minimum to replace the existing transactions.</source>
         <translation>... เป็นขั้นต่ำในการแทนที่ธุรกรรมที่มีอยู่  </translation>
     </message>
@@ -545,14 +579,20 @@ the sending value {sent}</source>
         <source>{rate} is the minimum for {rbf}</source>
         <translation>{rate} เป็นขั้นต่ำสำหรับ {rbf}  </translation>
     </message>
+</context>
+<context>
+    <name>FeeRateWarningBar</name>
     <message>
         <source>High fee rate!</source>
         <translation>อัตราค่าธรรมเนียมสูง!  </translation>
     </message>
     <message>
-        <source>The high prio mempool fee rate is {rate}</source>
-        <translation>อัตราค่าธรรมเนียม mempool ที่มีความสำคัญสูงคือ {rate}  </translation>
+        <source>The high priority mempool fee rate is {rate}</source>
+        <translation>อัตราค่าธรรมเนียมเมมพูลลำดับสูงคือ {rate}</translation>
     </message>
+</context>
+<context>
+    <name>FeeWarningBar</name>
     <message>
         <source>{sent} is sent!</source>
         <translation>{sent} ถูกส่ง!  </translation>
@@ -561,6 +601,22 @@ the sending value {sent}</source>
         <source>The transaction fee is:
 {fee}, and {sent} is sent!</source>
         <translation>ค่าธรรมเนียมการทำธุรกรรมคือ: {fee}, และ {sent} ถูกส่ง!  </translation>
+    </message>
+    <message>
+        <source>The estimated transaction fee is:
+{fee}, which is {percent}% of
+the sending value {sent}</source>
+        <translation>ค่าธรรมเนียมการทำธุรกรรมโดยประมาณคือ: {fee}, ซึ่งเป็น {percent}% ของมูลค่าที่ส่ง {sent}  </translation>
+    </message>
+    <message>
+        <source>The transaction fee is:
+{fee}, which is {percent}% of
+the sending value {sent}</source>
+        <translation>ค่าธรรมเนียมการทำธุรกรรมคือ: {fee}, ซึ่งเป็น {percent}% ของมูลค่าที่ส่ง {sent}  </translation>
+    </message>
+    <message>
+        <source>High fee ratio: {ratio}%.</source>
+        <translation>อัตราส่วนค่าธรรมเนียมสูง: {ratio}%</translation>
     </message>
 </context>
 <context>
@@ -782,8 +838,8 @@ the sending value {sent}</source>
         <translation>บัญชีที่ให้มา {provided_account} แตกต่างจากบัญชีเริ่มต้น {default_account}  </translation>
     </message>
     <message>
-        <source>Unexpected key origin</source>
-        <translation>คีย์ต้นทางไม่คาดคิด  </translation>
+        <source>Unexpected xpub origin</source>
+        <translation>ที่มาของ xpub ไม่คาดคิด</translation>
     </message>
 </context>
 <context>
@@ -1084,6 +1140,34 @@ Do you want to proceed anyway?</source>
         <translation>&amp;แสดงบันทึก  </translation>
     </message>
     <message>
+        <source>&amp;Feedback / Contact</source>
+        <translation>ข้อเสนอแนะ / ติดต่อ</translation>
+    </message>
+    <message>
+        <source>&amp;Contact via Nostr</source>
+        <translation>ติดต่อผ่าน Nostr</translation>
+    </message>
+    <message>
+        <source>&amp;Open issue in github</source>
+        <translation>เปิดปัญหาใน github</translation>
+    </message>
+    <message>
+        <source>&amp;Mail feedback</source>
+        <translation>ส่งข้อเสนอแนะทางอีเมล</translation>
+    </message>
+    <message>
+        <source>&amp;Documentation</source>
+        <translation>เอกสารประกอบ</translation>
+    </message>
+    <message>
+        <source>&amp;Knowledge</source>
+        <translation>ฐานความรู้</translation>
+    </message>
+    <message>
+        <source>&amp;New Wallet</source>
+        <translation>&amp;กระเป๋าเงินใหม่  </translation>
+    </message>
+    <message>
         <source>Please select the wallet</source>
         <translation>โปรดเลือกกระเป๋าเงิน  </translation>
     </message>
@@ -1108,10 +1192,6 @@ Do you want to proceed anyway?</source>
         <translation>ไม่ได้เลือกไฟล์  </translation>
     </message>
     <message>
-        <source>&amp;New Wallet</source>
-        <translation>&amp;กระเป๋าเงินใหม่  </translation>
-    </message>
-    <message>
         <source>Selected file: {file_path}</source>
         <translation>ไฟล์ที่เลือก: {file_path}  </translation>
     </message>
@@ -1128,8 +1208,12 @@ Do you want to proceed anyway?</source>
         <translation>ไม่สามารถถอดรหัสสตริงนี้ได้  </translation>
     </message>
     <message>
-        <source>Signed Message</source>
-        <translation>ข้อความที่ลงนามแล้ว  </translation>
+        <source>&amp;Open Wallet</source>
+        <translation>&amp;เปิดกระเป๋าเงิน  </translation>
+    </message>
+    <message>
+        <source>QR Scanner</source>
+        <translation>สแกนเนอร์ QR</translation>
     </message>
     <message>
         <source>Open Transaction or PSBT</source>
@@ -1152,10 +1236,6 @@ Do you want to proceed anyway?</source>
         <translation>ธุรกรรม {txid}  </translation>
     </message>
     <message>
-        <source>&amp;Open Wallet</source>
-        <translation>&amp;เปิดกระเป๋าเงิน  </translation>
-    </message>
-    <message>
         <source>PSBT {txid}</source>
         <translation>PSBT {txid}  </translation>
     </message>
@@ -1170,6 +1250,10 @@ Do you want to proceed anyway?</source>
     <message>
         <source>The wallet {file_path} is already open.</source>
         <translation>กระเป๋าเงิน {file_path} ถูกเปิดอยู่แล้ว  </translation>
+    </message>
+    <message>
+        <source>Open &amp;Recent</source>
+        <translation>เปิด &amp;ล่าสุด  </translation>
     </message>
     <message>
         <source>The wallet {file_path} is already open.  Do you want to open the wallet anyway?</source>
@@ -1196,10 +1280,6 @@ Do you want to proceed anyway?</source>
         <translation>ใหม่  </translation>
     </message>
     <message>
-        <source>Open &amp;Recent</source>
-        <translation>เปิด &amp;ล่าสุด  </translation>
-    </message>
-    <message>
         <source>A wallet with id {name} is already open.  </source>
         <translation>กระเป๋าเงินที่มี id {name} เปิดอยู่แล้ว  </translation>
     </message>
@@ -1214,6 +1294,10 @@ Do you want to proceed anyway?</source>
     <message>
         <source>Close wallet</source>
         <translation>ปิดกระเป๋าเงิน  </translation>
+    </message>
+    <message>
+        <source>&amp;Save Current Wallet</source>
+        <translation>&amp;บันทึกกระเป๋าเงินปัจจุบัน  </translation>
     </message>
     <message>
         <source>Closing wallet {id}</source>
@@ -1232,10 +1316,6 @@ Do you want to proceed anyway?</source>
         <translation>กำลังปิดแท็บ {name}  </translation>
     </message>
     <message>
-        <source>&amp;Save Current Wallet</source>
-        <translation>&amp;บันทึกกระเป๋าเงินปัจจุบัน  </translation>
-    </message>
-    <message>
         <source>&amp;Search</source>
         <translation>&amp;ค้นหา  </translation>
     </message>
@@ -1246,6 +1326,10 @@ Do you want to proceed anyway?</source>
 </context>
 <context>
     <name>MempoolButtons</name>
+    <message>
+        <source>Fetch new mempool data</source>
+        <translation>ดึงข้อมูลเมมพูลใหม่</translation>
+    </message>
     <message>
         <source>Next Block</source>
         <translation>บล็อกถัดไป  </translation>
@@ -1264,13 +1348,6 @@ Do you want to proceed anyway?</source>
     <message>
         <source>~{n}. Block</source>
         <translation>~{n} บล็อก  </translation>
-    </message>
-</context>
-<context>
-    <name>MultiLineListView</name>
-    <message>
-        <source>Delete all messages</source>
-        <translation>ลบข้อความทั้งหมด  </translation>
     </message>
 </context>
 <context>
@@ -1347,6 +1424,22 @@ Do you want to proceed anyway?</source>
     <message>
         <source>Automatic</source>
         <translation>อัตโนมัติ  </translation>
+    </message>
+    <message>
+        <source>Please remove the &apos;{scheme}&apos; from the electrum url</source>
+        <translation>โปรดลบ &apos;{scheme}&apos; ออกจาก URL ของ electrum  </translation>
+    </message>
+    <message>
+        <source>Are you sure &apos;{scheme}&apos; is correct in the esplora url?</source>
+        <translation>คุณแน่ใจหรือว่า &apos;{scheme}&apos; ถูกต้องใน URL ของ esplora?  </translation>
+    </message>
+    <message>
+        <source>The format for tor addresses should be &apos;{scheme}&apos;</source>
+        <translation>รูปแบบสำหรับที่อยู่ tor ควรเป็น &apos;{scheme}&apos;  </translation>
+    </message>
+    <message>
+        <source>Please try &apos;{scheme}&apos; at the beginning of the mempool url</source>
+        <translation>กรุณาลอง &apos;{scheme}&apos; ที่ต้น URL ของ mempool  </translation>
     </message>
     <message>
         <source>Error in server connection.
@@ -1555,6 +1648,13 @@ Do you want to proceed anyway?</source>
     </message>
 </context>
 <context>
+    <name>PoisoningWarningBar</name>
+    <message>
+        <source>Warning! This transaction involves deceptively similar addresses. It may be an address poisoning attack. Similar addresses are  &lt;br&gt;{addresses}.&lt;br&gt; Double-check all transaction details carefully!</source>
+        <translation>คำเตือน! ธุรกรรมนี้เกี่ยวข้องกับที่อยู่ที่คล้ายกันอย่างหลอกลวง อาจเป็นการโจมตีด้วยการปลอมที่อยู่ ที่อยู่ที่คล้ายกันคือ &lt;br&gt;{addresses}.&lt;br&gt; ตรวจสอบรายละเอียดการทำธุรกรรมทั้งหมดอย่างระมัดระวัง!</translation>
+    </message>
+</context>
+<context>
     <name>QTProtoWallet</name>
     <message>
         <source>Setup wallet</source>
@@ -1754,9 +1854,9 @@ Do you want to proceed anyway?</source>
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.     
                     &lt;br&gt;
                     &lt;br&gt;
-                    &lt;b&gt;Do NOT send in large funds into the wallet before you didn&apos;t complete all send tests!&lt;/b&gt;   
+                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   
                     </source>
-        <translation>รับจำนวนเงินที่ &lt;b&gt;น้อย&lt;/b&gt; (น้อยกว่า {test_amount}) ไปยัง 1 ที่อยู่ของกระเป๋าเงินนี้&lt;br&gt;&lt;br&gt;&lt;b&gt;ทำไม?&lt;/b&gt;&lt;br&gt;เพื่อทราบว่าคุณควบคุมเงินได้หรือไม่ คุณต้องทดลองใช้จ่ายจากกระเป๋าเงิน&lt;br&gt;ดังนั้นก่อนที่คุณจะส่งจำนวนเงิน Bitcoin ที่มากเข้าไปในกระเป๋าเงิน จึง&lt;b&gt;สำคัญมาก&lt;/b&gt;ที่จะใช้จ่ายจากกระเป๋าเงินและทดสอบผู้ลงนามทั้งหมด&lt;br&gt;&lt;br&gt;&lt;b&gt;อย่าส่งเงินจำนวนมากเข้ากระเป๋าเงินก่อนที่คุณจะทำการทดสอบการส่งทั้งหมดเสร็จสิ้น!&lt;/b&gt;  </translation>
+        <translation>รับจำนวนเงิน&lt;b&gt;เล็กน้อย&lt;/b&gt; (น้อยกว่า {test_amount}) ไปยังหนึ่งในที่อยู่ของกระเป๋าเงินนี้                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;ทำไม?&lt;/b&gt; &lt;br&gt;                     เพื่อทราบว่าคุณควบคุมเงินได้หรือไม่ คุณต้องทดสอบการใช้จ่ายจากกระเป๋าเงิน                     &lt;br&gt;                     ดังนั้นก่อนที่คุณจะส่งจำนวน Bitcoin ที่มากไปยังกระเป๋าเงิน มันเป็นเรื่อง&lt;b&gt;สำคัญ&lt;/b&gt;ที่จะต้องใช้จ่ายจากกระเป๋าเงินและทดสอบผู้ลงนามทั้งหมด                         &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;โปรดอย่าส่งเงินจำนวนมากเข้ากระเป๋าเงินก่อนที่คุณจะทำการทดสอบการส่งเสร็จสิ้น!&lt;/b&gt;  </translation>
     </message>
     <message>
         <source>Next step</source>
@@ -1917,8 +2017,8 @@ Do you want to proceed anyway?</source>
 <context>
     <name>RegisterMultisigInteractionWidget</name>
     <message>
-        <source>Register Multisig</source>
-        <translation>ลงทะเบียน Multisig  </translation>
+        <source>Register {wallet_name}</source>
+        <translation>ลงทะเบียน {wallet_name}</translation>
     </message>
 </context>
 <context>
@@ -2170,8 +2270,8 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
         <translation>กำลังเปิด {name} จาก {author}  </translation>
     </message>
     <message>
-        <source>Received message &apos;{description}&apos; from {author}</source>
-        <translation>ได้รับข้อความ &apos;{description}&apos; จาก {author}  </translation>
+        <source>{author}: {description}</source>
+        <translation>{author}: {description}  </translation>
     </message>
 </context>
 <context>
@@ -2376,6 +2476,10 @@ below {rate}</source>
     <message>
         <source>Invalid Signatures</source>
         <translation>ลายเซ็นไม่ถูกต้อง  </translation>
+    </message>
+    <message>
+        <source>Failed to broadcast {txid}. Consider broadcasting via {url}</source>
+        <translation>ไม่สามารถเผยแพร่ {txid} ได้ โปรดลองเผยแพร่ผ่าน {url}</translation>
     </message>
     <message>
         <source>Import file</source>
@@ -2898,32 +3002,10 @@ below {rate}</source>
     </message>
 </context>
 <context>
-    <name>descriptor</name>
-    <message>
-        <source>Wallet Properties</source>
-        <translation>คุณสมบัติของกระเป๋าเงิน  </translation>
-    </message>
-    <message>
-        <source>Address Type</source>
-        <translation>ประเภทที่อยู่  </translation>
-    </message>
-    <message>
-        <source>Wallet Descriptor</source>
-        <translation>ตัวบ่งชี้กระเป๋าเงิน  </translation>
-    </message>
-</context>
-<context>
     <name>dynamic_lib_load</name>
     <message>
         <source>libsecp256k1 could not be found. Please install libsecp256k1 in your OS.</source>
         <translation>ไม่พบ libsecp256k1 โปรดติดตั้ง libsecp256k1 ในระบบปฏิบัติการของคุณ  </translation>
-    </message>
-</context>
-<context>
-    <name>ensure_pyzbar_works</name>
-    <message>
-        <source>Trying to import pyzbar to see if Visual C++ Redistributable is installed. </source>
-        <translation>กำลังพยายามนำเข้า pyzbar เพื่อดูว่ามีการติดตั้ง Visual C++ Redistributable หรือไม่  </translation>
     </message>
 </context>
 <context>
@@ -3030,14 +3112,6 @@ below {rate}</source>
     <message>
         <source>Import Signature</source>
         <translation>นำเข้าลายเซ็น  </translation>
-    </message>
-</context>
-<context>
-    <name>lib_load</name>
-    <message>
-        <source>You are missing the {link}
-Please install it.</source>
-        <translation>คุณขาด {link} โปรดติดตั้งมัน  </translation>
     </message>
 </context>
 <context>
@@ -3191,12 +3265,12 @@ It is best to use your own server, such as {link}.</source>
         <translation>เมื่อสแกนกระเป๋าเงินนี้ใหม่ สแกนไปยังอย่างน้อยดัชนีที่อยู่ {max_tip} เพื่อค้นหาที่อยู่ที่ได้รับเงินทุนทั้งหมด  </translation>
     </message>
     <message>
-        <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;
+        <source>1. Attach the &apos;Recovery sheet&apos; ({number} words) to this paper or duplicate the 12/24 words onto this paper.&lt;br/&gt;
                 2. Fold this  paper at the line below &lt;br/&gt;
                 3. Put this paper in a secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
-        <translation>1. ติดกาวหรือเทป &apos;ใบเรียกคืน&apos; ({number} คำ) บนตารางด้านล่าง&lt;br/&gt;                 2. พับกระดาษนี้ตามเส้นด้านล่าง &lt;br/&gt;                 3. ใส่กระดาษนี้ไว้ในสถานที่ปลอดภัยที่คุณเข้าถึงได้เพียงผู้เดียว&lt;br/&gt;                 4. คุณสามารถวางผู้ลงนามฮาร์ดแวร์ได้ แบบ a) รวมกับการสำรองข้อมูลเมล็ดพันธุ์กระดาษ หรือ b) ในสถานที่ปลอดภัยอื่นๆ (หากมี)  </translation>
+        <translation>1. แนบ &apos;แผ่นกู้คืน&apos; ({number} คำ) กับกระดาษนี้หรือทำซ้ำคำ 12/24 บนกระดาษนี้&lt;br/&gt;                 2. พับกระดาษนี้ที่เส้นด้านล่าง&lt;br/&gt;                 3. วางกระดาษนี้ในที่ที่ปลอดภัยที่คุณเข้าถึงได้เพียงผู้เดียว&lt;br/&gt;                 4. คุณสามารถวางผู้ลงนามฮาร์ดแวร์ได้ a) ร่วมกับการสำรองข้อมูลเมล็ดกระดาษ หรือ b) ในที่ที่ปลอดภัยอื่น ๆ (ถ้ามี)  </translation>
     </message>
     <message>
         <source>Label syncronization backup key: {label_sync_nsec}</source>
@@ -3211,12 +3285,12 @@ It is best to use your own server, such as {link}.</source>
         <translation>คำแถลงยอดเงินของ &quot;{id}&quot;  </translation>
     </message>
     <message>
-        <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;
+        <source>1. Attach the &apos;Recovery sheet&apos; ({number} words) to this paper or duplicate the 12/24 words onto this paper.&lt;br/&gt;
                 2. Fold this  paper at the line below &lt;br/&gt;
                 3. Put each paper in a different secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signers either a) together with the corresponding paper seed backup, or b)   each  in yet another secure  location (if available)   
                 </source>
-        <translation>1. ติดกาวหรือเทป &apos;ใบเรียกคืน&apos; ({number} คำ) บนตารางด้านล่าง&lt;br/&gt;                 2. พับกระดาษนี้ตามเส้นด้านล่าง &lt;br/&gt;                 3. ใส่แต่ละกระดาษไว้ในสถานที่ปลอดภัยที่แตกต่างกัน ซึ่งคุณเข้าถึงได้เพียงผู้เดียว&lt;br/&gt;                 4. คุณสามารถวางผู้ลงนามฮาร์ดแวร์ได้ แบบ a) รวมกับการสำรองข้อมูลเมล็ดพันธุ์กระดาษที่เกี่ยวข้อง หรือ b) ในอีกสถานที่ปลอดภัยหนึ่ง (หากมี)  </translation>
+        <translation>1. แนบ &apos;แผ่นกู้คืน&apos; ({number} คำ) กับกระดาษนี้หรือทำซ้ำคำ 12/24 บนกระดาษนี้&lt;br/&gt;                 2. พับกระดาษนี้ที่เส้นด้านล่าง&lt;br/&gt;                 3. วางแต่ละกระดาษในที่ที่ปลอดภัยแตกต่างกันที่คุณเข้าถึงได้เพียงผู้เดียว&lt;br/&gt;                 4. คุณสามารถวางผู้ลงนามฮาร์ดแวร์ได้ a) ร่วมกับการสำรองข้อมูลเมล็ดกระดาษที่เกี่ยวข้อง หรือ b) แต่ละในที่ที่ปลอดภัยอื่น ๆ (ถ้ามี)</translation>
     </message>
     <message>
         <source>Secret seed words for a hardware signer: Never type into a computer. Never make a picture.</source>

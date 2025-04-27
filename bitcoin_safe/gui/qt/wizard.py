@@ -76,13 +76,14 @@ from bitcoin_safe.i18n import translate
 from bitcoin_safe.signals import Signals, UpdateFilter, UpdateFilterReason
 from bitcoin_safe.threading_manager import ThreadingManager
 from bitcoin_safe.typestubs import TypedPyQtSignal
-from bitcoin_safe.wallet import ProtoWallet, Wallet
+from bitcoin_safe.wallet import Wallet
 
 from ...pdfrecovery import TEXT_24_WORDS, make_and_open_pdf
 from ...pythonbdk_types import Recipient
 from ...signals import TypedPyQtSignalNo
 from ...tx import TxUiInfos
 from ...util import Satoshis
+from ...wallet_util import signer_name
 from .spinning_button import SpinningButton
 from .step_progress_bar import StepProgressContainer, TutorialWidget, VisibilityOption
 from .util import (
@@ -487,7 +488,7 @@ class StickerTheHardware(BaseTab):
     def device_name(self, i) -> str:
         protowallet = self.refs.qtwalletbase.get_editable_protowallet()
         threshold, n = protowallet.get_mn_tuple()
-        return ProtoWallet.signer_names(threshold=threshold, i=i)
+        return signer_name(threshold=threshold, i=i)
 
     def updateUi(self) -> None:
         super().updateUi()
@@ -965,11 +966,7 @@ class ReceiveTest(BaseTab):
 
     def updateUi(self) -> None:
         super().updateUi()
-        test_amount = (
-            Satoshis(self.refs.max_test_fund, self.refs.qt_wallet.wallet.network).str_with_unit()
-            if self.refs.qt_wallet
-            else ""
-        )
+        test_amount = Satoshis(self.refs.max_test_fund, self.refs.qtwalletbase.config.network).str_with_unit()
         self.label_receive_description.setText(
             html_f(
                 self.tr(
@@ -981,7 +978,7 @@ class ReceiveTest(BaseTab):
                     So before you send a substantial amount of Bitcoin into the wallet, it is <b>crucial</b> to spend from the wallet and test all signers.     
                     <br>
                     <br>
-                    <b>Do NOT send in large funds into the wallet before you didn't complete all send tests!</b>   
+                    <b>Do NOT send large funds into the wallet, yet. Please complete all send tests first!</b>   
                     """
                 ).format(test_amount=test_amount),
                 add_html_and_body=True,
@@ -1126,7 +1123,10 @@ class RegisterMultisig(BaseTab):
         for label in self.refs.qtwalletbase.get_keystore_labels():
 
             hardware_signer_interaction = RegisterMultisigInteractionWidget(
-                qt_wallet=self.refs.qt_wallet, threading_parent=self, parent=widget
+                qt_wallet=self.refs.qt_wallet,
+                threading_parent=self,
+                parent=widget,
+                wallet_name=self.refs.qt_wallet.wallet.id if self.refs.qt_wallet else "Multisig",
             )
             self.hardware_signer_tabs.addTab(
                 hardware_signer_interaction,

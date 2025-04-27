@@ -1,0 +1,234 @@
+name: Build and Test MacOS DMG
+
+on:
+  workflow_dispatch:
+    inputs:
+      commitHash:
+        description: 'Enter the commit hash to build (leave empty to use the default branch or the branch that triggered the workflow)'
+        required: false
+        type: string 
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        # Building on macos-14 produces an arm64 DMG,
+        # and building on macos-13 produces an x86 DMG.
+        # see available: https://github.com/actions/runner-images?tab=readme-ov-file#available-images
+        include:
+          - os: macos-14
+            artifact_name: dmgs-arm64
+          - os: macos-13
+            artifact_name: dmgs-x86_64
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for all branches and tags
+          ref: ${{ github.event.inputs.commitHash || github.sha }}
+
+      - name: Set up Python environment
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install poetry
+          poetry install  
+  
+      - name: Run build script
+        run: poetry run python tools/build.py --targets mac --commit None
+
+      - name: Check for DMG file
+        run: |
+          if [ -z "$(find dist -type f -name '*.dmg')" ]; then
+            echo "DMG file is missing"
+            exit 1
+          fi
+
+      - name: Upload DMG Files from dist/
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact_name }}
+          path: dist/*.dmg
+
+  test:
+    needs: build
+    strategy:
+      matrix:
+        include:
+          - arch: arm64
+            runner: macos-15  # This runner must be an arm64 machine
+            artifact_name: dmgs-arm64
+          - arch: x86_64
+            runner: macos-13    # This runner must be an x86 machine
+            artifact_name: dmgs-x86_64
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - name: Download DMG Artifact for ${{ matrix.arch }}
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ matrix.artifact_name }}
+          path: dmgs
+
+
+
+      - name: Start DMG file on ${{ matrix.arch }}
+        run: |
+          # Find the DMG file from the downloaded artifacts.
+          DMG_FILE=$(find dmgs -type f -name '*.dmg' | head -n 1)
+          if [ -z "$DMG_FILE" ]; then
+            echo "No DMG file found to test."
+            exit 1
+          fi
+          echo "Found DMG file: $DMG_FILE" | tee test_dmg.log
+          
+          # Mount the DMG.
+          echo "Mounting DMG file..." | tee -a test_dmg.log
+          i=0
+          until MOUNT_OUTPUT=$(hdiutil attach "$DMG_FILE" 2>&1); do
+            if [ $i -eq 10 ]; then
+              echo "Could not attach DMG" | tee -a test_dmg.log
+              exit 1
+            fi
+            i=$((i+1))
+            sleep 1
+          done
+          echo "$MOUNT_OUTPUT" | tee -a test_dmg.log
+
+          
+          # Extract the mount point (assuming the output contains a /Volumes entry).
+          MOUNT_POINT=$(echo "$MOUNT_OUTPUT" | grep /Volumes | awk '{print $3}')
+          if [ -z "$MOUNT_POINT" ]; then
+            echo "Failed to mount DMG file" | tee -a test_dmg.log
+            exit 1
+          fi
+          echo "DMG mounted at: $MOUNT_POINT" | tee -a test_dmg.log
+          
+          # Find the .app bundle within the mounted DMG.
+          APP_PATH=$(find "$MOUNT_POINT" -maxdepth 1 -name '*.app' | head -n 1)
+          if [ -z "$APP_PATH" ]; then
+            echo "No .app found in mounted DMG" | tee -a test_dmg.log
+            exit 1
+          fi
+          echo "Found app at: $APP_PATH" | tee -a test_dmg.log
+           
+          # Open the app using the 'open' command
+          echo "Launching app via open" | tee -a test_dmg.log
+          open "$APP_PATH"
+
+          echo "Starting screenshot capture..."
+          for i in $(seq 1 20); do
+            echo "Taking screenshot $i"
+            screencapture -x "screenshot_$i.png"
+            sleep 1
+          done
+
+
+          echo "Checking if Bitcoin_Safe is running..." | tee -a test_dmg.log
+          PROCESS_COUNT=$(ps aux | grep -v grep | grep "Bitcoin_Safe" | wc -l)
+          if [ "$PROCESS_COUNT" -eq 0 ]; then
+            echo "Error: Bitcoin_Safe is not running!" | tee -a test_dmg.log
+            exit 1
+          else
+            echo "Bitcoin_Safe is running." | tee -a test_dmg.log
+          fi
+
+
+          # Optionally, you can run further tests against the application.
+          
+          
+        shell: bash
+
+
+      - name: Check for pyzbar log entry in bitcoin_safe.log
+        run: |
+          echo "Checking bitcoin_safe.log for 'pyzbar could be loaded successfully'..." | tee -a test_dmg.log
+          if ! grep -q "pyzbar could be loaded successfully" "/Users/runner/Library/Application Support/bitcoin_safe/bitcoin_safe.log"; then
+            echo "Error: 'pyzbar could be loaded successfully' not found in bitcoin_safe.log" | tee -a test_dmg.log
+            exit 1
+          fi
+
+      - name: Gatekeeper tests on ${{ matrix.arch }}
+        run: |
+          echo "Starting DMG Gatekeeper tests..." | tee test_dmg.log
+          
+          # Locate the DMG file
+          DMG_FILE=$(find dmgs -type f -name '*.dmg' | head -n 1)
+          if [ -z "$DMG_FILE" ]; then
+            echo "No DMG file found to test." | tee -a test_dmg.log
+            exit 1
+          fi
+          echo "Found DMG file: $DMG_FILE" | tee -a test_dmg.log
+          
+          #######################################################
+          # Gatekeeper check on the DMG
+          #######################################################
+          echo "Running Gatekeeper check on DMG..." | tee -a test_dmg.log
+          OUTPUT=$(spctl --assess --verbose "$DMG_FILE" 2>&1) || true
+          echo "$OUTPUT" | tee -a test_dmg.log
+          if echo "$OUTPUT" | grep -Eq "(invalid signature)"; then
+            echo "DMG has invalid signature" | tee -a test_dmg.log
+            exit 1
+          fi
+          
+          #######################################################
+          # Attach the DMG (with retry logic)
+          #######################################################
+          echo "Mounting DMG file with retry logic..." | tee -a test_dmg.log
+          i=0
+          until MOUNT_OUTPUT=$(hdiutil attach "$DMG_FILE" 2>&1); do
+            if [ $i -eq 10 ]; then
+              echo "Could not attach DMG" | tee -a test_dmg.log
+              exit 1
+            fi
+            i=$((i+1))
+            sleep 1
+          done
+          echo "$MOUNT_OUTPUT" | tee -a test_dmg.log
+          
+          # Extract the mount point (assuming the output contains a /Volumes entry)
+          MOUNT_POINT=$(echo "$MOUNT_OUTPUT" | grep /Volumes | awk '{print $3}')
+          if [ -z "$MOUNT_POINT" ]; then
+            echo "Failed to identify DMG mount point" | tee -a test_dmg.log
+            exit 1
+          fi
+          echo "DMG mounted at: $MOUNT_POINT" | tee -a test_dmg.log
+          
+          #######################################################
+          # Copy .app bundle out of the DMG
+          #######################################################
+          APP_PATH=$(find "$MOUNT_POINT" -maxdepth 1 -name '*.app' | head -n 1)
+          if [ -z "$APP_PATH" ]; then
+            echo "No .app found in mounted DMG" | tee -a test_dmg.log
+            exit 1
+          fi
+          echo "Found app at: $APP_PATH" | tee -a test_dmg.log
+          cp -R "$APP_PATH" ./
+          APP_BASENAME=$(basename "$APP_PATH")
+          echo "Copied $APP_BASENAME to local directory" | tee -a test_dmg.log
+          
+          #######################################################
+          # Gatekeeper check on the .app bundle
+          #######################################################
+          echo "Running Gatekeeper check on .app..." | tee -a test_dmg.log
+          OUTPUT=$(spctl --assess --verbose "$APP_BASENAME" 2>&1) || true
+          echo "$OUTPUT" | tee -a test_dmg.log
+          if echo "$OUTPUT" | grep -Eq "(invalid signature)"; then
+            echo "App has invalid signature" | tee -a test_dmg.log
+            exit 1
+          fi 
+
+
+      - name: Upload DMG and Application Logs for ${{ matrix.arch }}
+        if: always()  # This ensures the step runs regardless of previous failures    
+        uses: actions/upload-artifact@v4
+        with:
+          name: logs-${{ matrix.arch }}
+          path: |
+            *.png
+            *.log
+            /Users/runner/Library/Application Support/bitcoin_safe/*

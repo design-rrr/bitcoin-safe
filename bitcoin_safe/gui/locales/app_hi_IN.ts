@@ -217,6 +217,21 @@
     </message>
 </context>
 <context>
+    <name>BaseDeviceItem</name>
+    <message>
+        <source>Rename</source>
+        <translation>नाम बदलें</translation>
+    </message>
+    <message>
+        <source>Enter a name of device with {npub}</source>
+        <translation>{npub} के साथ डिवाइस का नाम दर्ज करें</translation>
+    </message>
+    <message>
+        <source>Device name</source>
+        <translation>डिवाइस का नाम</translation>
+    </message>
+</context>
+<context>
     <name>BaseHardwareSignerInteractionWidget</name>
     <message>
         <source>Help</source>
@@ -236,6 +251,17 @@
     <message>
         <source>To complete the connection, accept my {id} request on the other device {other}.</source>
         <translation>अन्य उपकरण {other} पर मेरे {id} अनुरोध को स्वीकार करके कनेक्शन पूरा करें।  </translation>
+    </message>
+    <message>
+        <source>Enter a name of device with {npub}</source>
+        <translation>{npub} के साथ डिवाइस का नाम दर्ज करें</translation>
+    </message>
+</context>
+<context>
+    <name>BitcoinDmChatGui</name>
+    <message>
+        <source>Me</source>
+        <translation>मैं</translation>
     </message>
 </context>
 <context>
@@ -331,10 +357,6 @@
         <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
         <translation>सभी फाइलें (*);;PSBT (*.psbt);;लेन-देन (*.tx)</translation>
     </message>
-    <message>
-        <source>Me: {text}</source>
-        <translation>मैं: {text}  </translation>
-    </message>
 </context>
 <context>
     <name>CloseButton</name>
@@ -393,6 +415,22 @@
         <translation>आवश्यक साइनर्स</translation>
     </message>
     <message>
+        <source>Import from Clipboard</source>
+        <translation>क्लिपबोर्ड से आयात करें</translation>
+    </message>
+    <message>
+        <source>Input corrected</source>
+        <translation>इनपुट सुधारा गया</translation>
+    </message>
+    <message>
+        <source>Descriptor unchanged</source>
+        <translation>विवरणक अपरिवर्तित  </translation>
+    </message>
+    <message>
+        <source>New descriptor entered</source>
+        <translation>नया विवरणक दर्ज किया गया  </translation>
+    </message>
+    <message>
         <source>Scan Addresses ahead</source>
         <translation>पते स्कैन करें आगे  </translation>
     </message>
@@ -406,12 +444,24 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>यह &quot;वर्णनकर्ता&quot; वॉलेट को पुनर्निर्माण करने के लिए सभी जानकारी रखता है। कृपया धन की पुनर्प्राप्ति के लिए इस वर्णनकर्ता का बैकअप लें!</translation>
     </message>
     <message>
-        <source>Descriptor unchanged</source>
-        <translation>विवरणक अपरिवर्तित  </translation>
+        <source>Wallet Properties</source>
+        <translation>वॉलेट गुण  </translation>
     </message>
     <message>
-        <source>New descriptor entered</source>
-        <translation>नया विवरणक दर्ज किया गया  </translation>
+        <source>Address Type</source>
+        <translation>पता प्रकार</translation>
+    </message>
+    <message>
+        <source>Wallet Descriptor</source>
+        <translation>वॉलेट वर्णनकर्ता</translation>
+    </message>
+    <message>
+        <source>Import</source>
+        <translation>आयात करें</translation>
+    </message>
+    <message>
+        <source>Read QR Code</source>
+        <translation>QR कोड पढ़ें</translation>
     </message>
 </context>
 <context>
@@ -514,22 +564,6 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>शुल्क</translation>
     </message>
     <message>
-        <source>High fee ratio: {ratio}%</source>
-        <translation>उच्च शुल्क अनुपात: {ratio}%</translation>
-    </message>
-    <message>
-        <source>The estimated transaction fee is:
-{fee}, which is {percent}% of
-the sending value {sent}</source>
-        <translation>अनुमानित लेन-देन शुल्क है: {fee}, जो भेजे गए मूल्य {sent} का {percent}% है</translation>
-    </message>
-    <message>
-        <source>The transaction fee is:
-{fee}, which is {percent}% of
-the sending value {sent}</source>
-        <translation>लेन-देन शुल्क है: {fee}, जो भेजे गए मूल्य {sent} का {percent}% है</translation>
-    </message>
-    <message>
         <source>... is the minimum to replace the existing transactions.</source>
         <translation>... मौजूदा लेन-देनों को बदलने के लिए न्यूनतम है।</translation>
     </message>
@@ -545,14 +579,20 @@ the sending value {sent}</source>
         <source>{rate} is the minimum for {rbf}</source>
         <translation>{rate} {rbf} के लिए न्यूनतम है</translation>
     </message>
+</context>
+<context>
+    <name>FeeRateWarningBar</name>
     <message>
         <source>High fee rate!</source>
         <translation>उच्च शुल्क दर!</translation>
     </message>
     <message>
-        <source>The high prio mempool fee rate is {rate}</source>
-        <translation>उच्च प्राथमिकता मेमपूल शुल्क दर है {rate}</translation>
+        <source>The high priority mempool fee rate is {rate}</source>
+        <translation>उच्च प्राथमिकता मेमपूल शुल्क दर {rate} है</translation>
     </message>
+</context>
+<context>
+    <name>FeeWarningBar</name>
     <message>
         <source>{sent} is sent!</source>
         <translation>{sent} भेजा गया है!  </translation>
@@ -561,6 +601,22 @@ the sending value {sent}</source>
         <source>The transaction fee is:
 {fee}, and {sent} is sent!</source>
         <translation>लेनदेन शुल्क है: {fee}, और {sent} भेजा गया है!  </translation>
+    </message>
+    <message>
+        <source>The estimated transaction fee is:
+{fee}, which is {percent}% of
+the sending value {sent}</source>
+        <translation>अनुमानित लेन-देन शुल्क है: {fee}, जो भेजे गए मूल्य {sent} का {percent}% है</translation>
+    </message>
+    <message>
+        <source>The transaction fee is:
+{fee}, which is {percent}% of
+the sending value {sent}</source>
+        <translation>लेन-देन शुल्क है: {fee}, जो भेजे गए मूल्य {sent} का {percent}% है</translation>
+    </message>
+    <message>
+        <source>High fee ratio: {ratio}%.</source>
+        <translation>उच्च शुल्क अनुपात: {ratio}%।</translation>
     </message>
 </context>
 <context>
@@ -782,8 +838,8 @@ the sending value {sent}</source>
         <translation>प्रदान किया गया खाता {provided_account} डिफ़ॉल्ट खाता {default_account} से भिन्न है।  </translation>
     </message>
     <message>
-        <source>Unexpected key origin</source>
-        <translation>अप्रत्याशित की उत्पत्ति  </translation>
+        <source>Unexpected xpub origin</source>
+        <translation>अप्रत्याशित xpub स्रोत</translation>
     </message>
 </context>
 <context>
@@ -1084,6 +1140,34 @@ Do you want to proceed anyway?</source>
         <translation>&amp;लॉग दिखाएं  </translation>
     </message>
     <message>
+        <source>&amp;Feedback / Contact</source>
+        <translation>प्रतिक्रिया / संपर्क करें</translation>
+    </message>
+    <message>
+        <source>&amp;Contact via Nostr</source>
+        <translation>Nostr के माध्यम से संपर्क करें</translation>
+    </message>
+    <message>
+        <source>&amp;Open issue in github</source>
+        <translation>github पर समस्या खोलें</translation>
+    </message>
+    <message>
+        <source>&amp;Mail feedback</source>
+        <translation>मेल द्वारा प्रतिक्रिया दें</translation>
+    </message>
+    <message>
+        <source>&amp;Documentation</source>
+        <translation>प्रलेखन</translation>
+    </message>
+    <message>
+        <source>&amp;Knowledge</source>
+        <translation>ज्ञानकोष</translation>
+    </message>
+    <message>
+        <source>&amp;New Wallet</source>
+        <translation>&amp;नया वॉलेट</translation>
+    </message>
+    <message>
         <source>Please select the wallet</source>
         <translation>कृपया वॉलेट चुनें</translation>
     </message>
@@ -1108,10 +1192,6 @@ Do you want to proceed anyway?</source>
         <translation>कोई फ़ाइल नहीं चुनी गई  </translation>
     </message>
     <message>
-        <source>&amp;New Wallet</source>
-        <translation>&amp;नया वॉलेट</translation>
-    </message>
-    <message>
         <source>Selected file: {file_path}</source>
         <translation>चयनित फ़ाइल: {file_path}</translation>
     </message>
@@ -1128,8 +1208,12 @@ Do you want to proceed anyway?</source>
         <translation>इस स्ट्रिंग को डिकोड नहीं कर सका  </translation>
     </message>
     <message>
-        <source>Signed Message</source>
-        <translation>हस्ताक्षरित संदेश  </translation>
+        <source>&amp;Open Wallet</source>
+        <translation>&amp;वॉलेट खोलें</translation>
+    </message>
+    <message>
+        <source>QR Scanner</source>
+        <translation>QR स्कैनर</translation>
     </message>
     <message>
         <source>Open Transaction or PSBT</source>
@@ -1152,10 +1236,6 @@ Do you want to proceed anyway?</source>
         <translation>लेन-देन {txid}</translation>
     </message>
     <message>
-        <source>&amp;Open Wallet</source>
-        <translation>&amp;वॉलेट खोलें</translation>
-    </message>
-    <message>
         <source>PSBT {txid}</source>
         <translation>PSBT {txid}</translation>
     </message>
@@ -1170,6 +1250,10 @@ Do you want to proceed anyway?</source>
     <message>
         <source>The wallet {file_path} is already open.</source>
         <translation>वॉलेट {file_path} पहले से खुला है।</translation>
+    </message>
+    <message>
+        <source>Open &amp;Recent</source>
+        <translation>हाल का खोलें</translation>
     </message>
     <message>
         <source>The wallet {file_path} is already open.  Do you want to open the wallet anyway?</source>
@@ -1196,10 +1280,6 @@ Do you want to proceed anyway?</source>
         <translation>नया</translation>
     </message>
     <message>
-        <source>Open &amp;Recent</source>
-        <translation>हाल का खोलें</translation>
-    </message>
-    <message>
         <source>A wallet with id {name} is already open.  </source>
         <translation>वॉलेट के साथ id {name} पहले से खुला है।</translation>
     </message>
@@ -1214,6 +1294,10 @@ Do you want to proceed anyway?</source>
     <message>
         <source>Close wallet</source>
         <translation>वॉलेट बंद करें</translation>
+    </message>
+    <message>
+        <source>&amp;Save Current Wallet</source>
+        <translation>&amp;मौजूदा वॉलेट सहेजें</translation>
     </message>
     <message>
         <source>Closing wallet {id}</source>
@@ -1232,10 +1316,6 @@ Do you want to proceed anyway?</source>
         <translation>टैब {name} बंद करना</translation>
     </message>
     <message>
-        <source>&amp;Save Current Wallet</source>
-        <translation>&amp;मौजूदा वॉलेट सहेजें</translation>
-    </message>
-    <message>
         <source>&amp;Search</source>
         <translation>&amp;खोजें  </translation>
     </message>
@@ -1246,6 +1326,10 @@ Do you want to proceed anyway?</source>
 </context>
 <context>
     <name>MempoolButtons</name>
+    <message>
+        <source>Fetch new mempool data</source>
+        <translation>नए मेमपूल डेटा प्राप्त करें</translation>
+    </message>
     <message>
         <source>Next Block</source>
         <translation>अगला ब्लॉक</translation>
@@ -1264,13 +1348,6 @@ Do you want to proceed anyway?</source>
     <message>
         <source>~{n}. Block</source>
         <translation>~{n} ब्लॉक</translation>
-    </message>
-</context>
-<context>
-    <name>MultiLineListView</name>
-    <message>
-        <source>Delete all messages</source>
-        <translation>सभी संदेश हटाएं  </translation>
     </message>
 </context>
 <context>
@@ -1347,6 +1424,22 @@ Do you want to proceed anyway?</source>
     <message>
         <source>Automatic</source>
         <translation>स्वचालित</translation>
+    </message>
+    <message>
+        <source>Please remove the &apos;{scheme}&apos; from the electrum url</source>
+        <translation>कृपया इलेक्ट्रम यूआरएल से &apos;{scheme}&apos; को हटा दें</translation>
+    </message>
+    <message>
+        <source>Are you sure &apos;{scheme}&apos; is correct in the esplora url?</source>
+        <translation>क्या आप सुनिश्चित हैं कि एस्प्लोरा यूआरएल में &apos;{scheme}&apos; सही है?</translation>
+    </message>
+    <message>
+        <source>The format for tor addresses should be &apos;{scheme}&apos;</source>
+        <translation>टोर पतों का प्रारूप &apos;{scheme}&apos; होना चाहिए</translation>
+    </message>
+    <message>
+        <source>Please try &apos;{scheme}&apos; at the beginning of the mempool url</source>
+        <translation>कृपया मेमपूल यूआरएल की शुरुआत में &apos;{scheme}&apos; का प्रयास करें</translation>
     </message>
     <message>
         <source>Error in server connection.
@@ -1558,6 +1651,13 @@ Do you want to proceed anyway?</source>
     </message>
 </context>
 <context>
+    <name>PoisoningWarningBar</name>
+    <message>
+        <source>Warning! This transaction involves deceptively similar addresses. It may be an address poisoning attack. Similar addresses are  &lt;br&gt;{addresses}.&lt;br&gt; Double-check all transaction details carefully!</source>
+        <translation>चेतावनी! इस लेन-देन में धोखाधड़ी से समान पते शामिल हैं। यह पते का जहरीला हमला हो सकता है। समान पते हैं &lt;br&gt;{addresses}.&lt;br&gt; सभी लेन-देन विवरणों की सावधानी से जांच करें!</translation>
+    </message>
+</context>
+<context>
     <name>QTProtoWallet</name>
     <message>
         <source>Setup wallet</source>
@@ -1757,9 +1857,9 @@ Do you want to proceed anyway?</source>
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.     
                     &lt;br&gt;
                     &lt;br&gt;
-                    &lt;b&gt;Do NOT send in large funds into the wallet before you didn&apos;t complete all send tests!&lt;/b&gt;   
+                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   
                     </source>
-        <translation>इस वॉलेट के 1 पते पर &lt;b&gt;छोटी&lt;/b&gt; राशि (जो {test_amount} से कम है) प्राप्त करें।&lt;br&gt;&lt;br&gt;&lt;b&gt;क्यों?&lt;/b&gt;&lt;br&gt;यह जानने के लिए कि आप धन को नियंत्रित करते हैं, आपको वॉलेट से खर्च करने का परीक्षण करना होगा।&lt;br&gt;तो वॉलेट में बड़ी मात्रा में बिटकॉइन भेजने से पहले, वॉलेट से खर्च करना और सभी साइनर्स का परीक्षण करना &lt;b&gt;महत्वपूर्ण&lt;/b&gt; है।&lt;br&gt;&lt;br&gt;&lt;b&gt;जब तक आप सभी भेजने के परीक्षण पूरे नहीं कर लेते, वॉलेट में बड़ी धनराशि न भेजें!&lt;/b&gt;</translation>
+        <translation>इस वॉलेट के एक पते पर &lt;b&gt;छोटी&lt;/b&gt; राशि (कम से कम {test_amount}) प्राप्त करें। &lt;br&gt;&lt;br&gt; &lt;b&gt;क्यों?&lt;/b&gt; &lt;br&gt; यह जानने के लिए कि क्या आप फंड को नियंत्रित करते हैं, आपको वॉलेट से खर्च करने का परीक्षण करना होगा। &lt;br&gt; इसलिए इससे पहले कि आप वॉलेट में बड़ी मात्रा में बिटकॉइन भेजें, वॉलेट से खर्च करना और सभी हस्ताक्षरकर्ताओं का परीक्षण करना &lt;b&gt;महत्वपूर्ण&lt;/b&gt; है। &lt;br&gt; &lt;br&gt; &lt;b&gt;कृपया सभी भेजने के परीक्षण पूरे होने तक बड़ी राशि वॉलेट में न भेजें!&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Next step</source>
@@ -1920,8 +2020,8 @@ Do you want to proceed anyway?</source>
 <context>
     <name>RegisterMultisigInteractionWidget</name>
     <message>
-        <source>Register Multisig</source>
-        <translation>मल्टीसिग पंजीकरण  </translation>
+        <source>Register {wallet_name}</source>
+        <translation>{wallet_name} पंजीकृत करें</translation>
     </message>
 </context>
 <context>
@@ -2173,8 +2273,8 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
         <translation>{author} से {name} खोलना</translation>
     </message>
     <message>
-        <source>Received message &apos;{description}&apos; from {author}</source>
-        <translation>{author} से प्राप्त संदेश &apos;{description}&apos;</translation>
+        <source>{author}: {description}</source>
+        <translation>{author}: {description}</translation>
     </message>
 </context>
 <context>
@@ -2379,6 +2479,10 @@ below {rate}</source>
     <message>
         <source>Invalid Signatures</source>
         <translation>अमान्य हस्ताक्षर</translation>
+    </message>
+    <message>
+        <source>Failed to broadcast {txid}. Consider broadcasting via {url}</source>
+        <translation>{txid} प्रसारित करने में विफल। कृपया {url} के माध्यम से प्रसारित करने का प्रयास करें।</translation>
     </message>
     <message>
         <source>Import file</source>
@@ -2901,32 +3005,10 @@ below {rate}</source>
     </message>
 </context>
 <context>
-    <name>descriptor</name>
-    <message>
-        <source>Wallet Properties</source>
-        <translation>वॉलेट गुण  </translation>
-    </message>
-    <message>
-        <source>Address Type</source>
-        <translation>पता प्रकार</translation>
-    </message>
-    <message>
-        <source>Wallet Descriptor</source>
-        <translation>वॉलेट वर्णनकर्ता</translation>
-    </message>
-</context>
-<context>
     <name>dynamic_lib_load</name>
     <message>
         <source>libsecp256k1 could not be found. Please install libsecp256k1 in your OS.</source>
         <translation>libsecp256k1 नहीं मिला। कृपया अपने ओएस में libsecp256k1 स्थापित करें।  </translation>
-    </message>
-</context>
-<context>
-    <name>ensure_pyzbar_works</name>
-    <message>
-        <source>Trying to import pyzbar to see if Visual C++ Redistributable is installed. </source>
-        <translation>pyzbar को आयात करने का प्रयास कर रहा हूँ ताकि देख सकूं कि Visual C++ Redistributable स्थापित है या नहीं।  </translation>
     </message>
 </context>
 <context>
@@ -3033,14 +3115,6 @@ below {rate}</source>
     <message>
         <source>Import Signature</source>
         <translation>हस्ताक्षर आयात करें</translation>
-    </message>
-</context>
-<context>
-    <name>lib_load</name>
-    <message>
-        <source>You are missing the {link}
-Please install it.</source>
-        <translation>आपके पास {link} नहीं है। कृपया इसे स्थापित करें।</translation>
     </message>
 </context>
 <context>
@@ -3194,12 +3268,12 @@ It is best to use your own server, such as {link}.</source>
         <translation>इस वॉलेट को फिर से स्कैन करते समय, कम से कम पते के सूचकांक {max_tip} तक स्कैन करें ताकि सभी वित्तपोषित पते पता चल सकें।  </translation>
     </message>
     <message>
-        <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;
+        <source>1. Attach the &apos;Recovery sheet&apos; ({number} words) to this paper or duplicate the 12/24 words onto this paper.&lt;br/&gt;
                 2. Fold this  paper at the line below &lt;br/&gt;
                 3. Put this paper in a secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
-        <translation>1. &apos;रिकवरी शीट&apos; ({number} शब्दों) को नीचे दी गई तालिका पर गोंद या टेप करें&lt;br/&gt;2. नीचे दी गई लाइन पर इस कागज को मोड़ें&lt;br/&gt;3. इस कागज को केवल आपके पास पहुँचने वाली सुरक्षित जगह में रखें&lt;br/&gt;4. आप हार्डवेयर साइनर को या तो a) कागज़ के बीज बैकअप के साथ रख सकते हैं, या b) दूसरी सुरक्षित जगह में (अगर उपलब्ध है)  </translation>
+        <translation>1. इस कागज पर &apos;रिकवरी शीट&apos; ({number} शब्द) लगाएं या 12/24 शब्दों को इस कागज पर डुप्लिकेट करें।&lt;br/&gt; 2. नीचे की लाइन पर इस कागज को मोड़ें&lt;br/&gt; 3. इस कागज को एक सुरक्षित स्थान पर रखें, जहाँ केवल आपकी पहुँच हो&lt;br/&gt; 4. आप हार्डवेयर साइनर को या तो a) कागजी बीज बैकअप के साथ मिलाकर, या b) किसी अन्य सुरक्षित स्थान पर रख सकते हैं (यदि उपलब्ध हो)</translation>
     </message>
     <message>
         <source>Label syncronization backup key: {label_sync_nsec}</source>
@@ -3214,12 +3288,12 @@ It is best to use your own server, such as {link}.</source>
         <translation>&quot;{id}&quot; का बैलेंस स्टेटमेंट  </translation>
     </message>
     <message>
-        <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;
+        <source>1. Attach the &apos;Recovery sheet&apos; ({number} words) to this paper or duplicate the 12/24 words onto this paper.&lt;br/&gt;
                 2. Fold this  paper at the line below &lt;br/&gt;
                 3. Put each paper in a different secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signers either a) together with the corresponding paper seed backup, or b)   each  in yet another secure  location (if available)   
                 </source>
-        <translation>1. &apos;रिकवरी शीट&apos; ({number} शब्द) को नीचे दी गई तालिका पर चिपकाएं या टेप करें&lt;br/&gt;2. इस कागज को नीचे की रेखा पर मोड़ें&lt;br/&gt;3. प्रत्येक कागज को अलग सुरक्षित स्थान पर रखें, जहां केवल आपकी पहुंच हो&lt;br/&gt;4. आप हार्डवेयर साइनर्स को a) संबंधित पेपर सीड बैकअप के साथ रख सकते हैं, या b) प्रत्येक को एक और सुरक्षित स्थान पर रख सकते हैं (यदि उपलब्ध हो)</translation>
+        <translation>1. इस कागज पर &apos;रिकवरी शीट&apos; ({number} शब्द) लगाएं या 12/24 शब्दों को इस कागज पर डुप्लिकेट करें।&lt;br/&gt; 2. नीचे की लाइन पर इस कागज को मोड़ें&lt;br/&gt; 3. प्रत्येक कागज को एक अलग सुरक्षित स्थान पर रखें, जहाँ केवल आपकी पहुँच हो&lt;br/&gt; 4. आप हार्डवेयर साइनर को या तो a) संबंधित कागजी बीज बैकअप के साथ मिलाकर, या b) प्रत्येक को किसी अन्य सुरक्षित स्थान पर रख सकते हैं (यदि उपलब्ध हो)</translation>
     </message>
     <message>
         <source>Secret seed words for a hardware signer: Never type into a computer. Never make a picture.</source>

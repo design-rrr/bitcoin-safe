@@ -217,6 +217,21 @@
     </message>
 </context>
 <context>
+    <name>BaseDeviceItem</name>
+    <message>
+        <source>Rename</source>
+        <translation>이름 변경  </translation>
+    </message>
+    <message>
+        <source>Enter a name of device with {npub}</source>
+        <translation>{npub}가 포함된 장치의 이름을 입력하세요  </translation>
+    </message>
+    <message>
+        <source>Device name</source>
+        <translation>장치 이름  </translation>
+    </message>
+</context>
+<context>
     <name>BaseHardwareSignerInteractionWidget</name>
     <message>
         <source>Help</source>
@@ -236,6 +251,17 @@
     <message>
         <source>To complete the connection, accept my {id} request on the other device {other}.</source>
         <translation>연결을 완료하려면 다른 장치 {other}에서 내 {id} 요청을 수락하세요.  </translation>
+    </message>
+    <message>
+        <source>Enter a name of device with {npub}</source>
+        <translation>{npub}가 포함된 장치의 이름을 입력하세요  </translation>
+    </message>
+</context>
+<context>
+    <name>BitcoinDmChatGui</name>
+    <message>
+        <source>Me</source>
+        <translation>나</translation>
     </message>
 </context>
 <context>
@@ -331,10 +357,6 @@
         <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
         <translation>모든 파일 (*);;PSBT (*.psbt);;트랜잭션 (*.tx)  </translation>
     </message>
-    <message>
-        <source>Me: {text}</source>
-        <translation>나: {text}  </translation>
-    </message>
 </context>
 <context>
     <name>CloseButton</name>
@@ -393,6 +415,22 @@
         <translation>필요한 서명 기계  </translation>
     </message>
     <message>
+        <source>Import from Clipboard</source>
+        <translation>클립보드에서 가져오기</translation>
+    </message>
+    <message>
+        <source>Input corrected</source>
+        <translation>입력이 수정되었습니다</translation>
+    </message>
+    <message>
+        <source>Descriptor unchanged</source>
+        <translation>디스크립터 변경 없음</translation>
+    </message>
+    <message>
+        <source>New descriptor entered</source>
+        <translation>새로 입력된 설명자  </translation>
+    </message>
+    <message>
         <source>Scan Addresses ahead</source>
         <translation>앞으로 주소 검색  </translation>
     </message>
@@ -406,12 +444,24 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>이 &quot;디스크립트&quot;에는 지갑을 재구성하는 모든 정보가 포함되어 있습니다. 자금을 복구할 수 있도록 이 디스크립트를 백업하세요!</translation>
     </message>
     <message>
-        <source>Descriptor unchanged</source>
-        <translation>디스크립터 변경 없음</translation>
+        <source>Wallet Properties</source>
+        <translation>지갑 속성  </translation>
     </message>
     <message>
-        <source>New descriptor entered</source>
-        <translation>새로 입력된 설명자  </translation>
+        <source>Address Type</source>
+        <translation>주소 유형  </translation>
+    </message>
+    <message>
+        <source>Wallet Descriptor</source>
+        <translation>지갑 디스크립터  </translation>
+    </message>
+    <message>
+        <source>Import</source>
+        <translation>가져오기  </translation>
+    </message>
+    <message>
+        <source>Read QR Code</source>
+        <translation>QR 코드 읽기</translation>
     </message>
 </context>
 <context>
@@ -514,22 +564,6 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>수수료  </translation>
     </message>
     <message>
-        <source>High fee ratio: {ratio}%</source>
-        <translation>높은 수수료 비율: {ratio}%  </translation>
-    </message>
-    <message>
-        <source>The estimated transaction fee is:
-{fee}, which is {percent}% of
-the sending value {sent}</source>
-        <translation>예상되는 거래 수수료는: {fee}, 이는 보내는 금액 {sent}의 {percent}%입니다  </translation>
-    </message>
-    <message>
-        <source>The transaction fee is:
-{fee}, which is {percent}% of
-the sending value {sent}</source>
-        <translation>거래 수수료는: {fee}, 이는 전송 금액 {sent}의 {percent}%입니다</translation>
-    </message>
-    <message>
         <source>... is the minimum to replace the existing transactions.</source>
         <translation>...는 기존 트랜잭션을 대체하기 위한 최소 금액입니다.  </translation>
     </message>
@@ -545,14 +579,20 @@ the sending value {sent}</source>
         <source>{rate} is the minimum for {rbf}</source>
         <translation>{rate}은 {rbf}를 위한 최소 비율입니다.</translation>
     </message>
+</context>
+<context>
+    <name>FeeRateWarningBar</name>
     <message>
         <source>High fee rate!</source>
         <translation>높은 수수료율!  </translation>
     </message>
     <message>
-        <source>The high prio mempool fee rate is {rate}</source>
-        <translation>높은 우선순위의 mempool 수수료율은 {rate}입니다  </translation>
+        <source>The high priority mempool fee rate is {rate}</source>
+        <translation>높은 우선순위 멤풀 수수료율은 {rate}입니다</translation>
     </message>
+</context>
+<context>
+    <name>FeeWarningBar</name>
     <message>
         <source>{sent} is sent!</source>
         <translation>{sent}가 전송되었습니다!  </translation>
@@ -561,6 +601,22 @@ the sending value {sent}</source>
         <source>The transaction fee is:
 {fee}, and {sent} is sent!</source>
         <translation>거래 수수료는: {fee}, 그리고 {sent}가 전송되었습니다!  </translation>
+    </message>
+    <message>
+        <source>The estimated transaction fee is:
+{fee}, which is {percent}% of
+the sending value {sent}</source>
+        <translation>예상되는 거래 수수료는: {fee}, 이는 보내는 금액 {sent}의 {percent}%입니다  </translation>
+    </message>
+    <message>
+        <source>The transaction fee is:
+{fee}, which is {percent}% of
+the sending value {sent}</source>
+        <translation>거래 수수료는: {fee}, 이는 전송 금액 {sent}의 {percent}%입니다</translation>
+    </message>
+    <message>
+        <source>High fee ratio: {ratio}%.</source>
+        <translation>높은 수수료 비율: {ratio}%</translation>
     </message>
 </context>
 <context>
@@ -782,8 +838,8 @@ the sending value {sent}</source>
         <translation>제공된 계정 {provided_account}이(가) 기본 계정 {default_account}과 다릅니다.</translation>
     </message>
     <message>
-        <source>Unexpected key origin</source>
-        <translation>예상치 못한 키 출처  </translation>
+        <source>Unexpected xpub origin</source>
+        <translation>예상치 못한 xpub 출처</translation>
     </message>
 </context>
 <context>
@@ -1084,6 +1140,34 @@ Do you want to proceed anyway?</source>
         <translation>&amp;로그 보기  </translation>
     </message>
     <message>
+        <source>&amp;Feedback / Contact</source>
+        <translation>피드백 / 연락처</translation>
+    </message>
+    <message>
+        <source>&amp;Contact via Nostr</source>
+        <translation>Nostr로 연락하기</translation>
+    </message>
+    <message>
+        <source>&amp;Open issue in github</source>
+        <translation>github에서 이슈 열기</translation>
+    </message>
+    <message>
+        <source>&amp;Mail feedback</source>
+        <translation>이메일로 피드백 보내기</translation>
+    </message>
+    <message>
+        <source>&amp;Documentation</source>
+        <translation>문서</translation>
+    </message>
+    <message>
+        <source>&amp;Knowledge</source>
+        <translation>지식 베이스</translation>
+    </message>
+    <message>
+        <source>&amp;New Wallet</source>
+        <translation>&amp;새 지갑  </translation>
+    </message>
+    <message>
         <source>Please select the wallet</source>
         <translation>지갑을 선택하세요  </translation>
     </message>
@@ -1108,10 +1192,6 @@ Do you want to proceed anyway?</source>
         <translation>파일이 선택되지 않았습니다  </translation>
     </message>
     <message>
-        <source>&amp;New Wallet</source>
-        <translation>&amp;새 지갑  </translation>
-    </message>
-    <message>
         <source>Selected file: {file_path}</source>
         <translation>선택된 파일: {file_path}  </translation>
     </message>
@@ -1128,8 +1208,12 @@ Do you want to proceed anyway?</source>
         <translation>이 문자열을 해석 할 수 없습니다</translation>
     </message>
     <message>
-        <source>Signed Message</source>
-        <translation>서명된 메시지  </translation>
+        <source>&amp;Open Wallet</source>
+        <translation>&amp;지갑 열기  </translation>
+    </message>
+    <message>
+        <source>QR Scanner</source>
+        <translation>QR 스캐너</translation>
     </message>
     <message>
         <source>Open Transaction or PSBT</source>
@@ -1152,10 +1236,6 @@ Do you want to proceed anyway?</source>
         <translation>트랜잭션 {txid}  </translation>
     </message>
     <message>
-        <source>&amp;Open Wallet</source>
-        <translation>&amp;지갑 열기  </translation>
-    </message>
-    <message>
         <source>PSBT {txid}</source>
         <translation>PSBT {txid}  </translation>
     </message>
@@ -1170,6 +1250,10 @@ Do you want to proceed anyway?</source>
     <message>
         <source>The wallet {file_path} is already open.</source>
         <translation>지갑 {file_path}이 이미 열려 있습니다.</translation>
+    </message>
+    <message>
+        <source>Open &amp;Recent</source>
+        <translation>최근 열기  </translation>
     </message>
     <message>
         <source>The wallet {file_path} is already open.  Do you want to open the wallet anyway?</source>
@@ -1196,10 +1280,6 @@ Do you want to proceed anyway?</source>
         <translation>새로운  </translation>
     </message>
     <message>
-        <source>Open &amp;Recent</source>
-        <translation>최근 열기  </translation>
-    </message>
-    <message>
         <source>A wallet with id {name} is already open.  </source>
         <translation>id {name}인 지갑이 이미 열려 있습니다.  </translation>
     </message>
@@ -1214,6 +1294,10 @@ Do you want to proceed anyway?</source>
     <message>
         <source>Close wallet</source>
         <translation>지갑 닫기  </translation>
+    </message>
+    <message>
+        <source>&amp;Save Current Wallet</source>
+        <translation>&amp;현재 지갑 저장  </translation>
     </message>
     <message>
         <source>Closing wallet {id}</source>
@@ -1232,10 +1316,6 @@ Do you want to proceed anyway?</source>
         <translation>탭 {name} 닫기  </translation>
     </message>
     <message>
-        <source>&amp;Save Current Wallet</source>
-        <translation>&amp;현재 지갑 저장  </translation>
-    </message>
-    <message>
         <source>&amp;Search</source>
         <translation>&amp;검색  </translation>
     </message>
@@ -1246,6 +1326,10 @@ Do you want to proceed anyway?</source>
 </context>
 <context>
     <name>MempoolButtons</name>
+    <message>
+        <source>Fetch new mempool data</source>
+        <translation>새 멤풀 데이터 가져오기</translation>
+    </message>
     <message>
         <source>Next Block</source>
         <translation>다음 블록  </translation>
@@ -1264,13 +1348,6 @@ Do you want to proceed anyway?</source>
     <message>
         <source>~{n}. Block</source>
         <translation>~{n}번째 블록  </translation>
-    </message>
-</context>
-<context>
-    <name>MultiLineListView</name>
-    <message>
-        <source>Delete all messages</source>
-        <translation>모든 메시지 삭제  </translation>
     </message>
 </context>
 <context>
@@ -1347,6 +1424,22 @@ Do you want to proceed anyway?</source>
     <message>
         <source>Automatic</source>
         <translation>자동  </translation>
+    </message>
+    <message>
+        <source>Please remove the &apos;{scheme}&apos; from the electrum url</source>
+        <translation>electrum URL에서 &apos;{scheme}&apos;를 제거하세요  </translation>
+    </message>
+    <message>
+        <source>Are you sure &apos;{scheme}&apos; is correct in the esplora url?</source>
+        <translation>esplora URL에서 &apos;{scheme}&apos;가 정확한지 확실합니까?  </translation>
+    </message>
+    <message>
+        <source>The format for tor addresses should be &apos;{scheme}&apos;</source>
+        <translation>tor 주소의 형식은 &apos;{scheme}&apos;이어야 합니다  </translation>
+    </message>
+    <message>
+        <source>Please try &apos;{scheme}&apos; at the beginning of the mempool url</source>
+        <translation>mempool URL의 시작 부분에서 &apos;{scheme}&apos;을(를) 시도해보세요  </translation>
     </message>
     <message>
         <source>Error in server connection.
@@ -1555,6 +1648,13 @@ Do you want to proceed anyway?</source>
     </message>
 </context>
 <context>
+    <name>PoisoningWarningBar</name>
+    <message>
+        <source>Warning! This transaction involves deceptively similar addresses. It may be an address poisoning attack. Similar addresses are  &lt;br&gt;{addresses}.&lt;br&gt; Double-check all transaction details carefully!</source>
+        <translation>경고! 이 거래는 속이는 듯 비슷한 주소를 포함하고 있습니다. 이는 주소 독살 공격일 수 있습니다. 비슷한 주소는 &lt;br&gt;{addresses}.&lt;br&gt; 모든 거래 세부사항을 주의 깊게 다시 확인하십시오!</translation>
+    </message>
+</context>
+<context>
     <name>QTProtoWallet</name>
     <message>
         <source>Setup wallet</source>
@@ -1754,9 +1854,9 @@ Do you want to proceed anyway?</source>
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.     
                     &lt;br&gt;
                     &lt;br&gt;
-                    &lt;b&gt;Do NOT send in large funds into the wallet before you didn&apos;t complete all send tests!&lt;/b&gt;   
+                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   
                     </source>
-        <translation>이 지갑의 1개 주소에 {test_amount} 미만의 &lt;b&gt;소액&lt;/b&gt;을 받습니다. &lt;br&gt;&lt;br&gt; &lt;b&gt;왜?&lt;/b&gt; &lt;br&gt; 자금을 제어하는지 알기 위해서는 지갑에서 지출을 테스트해야 합니다. &lt;br&gt; 따라서 지갑에 상당한 금액의 비트코인을 보내기 전에 반드시 지갑에서 지출을 테스트하고 모든 서명 기계를 테스트해야 합니다. &lt;br&gt; &lt;br&gt; &lt;b&gt;모든 전송 테스트를 완료하기 전에는 지갑에 큰 금액을 보내지 마십시오!&lt;/b&gt;  </translation>
+        <translation>이 지갑의 주소 하나로 &lt;b&gt;소량&lt;/b&gt; ( {test_amount} 미만)을 받으세요.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;왜?&lt;/b&gt; &lt;br&gt;                     자금을 제어하고 있는지 알아보기 위해서는 지갑에서 지출을 테스트해야 합니다.                      &lt;br&gt;                     따라서 지갑으로 상당한 양의 비트코인을 보내기 전에 지갑에서 지출을 하고 모든 서명자를 테스트하는 것이 &lt;b&gt;필수적&lt;/b&gt;입니다.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;아직 큰 자금을 지갑으로 보내지 마세요. 모든 송금 테스트를 먼저 완료해주세요!&lt;/b&gt;  </translation>
     </message>
     <message>
         <source>Next step</source>
@@ -1917,8 +2017,8 @@ Do you want to proceed anyway?</source>
 <context>
     <name>RegisterMultisigInteractionWidget</name>
     <message>
-        <source>Register Multisig</source>
-        <translation>멀티시그 등록  </translation>
+        <source>Register {wallet_name}</source>
+        <translation>{wallet_name} 등록하기</translation>
     </message>
 </context>
 <context>
@@ -2170,8 +2270,8 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
         <translation>{name}을 {author}로부터 열기</translation>
     </message>
     <message>
-        <source>Received message &apos;{description}&apos; from {author}</source>
-        <translation>{author}로부터 받은 메시지 &apos;{description}&apos;  </translation>
+        <source>{author}: {description}</source>
+        <translation>{author}: {description}  </translation>
     </message>
 </context>
 <context>
@@ -2376,6 +2476,10 @@ below {rate}</source>
     <message>
         <source>Invalid Signatures</source>
         <translation>잘못된 서명  </translation>
+    </message>
+    <message>
+        <source>Failed to broadcast {txid}. Consider broadcasting via {url}</source>
+        <translation>{txid} 전송 실패했습니다. {url}을 통해 전송해 보십시오.</translation>
     </message>
     <message>
         <source>Import file</source>
@@ -2898,32 +3002,10 @@ below {rate}</source>
     </message>
 </context>
 <context>
-    <name>descriptor</name>
-    <message>
-        <source>Wallet Properties</source>
-        <translation>지갑 속성  </translation>
-    </message>
-    <message>
-        <source>Address Type</source>
-        <translation>주소 유형  </translation>
-    </message>
-    <message>
-        <source>Wallet Descriptor</source>
-        <translation>지갑 디스크립터  </translation>
-    </message>
-</context>
-<context>
     <name>dynamic_lib_load</name>
     <message>
         <source>libsecp256k1 could not be found. Please install libsecp256k1 in your OS.</source>
         <translation>libsecp256k1을 찾을 수 없습니다. OS에 libsecp256k1을 설치하세요.  </translation>
-    </message>
-</context>
-<context>
-    <name>ensure_pyzbar_works</name>
-    <message>
-        <source>Trying to import pyzbar to see if Visual C++ Redistributable is installed. </source>
-        <translation>Visual C++ Redistributable이 설치되어 있는지 확인하기 위해 pyzbar를 가져오려고 합니다.  </translation>
     </message>
 </context>
 <context>
@@ -3030,14 +3112,6 @@ below {rate}</source>
     <message>
         <source>Import Signature</source>
         <translation>서명 가져오기  </translation>
-    </message>
-</context>
-<context>
-    <name>lib_load</name>
-    <message>
-        <source>You are missing the {link}
-Please install it.</source>
-        <translation>{link}가 누락되었습니다. 설치하세요.</translation>
     </message>
 </context>
 <context>
@@ -3191,12 +3265,12 @@ It is best to use your own server, such as {link}.</source>
         <translation>이 지갑을 다시 스캔할 때는 모든 자금이 조달된 주소를 발견하기 위해 적어도 주소 인덱스 {max_tip}까지 스캔하세요.  </translation>
     </message>
     <message>
-        <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;
+        <source>1. Attach the &apos;Recovery sheet&apos; ({number} words) to this paper or duplicate the 12/24 words onto this paper.&lt;br/&gt;
                 2. Fold this  paper at the line below &lt;br/&gt;
                 3. Put this paper in a secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
-        <translation>1. &apos;복구 시트&apos; ({number} 단어)를 아래 표 위에 붙이거나 테이프로 붙입니다.&lt;br/&gt; 2. 아래 선에서 이 종이를 접습니다.&lt;br/&gt; 3. 당신만 접근할 수 있는 안전한 장소에 이 종이를 두세요.&lt;br/&gt; 4. 하드웨어 서명 기계를 a) 종이 시드 백업과 함께 또는 b) 가능한 경우 다른 안전한 위치에 둘 수 있습니다.  </translation>
+        <translation>1. 이 종이에 &apos;복구 시트&apos; ({number} 단어)를 붙이거나 12/24 단어를 이 종이에 복사하세요.&lt;br/&gt;                 2. 아래 줄에서 이 종이를 접으세요&lt;br/&gt;                 3. 이 종이를 당신만 접근할 수 있는 안전한 장소에 두세요&lt;br/&gt;                 4. 하드웨어 서명자를 a) 종이 씨드 백업과 함께 또는 b) 다른 안전한 장소에 둘 수 있습니다 (가능한 경우)  </translation>
     </message>
     <message>
         <source>Label syncronization backup key: {label_sync_nsec}</source>
@@ -3211,12 +3285,12 @@ It is best to use your own server, such as {link}.</source>
         <translation>&quot;{id}&quot;의 잔액</translation>
     </message>
     <message>
-        <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;
+        <source>1. Attach the &apos;Recovery sheet&apos; ({number} words) to this paper or duplicate the 12/24 words onto this paper.&lt;br/&gt;
                 2. Fold this  paper at the line below &lt;br/&gt;
                 3. Put each paper in a different secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signers either a) together with the corresponding paper seed backup, or b)   each  in yet another secure  location (if available)   
                 </source>
-        <translation>1. &apos;복구 시트&apos; ({number} 단어)를 아래 표 위에 붙이거나 테이프로 붙입니다.&lt;br/&gt; 2. 아래 선에서 이 종이를 접습니다.&lt;br/&gt; 3. 각 종이를 다른 안전한 위치에 두세요, 여기에는 당신만 접근할 수 있습니다.&lt;br/&gt; 4. 하드웨어 서명을 a) 해당 종이 시드 백업과 함께 또는 b) 가능한 경우 또 다른 안전한 위치에 각각 둘 수 있습니다.</translation>
+        <translation>1. 이 종이에 &apos;복구 시트&apos; ({number} 단어)를 붙이거나 12/24 단어를 이 종이에 복사하세요.&lt;br/&gt;                 2. 아래 줄에서 이 종이를 접으세요&lt;br/&gt;                 3. 각 종이를 당신만 접근할 수 있는 다른 안전한 장소에 두세요&lt;br/&gt;                 4. 하드웨어 서명자를 a) 해당 종이 씨드 백업과 함께 또는 b) 각각 다른 안전한 장소에 둘 수 있습니다 (가능한 경우)  </translation>
     </message>
     <message>
         <source>Secret seed words for a hardware signer: Never type into a computer. Never make a picture.</source>

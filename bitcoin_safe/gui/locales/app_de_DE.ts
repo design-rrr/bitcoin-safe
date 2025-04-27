@@ -217,6 +217,21 @@
     </message>
 </context>
 <context>
+    <name>BaseDeviceItem</name>
+    <message>
+        <source>Rename</source>
+        <translation>Umbenennen  </translation>
+    </message>
+    <message>
+        <source>Enter a name of device with {npub}</source>
+        <translation>Geben Sie einen Namen für das Gerät mit {npub} ein  </translation>
+    </message>
+    <message>
+        <source>Device name</source>
+        <translation>Gerätename  </translation>
+    </message>
+</context>
+<context>
     <name>BaseHardwareSignerInteractionWidget</name>
     <message>
         <source>Help</source>
@@ -236,6 +251,17 @@
     <message>
         <source>To complete the connection, accept my {id} request on the other device {other}.</source>
         <translation>Um die Verbindung abzuschließen, akzeptieren Sie meine {id}-Anfrage auf dem anderen Gerät {other}.  </translation>
+    </message>
+    <message>
+        <source>Enter a name of device with {npub}</source>
+        <translation>Geben Sie einen Namen für das Gerät mit {npub} ein  </translation>
+    </message>
+</context>
+<context>
+    <name>BitcoinDmChatGui</name>
+    <message>
+        <source>Me</source>
+        <translation>Ich</translation>
     </message>
 </context>
 <context>
@@ -291,7 +317,7 @@
     <name>CategoryEditor</name>
     <message>
         <source>KYC Exchange</source>
-        <translation>KYC-Austausch  </translation>
+        <translation>KYC Börse</translation>
     </message>
     <message>
         <source>Private</source>
@@ -330,10 +356,6 @@
     <message>
         <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
         <translation>Alle Dateien (*);;PSBT (*.psbt);;Transaktion (*.tx)  </translation>
-    </message>
-    <message>
-        <source>Me: {text}</source>
-        <translation>Ich: {text}  </translation>
     </message>
 </context>
 <context>
@@ -393,6 +415,22 @@
         <translation>Erforderliche Unterzeichner  </translation>
     </message>
     <message>
+        <source>Import from Clipboard</source>
+        <translation>Aus Zwischenablage importieren</translation>
+    </message>
+    <message>
+        <source>Input corrected</source>
+        <translation>Eingabe korrigiert</translation>
+    </message>
+    <message>
+        <source>Descriptor unchanged</source>
+        <translation>Deskriptor unverändert  </translation>
+    </message>
+    <message>
+        <source>New descriptor entered</source>
+        <translation>Neuer Deskriptor eingegeben  </translation>
+    </message>
+    <message>
         <source>Scan Addresses ahead</source>
         <translation>Adressen im Voraus scannen  </translation>
     </message>
@@ -406,12 +444,24 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>Dieser &quot;Deskriptor&quot; enthält alle Informationen, um das Wallet neu aufzubauen. Bitte sichern Sie diesen Deskriptor, um die Mittel wiederherstellen zu können!  </translation>
     </message>
     <message>
-        <source>Descriptor unchanged</source>
-        <translation>Deskriptor unverändert  </translation>
+        <source>Wallet Properties</source>
+        <translation>Wallet-Eigenschaften  </translation>
     </message>
     <message>
-        <source>New descriptor entered</source>
-        <translation>Neuer Deskriptor eingegeben  </translation>
+        <source>Address Type</source>
+        <translation>Adresstyp  </translation>
+    </message>
+    <message>
+        <source>Wallet Descriptor</source>
+        <translation>Wallet-Deskriptor  </translation>
+    </message>
+    <message>
+        <source>Import</source>
+        <translation>Importieren</translation>
+    </message>
+    <message>
+        <source>Read QR Code</source>
+        <translation>QR-Code lesen</translation>
     </message>
 </context>
 <context>
@@ -514,22 +564,6 @@ Please back up this descriptor to be able to recover the funds!</source>
         <translation>Gebühr  </translation>
     </message>
     <message>
-        <source>High fee ratio: {ratio}%</source>
-        <translation>Hohe Gebührenrate: {ratio}%  </translation>
-    </message>
-    <message>
-        <source>The estimated transaction fee is:
-{fee}, which is {percent}% of
-the sending value {sent}</source>
-        <translation>Die geschätzte Transaktionsgebühr beträgt: {fee}, was {percent}% des gesendeten Werts {sent} entspricht  </translation>
-    </message>
-    <message>
-        <source>The transaction fee is:
-{fee}, which is {percent}% of
-the sending value {sent}</source>
-        <translation>Die Transaktionsgebühr beträgt: {fee}, was {percent}% des gesendeten Werts {sent} entspricht  </translation>
-    </message>
-    <message>
         <source>... is the minimum to replace the existing transactions.</source>
         <translation>... ist das Minimum, um die bestehenden Transaktionen zu ersetzen.  </translation>
     </message>
@@ -545,14 +579,20 @@ the sending value {sent}</source>
         <source>{rate} is the minimum for {rbf}</source>
         <translation>{rate} ist das Minimum für {rbf}  </translation>
     </message>
+</context>
+<context>
+    <name>FeeRateWarningBar</name>
     <message>
         <source>High fee rate!</source>
         <translation>Hohe Gebührenrate!  </translation>
     </message>
     <message>
-        <source>The high prio mempool fee rate is {rate}</source>
-        <translation>Die hohe Prioritäts-Gebührenrate im Mempool beträgt {rate}  </translation>
+        <source>The high priority mempool fee rate is {rate}</source>
+        <translation>Die hohe Priorität Mempool-Gebühr beträgt {rate}</translation>
     </message>
+</context>
+<context>
+    <name>FeeWarningBar</name>
     <message>
         <source>{sent} is sent!</source>
         <translation>{sent} ist gesendet!  </translation>
@@ -561,6 +601,22 @@ the sending value {sent}</source>
         <source>The transaction fee is:
 {fee}, and {sent} is sent!</source>
         <translation>Die Transaktionsgebühr beträgt: {fee}, und {sent} ist gesendet!  </translation>
+    </message>
+    <message>
+        <source>The estimated transaction fee is:
+{fee}, which is {percent}% of
+the sending value {sent}</source>
+        <translation>Die geschätzte Transaktionsgebühr beträgt: {fee}, was {percent}% des gesendeten Werts {sent} entspricht  </translation>
+    </message>
+    <message>
+        <source>The transaction fee is:
+{fee}, which is {percent}% of
+the sending value {sent}</source>
+        <translation>Die Transaktionsgebühr beträgt: {fee}, was {percent}% des gesendeten Werts {sent} entspricht  </translation>
+    </message>
+    <message>
+        <source>High fee ratio: {ratio}%.</source>
+        <translation>Hohes Gebührenverhältnis: {ratio}%</translation>
     </message>
 </context>
 <context>
@@ -782,8 +838,8 @@ the sending value {sent}</source>
         <translation>Das bereitgestellte Konto {provided_account} unterscheidet sich vom Standardkonto {default_account}.  </translation>
     </message>
     <message>
-        <source>Unexpected key origin</source>
-        <translation>Unerwarteter Schlüsselursprung  </translation>
+        <source>Unexpected xpub origin</source>
+        <translation>Unerwartete xpub-Herkunft</translation>
     </message>
 </context>
 <context>
@@ -1084,6 +1140,34 @@ Do you want to proceed anyway?</source>
         <translation>&amp;Protokolle anzeigen  </translation>
     </message>
     <message>
+        <source>&amp;Feedback / Contact</source>
+        <translation>Feedback / Kontakt</translation>
+    </message>
+    <message>
+        <source>&amp;Contact via Nostr</source>
+        <translation>Kontakt über Nostr</translation>
+    </message>
+    <message>
+        <source>&amp;Open issue in github</source>
+        <translation>Problem auf github öffnen</translation>
+    </message>
+    <message>
+        <source>&amp;Mail feedback</source>
+        <translation>Feedback per E-Mail senden</translation>
+    </message>
+    <message>
+        <source>&amp;Documentation</source>
+        <translation>Dokumentation</translation>
+    </message>
+    <message>
+        <source>&amp;Knowledge</source>
+        <translation>Wissensdatenbank</translation>
+    </message>
+    <message>
+        <source>&amp;New Wallet</source>
+        <translation>Neues Wallet  </translation>
+    </message>
+    <message>
         <source>Please select the wallet</source>
         <translation>Bitte wählen Sie das Wallet  </translation>
     </message>
@@ -1108,10 +1192,6 @@ Do you want to proceed anyway?</source>
         <translation>Keine Datei ausgewählt  </translation>
     </message>
     <message>
-        <source>&amp;New Wallet</source>
-        <translation>Neues Wallet  </translation>
-    </message>
-    <message>
         <source>Selected file: {file_path}</source>
         <translation>Ausgewählte Datei: {file_path}  </translation>
     </message>
@@ -1128,8 +1208,12 @@ Do you want to proceed anyway?</source>
         <translation>Diese Zeichenfolge konnte nicht dekodiert werden  </translation>
     </message>
     <message>
-        <source>Signed Message</source>
-        <translation>Signierte Nachricht  </translation>
+        <source>&amp;Open Wallet</source>
+        <translation>Wallet öffnen  </translation>
+    </message>
+    <message>
+        <source>QR Scanner</source>
+        <translation>QR-Scanner</translation>
     </message>
     <message>
         <source>Open Transaction or PSBT</source>
@@ -1152,10 +1236,6 @@ Do you want to proceed anyway?</source>
         <translation>Transaktion {txid}  </translation>
     </message>
     <message>
-        <source>&amp;Open Wallet</source>
-        <translation>Wallet öffnen  </translation>
-    </message>
-    <message>
         <source>PSBT {txid}</source>
         <translation>PSBT {txid}  </translation>
     </message>
@@ -1170,6 +1250,10 @@ Do you want to proceed anyway?</source>
     <message>
         <source>The wallet {file_path} is already open.</source>
         <translation>Das Wallet {file_path} ist bereits geöffnet.  </translation>
+    </message>
+    <message>
+        <source>Open &amp;Recent</source>
+        <translation>Kürzlich öffnen  </translation>
     </message>
     <message>
         <source>The wallet {file_path} is already open.  Do you want to open the wallet anyway?</source>
@@ -1196,10 +1280,6 @@ Do you want to proceed anyway?</source>
         <translation>neu  </translation>
     </message>
     <message>
-        <source>Open &amp;Recent</source>
-        <translation>Kürzlich öffnen  </translation>
-    </message>
-    <message>
         <source>A wallet with id {name} is already open.  </source>
         <translation>Ein Wallet mit der ID {name} ist bereits geöffnet.  </translation>
     </message>
@@ -1214,6 +1294,10 @@ Do you want to proceed anyway?</source>
     <message>
         <source>Close wallet</source>
         <translation>Wallet schließen  </translation>
+    </message>
+    <message>
+        <source>&amp;Save Current Wallet</source>
+        <translation>Aktuelles Wallet speichern  </translation>
     </message>
     <message>
         <source>Closing wallet {id}</source>
@@ -1232,10 +1316,6 @@ Do you want to proceed anyway?</source>
         <translation>Tab {name} schließen  </translation>
     </message>
     <message>
-        <source>&amp;Save Current Wallet</source>
-        <translation>Aktuelles Wallet speichern  </translation>
-    </message>
-    <message>
         <source>&amp;Search</source>
         <translation>Suchen  </translation>
     </message>
@@ -1246,6 +1326,10 @@ Do you want to proceed anyway?</source>
 </context>
 <context>
     <name>MempoolButtons</name>
+    <message>
+        <source>Fetch new mempool data</source>
+        <translation>Neue Mempool-Daten abrufen</translation>
+    </message>
     <message>
         <source>Next Block</source>
         <translation>Nächster Block  </translation>
@@ -1264,13 +1348,6 @@ Do you want to proceed anyway?</source>
     <message>
         <source>~{n}. Block</source>
         <translation>~{n}. Block  </translation>
-    </message>
-</context>
-<context>
-    <name>MultiLineListView</name>
-    <message>
-        <source>Delete all messages</source>
-        <translation>Alle Nachrichten löschen  </translation>
     </message>
 </context>
 <context>
@@ -1347,6 +1424,22 @@ Do you want to proceed anyway?</source>
     <message>
         <source>Automatic</source>
         <translation>Automatisch  </translation>
+    </message>
+    <message>
+        <source>Please remove the &apos;{scheme}&apos; from the electrum url</source>
+        <translation>Bitte entfernen Sie &apos;{scheme}&apos; aus der electrum URL  </translation>
+    </message>
+    <message>
+        <source>Are you sure &apos;{scheme}&apos; is correct in the esplora url?</source>
+        <translation>Sind Sie sicher, dass &apos;{scheme}&apos; in der esplora URL korrekt ist?  </translation>
+    </message>
+    <message>
+        <source>The format for tor addresses should be &apos;{scheme}&apos;</source>
+        <translation>Das Format für tor Adressen sollte &apos;{scheme}&apos; sein  </translation>
+    </message>
+    <message>
+        <source>Please try &apos;{scheme}&apos; at the beginning of the mempool url</source>
+        <translation>Bitte versuchen Sie &apos;{scheme}&apos; am Anfang der mempool URL  </translation>
     </message>
     <message>
         <source>Error in server connection.
@@ -1555,6 +1648,13 @@ Do you want to proceed anyway?</source>
     </message>
 </context>
 <context>
+    <name>PoisoningWarningBar</name>
+    <message>
+        <source>Warning! This transaction involves deceptively similar addresses. It may be an address poisoning attack. Similar addresses are  &lt;br&gt;{addresses}.&lt;br&gt; Double-check all transaction details carefully!</source>
+        <translation>Warnung! Diese Transaktion beinhaltet täuschend ähnliche Adressen. Es könnte sich um einen Adressen-Poisoning-Angriff handeln. Ähnliche Adressen sind &lt;br&gt;{addresses}.&lt;br&gt; Überprüfen Sie alle Transaktionsdetails sorgfältig!</translation>
+    </message>
+</context>
+<context>
     <name>QTProtoWallet</name>
     <message>
         <source>Setup wallet</source>
@@ -1754,9 +1854,9 @@ Do you want to proceed anyway?</source>
                     So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.     
                     &lt;br&gt;
                     &lt;br&gt;
-                    &lt;b&gt;Do NOT send in large funds into the wallet before you didn&apos;t complete all send tests!&lt;/b&gt;   
+                    &lt;b&gt;Do NOT send large funds into the wallet, yet. Please complete all send tests first!&lt;/b&gt;   
                     </source>
-        <translation>Empfangen Sie einen &lt;b&gt;kleinen&lt;/b&gt; Betrag (weniger als {test_amount}) auf eine Adresse dieses Wallets.                      &lt;br&gt;&lt;br&gt;                      &lt;b&gt;Warum?&lt;/b&gt; &lt;br&gt;                      Um zu wissen, ob Sie die Mittel kontrollieren, müssen Sie das Ausgeben aus dem Wallet testen.                       &lt;br&gt;                      Bevor Sie also eine erhebliche Menge Bitcoin in das Wallet senden, ist es &lt;b&gt;entscheidend&lt;/b&gt;, aus dem Wallet auszugeben und alle Unterzeichner zu testen.                           &lt;br&gt;                      &lt;b&gt;Senden Sie KEINE großen Geldbeträge in das Wallet, bevor Sie nicht alle Sendetests abgeschlossen haben!&lt;/b&gt;       </translation>
+        <translation>Empfangen Sie einen &lt;b&gt;kleinen&lt;/b&gt; Betrag (weniger als {test_amount}) an eine Adresse dieses Wallets.                     &lt;br&gt;&lt;br&gt;                     &lt;b&gt;Warum?&lt;/b&gt; &lt;br&gt;                     Um zu wissen, ob Sie die Kontrolle über die Mittel haben, müssen Sie das Ausgeben aus dem Wallet testen.                      &lt;br&gt;                     Bevor Sie also eine erhebliche Menge Bitcoin in das Wallet senden, ist es &lt;b&gt;entscheidend&lt;/b&gt;, aus dem Wallet zu spenden und alle Unterzeichner zu testen.                          &lt;br&gt;                     &lt;br&gt;                     &lt;b&gt;Senden Sie noch keine großen Geldbeträge in das Wallet. Bitte schließen Sie zuerst alle Sendetests ab!&lt;/b&gt;  </translation>
     </message>
     <message>
         <source>Next step</source>
@@ -1917,8 +2017,8 @@ Do you want to proceed anyway?</source>
 <context>
     <name>RegisterMultisigInteractionWidget</name>
     <message>
-        <source>Register Multisig</source>
-        <translation>Multisig registrieren  </translation>
+        <source>Register {wallet_name}</source>
+        <translation>{wallet_name} registrieren</translation>
     </message>
 </context>
 <context>
@@ -2170,8 +2270,8 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
         <translation>Öffnung {name} von {author}  </translation>
     </message>
     <message>
-        <source>Received message &apos;{description}&apos; from {author}</source>
-        <translation>Empfangene Nachricht &apos;{description}&apos; von {author}  </translation>
+        <source>{author}: {description}</source>
+        <translation>{author} : {description}  </translation>
     </message>
 </context>
 <context>
@@ -2376,6 +2476,10 @@ below {rate}</source>
     <message>
         <source>Invalid Signatures</source>
         <translation>Ungültige Signaturen  </translation>
+    </message>
+    <message>
+        <source>Failed to broadcast {txid}. Consider broadcasting via {url}</source>
+        <translation>Übertragung von {txid} fehlgeschlagen. Erwägen Sie, die Übertragung über {url} vorzunehmen.</translation>
     </message>
     <message>
         <source>Import file</source>
@@ -2898,32 +3002,10 @@ below {rate}</source>
     </message>
 </context>
 <context>
-    <name>descriptor</name>
-    <message>
-        <source>Wallet Properties</source>
-        <translation>Wallet-Eigenschaften  </translation>
-    </message>
-    <message>
-        <source>Address Type</source>
-        <translation>Adresstyp  </translation>
-    </message>
-    <message>
-        <source>Wallet Descriptor</source>
-        <translation>Wallet-Deskriptor  </translation>
-    </message>
-</context>
-<context>
     <name>dynamic_lib_load</name>
     <message>
         <source>libsecp256k1 could not be found. Please install libsecp256k1 in your OS.</source>
         <translation>libsecp256k1 konnte nicht gefunden werden. Bitte installieren Sie libsecp256k1 in Ihrem Betriebssystem.  </translation>
-    </message>
-</context>
-<context>
-    <name>ensure_pyzbar_works</name>
-    <message>
-        <source>Trying to import pyzbar to see if Visual C++ Redistributable is installed. </source>
-        <translation>Versuch, pyzbar zu importieren, um zu sehen, ob Visual C++ Redistributable installiert ist.  </translation>
     </message>
 </context>
 <context>
@@ -3030,14 +3112,6 @@ below {rate}</source>
     <message>
         <source>Import Signature</source>
         <translation>Signatur importieren  </translation>
-    </message>
-</context>
-<context>
-    <name>lib_load</name>
-    <message>
-        <source>You are missing the {link}
-Please install it.</source>
-        <translation>Es fehlt Ihnen der {link}. Bitte installieren Sie ihn.  </translation>
     </message>
 </context>
 <context>
@@ -3191,12 +3265,12 @@ It is best to use your own server, such as {link}.</source>
         <translation>Beim erneuten Scannen dieses Wallets scannen Sie mindestens bis zum Adressindex {max_tip}, um alle finanzierten Adressen zu entdecken.  </translation>
     </message>
     <message>
-        <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;
+        <source>1. Attach the &apos;Recovery sheet&apos; ({number} words) to this paper or duplicate the 12/24 words onto this paper.&lt;br/&gt;
                 2. Fold this  paper at the line below &lt;br/&gt;
                 3. Put this paper in a secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
-        <translation>1. Kleben oder kleben Sie das &apos;Recovery sheet&apos; ({number} Wörter) über die Tabelle unten&lt;br/&gt;                 2. Falten Sie dieses Papier an der Linie unten &lt;br/&gt;                 3. Legen Sie dieses Papier an einen sicheren Ort, wo nur Sie Zugang haben&lt;br/&gt;                 4. Sie können den Hardware-Signer entweder a) zusammen mit dem Papier-Seed-Backup oder b) an einem anderen sicheren Ort (falls verfügbar) aufbewahren  </translation>
+        <translation>1. Befestigen Sie das &apos;Wiederherstellungsblatt&apos; ({number} Wörter) an dieses Papier oder duplizieren Sie die 12/24 Wörter auf diesem Papier.&lt;br/&gt;                 2. Falten Sie dieses Papier an der Linie unten &lt;br/&gt;                 3. Legen Sie dieses Papier an einen sicheren Ort, wo nur Sie Zugang haben&lt;br/&gt;                 4. Sie können den Hardware-Unterzeichner entweder a) zusammen mit dem Papier-Seed-Backup oder b) an einem anderen sicheren Ort (falls verfügbar) platzieren  </translation>
     </message>
     <message>
         <source>Label syncronization backup key: {label_sync_nsec}</source>
@@ -3211,12 +3285,12 @@ It is best to use your own server, such as {link}.</source>
         <translation>Kontostandsauszug von &quot;{id}&quot;  </translation>
     </message>
     <message>
-        <source>1. Glue or tape the &apos;Recovery sheet&apos; ({number} words) over the table below&lt;br/&gt;
+        <source>1. Attach the &apos;Recovery sheet&apos; ({number} words) to this paper or duplicate the 12/24 words onto this paper.&lt;br/&gt;
                 2. Fold this  paper at the line below &lt;br/&gt;
                 3. Put each paper in a different secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signers either a) together with the corresponding paper seed backup, or b)   each  in yet another secure  location (if available)   
                 </source>
-        <translation>1. Kleben oder kleben Sie das &apos;Recovery sheet&apos; ({number} Wörter) über die Tabelle unten&lt;br/&gt;                 2. Falten Sie jedes Papier an der Linie unten &lt;br/&gt;                 3. Legen Sie jedes Papier an einen anderen sicheren Ort, wo nur Sie Zugang haben&lt;br/&gt;                 4. Sie können die Hardware-Signer entweder a) zusammen mit dem entsprechenden Papier-Seed-Backup oder b) jeweils an einem weiteren sicheren Ort (falls verfügbar) aufbewahren  </translation>
+        <translation>1. Befestigen Sie das &apos;Wiederherstellungsblatt&apos; ({number} Wörter) an dieses Papier oder duplizieren Sie die 12/24 Wörter auf diesem Papier.&lt;br/&gt;                 2. Falten Sie dieses Papier an der Linie unten &lt;br/&gt;                 3. Legen Sie jedes Papier an einen anderen sicheren Ort, wo nur Sie Zugang haben&lt;br/&gt;                 4. Sie können die Hardware-Unterzeichner entweder a) zusammen mit dem entsprechenden Papier-Seed-Backup oder b) jeden an einem anderen sicheren Ort (falls verfügbar) platzieren</translation>
     </message>
     <message>
         <source>Secret seed words for a hardware signer: Never type into a computer. Never make a picture.</source>

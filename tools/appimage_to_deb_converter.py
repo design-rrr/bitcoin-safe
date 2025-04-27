@@ -25,8 +25,6 @@
 # ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
-
 import os
 import shutil
 import subprocess
@@ -125,6 +123,23 @@ class Appimage2debConverter:
         control_content = "\n".join(lines) + "\n"
         (debian_dir / "control").write_text(control_content)
 
+    def _create_preinst_script(self, debian_dir: Path) -> None:
+        """
+        Creates a pre-installation script that purges /opt/{package_name},
+        but never fails (errors are ignored).
+        """
+        preinst_path = debian_dir / "preinst"
+        preinst_content = f"""\
+#!/bin/sh
+# purge any old install; ignore all errors
+if [ -d "/opt/{self.package_name}" ]; then
+    rm -rf "/opt/{self.package_name}" 2>/dev/null || true
+fi
+exit 0
+"""
+        preinst_path.write_text(preinst_content)
+        os.chmod(preinst_path, 0o755)
+
     def _create_desktop_file(self, package_root: Path) -> None:
         # Create the directory for desktop entries.
         applications_dir = package_root / "usr" / "share" / "applications"
@@ -148,7 +163,7 @@ class Appimage2debConverter:
             f"Exec={desktop_exec}",
         ]
         if self.desktop_icon_name:
-            lines.append(f"Icon=/opt/{self.package_name}/{ self.desktop_icon_name}")
+            lines.append(f"Icon=/opt/{self.package_name}/{self.desktop_icon_name}")
         lines.extend(["Terminal=false", f"Categories={self.desktop_categories}"])
         desktop_content = "\n".join(lines) + "\n"
         desktop_file_path.write_text(desktop_content)
@@ -173,6 +188,9 @@ class Appimage2debConverter:
 
             debian_dir = package_root / "DEBIAN"
             self._create_control_file(debian_dir)
+
+            # print("Creating preinst script...")
+            self._create_preinst_script(debian_dir)
 
             print("Creating desktop entry...")
             self._create_desktop_file(package_root)
