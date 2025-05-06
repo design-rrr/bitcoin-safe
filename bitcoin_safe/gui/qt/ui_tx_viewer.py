@@ -184,13 +184,17 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
         # inputs
         self.tab_inputs = QWidget()
         self.tab_inputs_layout = QVBoxLayout(self.tab_inputs)
-        self.tabs_inputs_outputs.addTab(self.tab_inputs, description="")
+        self.tabs_inputs_outputs.addTab(
+            self.tab_inputs, description="", icon=SvgTools.get_QIcon("bi--inputs.svg")
+        )
         self.tab_inputs_layout.addWidget(widget_utxo_with_toolbar)
 
         # outputs
         self.tab_outputs = QWidget()
         self.tab_outputs_layout = QVBoxLayout(self.tab_outputs)
-        self.tabs_inputs_outputs.addTab(self.tab_outputs, description="")
+        self.tabs_inputs_outputs.addTab(
+            self.tab_outputs, description="", icon=SvgTools.get_QIcon("bi--recipients.svg")
+        )
         self.tabs_inputs_outputs.setCurrentWidget(self.tab_outputs)
 
         self.recipients = self.create_recipients(
