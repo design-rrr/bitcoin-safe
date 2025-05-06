@@ -59,8 +59,8 @@ print(f"Included binaries: {binaries}")
 
 datas = [
     (f"{PROJECT_ROOT}/{PYPKG}/gui/icons/*", f"{PYPKG}/gui/icons"),
-    (f"{PROJECT_ROOT}/{PYPKG}/gui/icons/hardware_signers/*", f"{PYPKG}/gui/icons/hardware_signers"),
-    (f"{PROJECT_ROOT}/{PYPKG}/gui/icons/hardware_signers/generated/*", f"{PYPKG}/gui/icons/hardware_signers/generated"),
+    (f"{PROJECT_ROOT}/{PYPKG}/gui/hardware_signers/*", f"{PYPKG}/gui/hardware_signers"),
+    (f"{PROJECT_ROOT}/{PYPKG}/gui/hardware_signers/generated/*", f"{PYPKG}/gui/hardware_signers/generated"),
     (f"{PROJECT_ROOT}/{PYPKG}/gui/screenshots/*", f"{PYPKG}/gui/screenshots"),
     (f"{PROJECT_ROOT}/{PYPKG}/gui/locales/*", f"{PYPKG}/gui/locales"), 
 ]
