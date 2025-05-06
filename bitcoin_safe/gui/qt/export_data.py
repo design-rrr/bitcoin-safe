@@ -173,7 +173,7 @@ class FileToolButton(QToolButton):
         self.setMenu(self._menu)
         self.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
 
-        self.setIcon((self.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_DialogSaveButton))
+        self.setIcon(SvgTools.get_QIcon("bi--download.svg")) 
 
         self.set_data(data=data)
         self.updateUi()
@@ -303,7 +303,7 @@ class FileToolButton(QToolButton):
         self,
         menu: Menu,
     ):
-        file_icon = (self.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_DialogSaveButton)
+        file_icon = SvgTools.get_QIcon("bi--download.svg") 
         menu.blockSignals(True)
         menu.clear()
         menu.add_action(
@@ -613,7 +613,7 @@ class ExportDataSimple(HorizontalImportExportGroups, ThreadingManager):
 
         self.button_save_qr = QPushButton()
         self.button_save_qr.setIcon(
-            (self.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_DialogSaveButton)
+            SvgTools.get_QIcon("bi--download.svg")
         )
         self.button_save_qr.clicked.connect(self.export_qrcode)
         self.group_qr_buttons_layout.addWidget(self.button_save_qr)

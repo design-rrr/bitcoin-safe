@@ -603,7 +603,7 @@ class HistList(MyTreeView):
         menu.add_action(
             translate("hist_list", "Save as file"),
             partial(self.export_raw_transactions, selected_items),
-            icon=(self.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_DialogSaveButton),
+            icon=SvgTools.get_QIcon("bi--download.svg"),
         )
 
         if not multi_select:

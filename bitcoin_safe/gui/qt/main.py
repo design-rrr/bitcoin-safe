@@ -396,7 +396,7 @@ class MainWindow(QMainWindow):
         self.menu_action_save_current_wallet = self.menu_wallet.add_action("", self.save_qt_wallet)
         self.menu_action_save_current_wallet.setShortcut(QKeySequence("CTRL+S"))
         self.menu_action_save_current_wallet.setIcon(
-            (self.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_DialogSaveButton)
+            SvgTools.get_QIcon("bi--download.svg")
         )
         self.menu_wallet.addSeparator()
 
