@@ -431,7 +431,7 @@ class MainWindow(QMainWindow):
         )
         self.menu_action_refresh_wallet.setShortcut(QKeySequence("F5"))
         self.menu_action_refresh_wallet.setIcon(
-            (self.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_BrowserReload)
+            SvgTools.get_QIcon("bi--arrow-clockwise.svg")
         )
 
         # menu tools

@@ -730,7 +730,7 @@ class RefreshButton(QPushButton):
         self.set_icon_allow_refresh()
 
     def set_icon_allow_refresh(self) -> None:
-        icon = (self.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_BrowserReload)
+        icon = SvgTools.get_QIcon("bi--arrow-clockwise.svg")
         self.setIcon(icon)
 
     def set_icon_is_syncing(self) -> None:
