@@ -34,13 +34,14 @@ import shutil
 import tempfile
 from pathlib import Path
 from typing import Any, Dict, List, Optional
-from bitcoin_safe.gui.qt.icons import SvgTools 
+
 from packaging import version
 from PyQt6.QtCore import pyqtSignal
-from PyQt6.QtWidgets import QHBoxLayout, QStyle, QWidget
+from PyQt6.QtWidgets import QHBoxLayout, QWidget
 
 from bitcoin_safe.gui.qt.downloader import Downloader, DownloadThread
 from bitcoin_safe.gui.qt.notification_bar import NotificationBar
+from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.threading_manager import TaskThread, ThreadingManager
 
 from ... import __version__
@@ -88,7 +89,7 @@ class UpdateNotificationBar(NotificationBar, ThreadingManager):
             threading_parent=threading_parent,
         )
         self.signals_min = signals_min
-        refresh_icon = SvgTools.get_QIcon("bi--arrow-clockwise.svg")
+        refresh_icon = svg_tools.get_QIcon("bi--arrow-clockwise.svg")
         self.optionalButton.setIcon(refresh_icon)
 
         self.verifyer = SignatureVerifyer(list_of_known_keys=[self.key], proxies=self.proxies)

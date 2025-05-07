@@ -12,8 +12,8 @@
         <translation>Дополнительные подписи не добавлены  </translation>
     </message>
     <message>
-        <source>bitcoin_tx libary error. The txid should not be changed during finalizing</source>
-        <translation>Ошибка библиотеки bitcoin_tx. Идентификатор транзакции не должен быть изменен во время финализации</translation>
+        <source>bdk libary error. The txid should not be changed during finalizing</source>
+        <translation>Ошибка библиотеки bdk. При финализации txid не должен изменяться</translation>
     </message>
 </context>
 <context>
@@ -69,6 +69,10 @@
     <message>
         <source>Address {address}</source>
         <translation>Адрес {address}</translation>
+    </message>
+    <message>
+        <source>change</source>
+        <translation>сдача</translation>
     </message>
     <message>
         <source>receiving</source>
@@ -127,8 +131,8 @@
         <translation>Баланс</translation>
     </message>
     <message>
-        <source>change</source>
-        <translation>сдача</translation>
+        <source>Value</source>
+        <translation>Значение</translation>
     </message>
 </context>
 <context>
@@ -200,13 +204,6 @@
     <message>
         <source>Unmatured</source>
         <translation>Не созревшее</translation>
-    </message>
-</context>
-<context>
-    <name>BalanceChart</name>
-    <message>
-        <source>Date</source>
-        <translation>Дата</translation>
     </message>
 </context>
 <context>
@@ -579,6 +576,14 @@ Please back up this descriptor to be able to recover the funds!</source>
         <source>{rate} is the minimum for {rbf}</source>
         <translation>{rate} это минимум для {rbf}</translation>
     </message>
+    <message>
+        <source>{rate} combined fee rate</source>
+        <translation>{rate} комбинированная ставка комиссии</translation>
+    </message>
+    <message>
+        <source>This transaction has {number} unconfirmed parents with a combined fee rate of {parents_fee_rate}</source>
+        <translation>У этой транзакции {number} неподтверждённых родительских транзакций с объединённой ставкой комиссии {parents_fee_rate}</translation>
+    </message>
 </context>
 <context>
     <name>FeeRateWarningBar</name>
@@ -729,6 +734,14 @@ the sending value {sent}</source>
         <translation>Кошелек</translation>
     </message>
     <message>
+        <source>Speedup of {txid}</source>
+        <translation>Ускорение {txid}</translation>
+    </message>
+    <message>
+        <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
+        <translation>Не удается получить кошелек &apos;{id}&apos;. Пожалуйста, сначала откройте кошелек.</translation>
+    </message>
+    <message>
         <source>Status</source>
         <translation>Статус</translation>
     </message>
@@ -757,8 +770,8 @@ the sending value {sent}</source>
         <translation>{number} Подтверждений</translation>
     </message>
     <message>
-        <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
-        <translation>Не удается получить кошелек &apos;{id}&apos;. Пожалуйста, сначала откройте кошелек.</translation>
+        <source>Cannot CPFP the transaction because no receiving output could be found</source>
+        <translation>Невозможно выполнить CPFP для транзакции, так как не найден выход для получения</translation>
     </message>
 </context>
 <context>
@@ -1300,10 +1313,6 @@ Do you want to proceed anyway?</source>
         <translation>&amp;Сохранить текущий кошелек</translation>
     </message>
     <message>
-        <source>Closing wallet {id}</source>
-        <translation>Закрытие кошелька {id}</translation>
-    </message>
-    <message>
         <source>Do you want to save the PSBT {id}?</source>
         <translation>Вы хотите сохранить PSBT {id}?  </translation>
     </message>
@@ -1380,6 +1389,10 @@ Do you want to proceed anyway?</source>
         <translation>Расширенные</translation>
     </message>
     <message>
+        <source>SSL:</source>
+        <translation>SSL:</translation>
+    </message>
+    <message>
         <source>Port:</source>
         <translation>Порт:</translation>
     </message>
@@ -1416,14 +1429,14 @@ Do you want to proceed anyway?</source>
         <translation>Применить &amp;&amp; Завершить работу  </translation>
     </message>
     <message>
+        <source>Automatic</source>
+        <translation>Автоматический</translation>
+    </message>
+    <message>
         <source>Responses:
     {name}: {status}
     Mempool Instance: {server}</source>
         <translation>Ответы:     {name}: {status}     Экземпляр Mempool: {server}</translation>
-    </message>
-    <message>
-        <source>Automatic</source>
-        <translation>Автоматический</translation>
     </message>
     <message>
         <source>Please remove the &apos;{scheme}&apos; from the electrum url</source>
@@ -1452,6 +1465,10 @@ Do you want to proceed anyway?</source>
 Вы хотите продолжить?</translation>
     </message>
     <message>
+        <source>Open Tor proxy configuration documentation</source>
+        <translation>Открыть документацию по настройке прокси Tor  </translation>
+    </message>
+    <message>
         <source>Test Connection</source>
         <translation>Тестировать соединение</translation>
     </message>
@@ -1474,10 +1491,6 @@ Do you want to proceed anyway?</source>
     <message>
         <source>Enable SSL</source>
         <translation>Включить SSL</translation>
-    </message>
-    <message>
-        <source>SSL:</source>
-        <translation>SSL:</translation>
     </message>
 </context>
 <context>
@@ -1671,6 +1684,14 @@ Do you want to proceed anyway?</source>
         <translation>Отправить</translation>
     </message>
     <message>
+        <source>Backup failed. Aborting Changes.</source>
+        <translation>Не удалось сохранить резервную копию. Изменения отменены.</translation>
+    </message>
+    <message>
+        <source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
+        <translation>Продолжение может изменить все адреса кошельков. Хотите продолжить?  </translation>
+    </message>
+    <message>
         <source>Cannot move the wallet file, because {file_path} exists</source>
         <translation>Не удается переместить файл кошелька, потому что {file_path} существует</translation>
     </message>
@@ -1691,10 +1712,6 @@ Do you want to proceed anyway?</source>
         <translation>Удалить кошелек  </translation>
     </message>
     <message>
-        <source>No file selected</source>
-        <translation>Файл не выбран  </translation>
-    </message>
-    <message>
         <source>Password incorrect</source>
         <translation>Неверный пароль</translation>
     </message>
@@ -1707,12 +1724,12 @@ Do you want to proceed anyway?</source>
         <translation>Новый пароль:</translation>
     </message>
     <message>
-        <source>Wallet saved</source>
-        <translation>Кошелек сохранен</translation>
-    </message>
-    <message>
         <source>Descriptor</source>
         <translation>Дескриптор</translation>
+    </message>
+    <message>
+        <source>Wallet saved</source>
+        <translation>Кошелек сохранен</translation>
     </message>
     <message>
         <source>  {amount} in {shortid}</source>
@@ -1747,8 +1764,17 @@ Do you want to proceed anyway?</source>
         <translation>Выберите новое имя или существующее имя для объединения:</translation>
     </message>
     <message>
+        <source>The addresses {used_addresses}
+have transactions linking to other addresses already. Are you sure you want to change the category?</source>
+        <translation>Адреса {used_addresses} уже имеют транзакции, связанные с другими адресами. Вы уверены, что хотите изменить категорию?  </translation>
+    </message>
+    <message>
         <source>Syncing with {server}</source>
         <translation>Синхронизация с {server}  </translation>
+    </message>
+    <message>
+        <source>Sync &amp;&amp; Chat</source>
+        <translation>Синхронизация &amp;&amp; Чат  </translation>
     </message>
     <message>
         <source>Connected to {server}</source>
@@ -1757,10 +1783,6 @@ Do you want to proceed anyway?</source>
     <message>
         <source>Disconnected from {server}</source>
         <translation>Отключено от {server}  </translation>
-    </message>
-    <message>
-        <source>Sync &amp;&amp; Chat</source>
-        <translation>Синхронизация &amp;&amp; Чат  </translation>
     </message>
     <message>
         <source>Click for new address</source>
@@ -1787,8 +1809,16 @@ Do you want to proceed anyway?</source>
         <translation>Все файлы (*);;Файлы JSON (*.jsonl);;Файлы JSON (*.json)</translation>
     </message>
     <message>
+        <source>No file selected</source>
+        <translation>Файл не выбран  </translation>
+    </message>
+    <message>
         <source>Import labels</source>
         <translation>Импортировать метки</translation>
+    </message>
+    <message>
+        <source>History</source>
+        <translation>История</translation>
     </message>
     <message>
         <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
@@ -1803,16 +1833,20 @@ Do you want to proceed anyway?</source>
         <translation>Импортировать метки кошелька Electrum</translation>
     </message>
     <message>
-        <source>History</source>
-        <translation>История</translation>
-    </message>
-    <message>
         <source>All Files (*);;JSON Files (*.json)</source>
         <translation>Все файлы (*);;Файлы JSON (*.json)</translation>
     </message>
     <message>
         <source>Receive</source>
         <translation>Получить</translation>
+    </message>
+    <message>
+        <source>Balance</source>
+        <translation>Баланс</translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation>Значение</translation>
     </message>
     <message>
         <source>No changes to apply.</source>
@@ -1822,20 +1856,19 @@ Do you want to proceed anyway?</source>
         <source>Backup saved to {filename}</source>
         <translation>Резервная копия сохранена в {filename}</translation>
     </message>
-    <message>
-        <source>Backup failed. Aborting Changes.</source>
-        <translation>Не удалось сохранить резервную копию. Изменения отменены.</translation>
-    </message>
-    <message>
-        <source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
-        <translation>Продолжение может изменить все адреса кошельков. Хотите продолжить?  </translation>
-    </message>
 </context>
 <context>
     <name>QrToolButton</name>
     <message>
         <source>QR Code</source>
         <translation>QR-код  </translation>
+    </message>
+</context>
+<context>
+    <name>ReceiveGroup</name>
+    <message>
+        <source>Address</source>
+        <translation>Адрес</translation>
     </message>
 </context>
 <context>
@@ -2407,10 +2440,6 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
         <translation>Выберите категорию, которая лучше всего подходит получателю</translation>
     </message>
     <message>
-        <source>Adding outpoints {outpoints}</source>
-        <translation>Добавление точек выхода {outpoints}</translation>
-    </message>
-    <message>
         <source>Add Inputs</source>
         <translation>Добавить входы</translation>
     </message>
@@ -2477,6 +2506,10 @@ below {rate}</source>
         <translation>Входы</translation>
     </message>
     <message>
+        <source>Label: </source>
+        <translation>Метка:  </translation>
+    </message>
+    <message>
         <source>Invalid Signatures</source>
         <translation>Недействительные подписи</translation>
     </message>
@@ -2509,6 +2542,10 @@ below {rate}</source>
         <translation>Редактировать с увеличенной комиссией (RBF)</translation>
     </message>
     <message>
+        <source>Increase fee (RBF)</source>
+        <translation>Увеличить комиссию (RBF)</translation>
+    </message>
+    <message>
         <source>Previous step</source>
         <translation>Предыдущий шаг</translation>
     </message>
@@ -2519,10 +2556,6 @@ below {rate}</source>
     <message>
         <source>Send</source>
         <translation>Отправить</translation>
-    </message>
-    <message>
-        <source>Label: </source>
-        <translation>Метка:  </translation>
     </message>
 </context>
 <context>
@@ -2673,10 +2706,6 @@ below {rate}</source>
     <message>
         <source>Balance ({unit})</source>
         <translation>Баланс ({unit})</translation>
-    </message>
-    <message>
-        <source>Date</source>
-        <translation>Дата</translation>
     </message>
 </context>
 <context>
@@ -3067,6 +3096,14 @@ below {rate}</source>
         <translation>Попробовать отменить транзакцию (RBF)</translation>
     </message>
     <message>
+        <source>Increase fee (RBF)</source>
+        <translation>Увеличить комиссию (RBF)</translation>
+    </message>
+    <message>
+        <source>Receive faster (CPFP)</source>
+        <translation>Получить быстрее (CPFP)</translation>
+    </message>
+    <message>
         <source>Unused</source>
         <translation>Неиспользованный</translation>
     </message>
@@ -3158,8 +3195,20 @@ below {rate}</source>
         <translation>Это приватный и быстрый способ подключения к биткойн-сети.</translation>
     </message>
     <message>
+        <source>You can connect your own Bitcoin node, such as {link}.</source>
+        <translation>Вы можете подключить свой собственный биткойн-узел, например {link}.</translation>
+    </message>
+    <message>
+        <source>Run your bitcoind with &quot;bitcoind -chain=regtest&quot;</source>
+        <translation>Запустите ваш bitcoind с &quot;bitcoind -chain=regtest&quot;</translation>
+    </message>
+    <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=test&quot;</source>
         <translation>Запустите ваш bitcoind с &quot;bitcoind -chain=test&quot;</translation>
+    </message>
+    <message>
+        <source>Run your bitcoind with &quot;bitcoind -chain=testnet4&quot;</source>
+        <translation>Запустите bitcoind с &quot;bitcoind -chain=testnet4&quot;</translation>
     </message>
     <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=signet&quot;  This however is a different signet than mutinynet.com.</source>
@@ -3175,28 +3224,28 @@ It is best to use your own server, such as {link}.</source>
         <translation>Вы можете настроить {electrum} с сервером электрума на {server} и блок-эксплорером на {explorer}  </translation>
     </message>
     <message>
-        <source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}</source>
-        <translation>Хорошим вариантом будет {electrum_testnet4} и как блок-эксплорер {explorer_testnet4}  </translation>
+        <source>A good option is  {electrum_testnet} and as block explorer {explorer_testnet}</source>
+        <translation>Хорошим вариантом является {electrum_testnet}, а в качестве обозревателя блоков {explorer_testnet}</translation>
     </message>
     <message>
-        <source>Signet choose {electrum} and a block explorer on {mempool_url}.</source>
-        <translation>Signet выберите {electrum} и блок-эксплорер на {mempool_url}.  </translation>
+        <source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}. There is a {faucet} for free test coins.</source>
+        <translation>Хорошим вариантом является {electrum_testnet4}, а в качестве обозревателя блоков — {explorer_testnet4}. Есть {faucet} для получения бесплатных тестовых монет.</translation>
+    </message>
+    <message>
+        <source>Signet choose {electrum} and a block explorer on {mempool_url}. There is a {faucet} for free test coins.</source>
+        <translation>Signet выбирает {electrum} и блок-обозреватель на {mempool_url}. Существует {faucet} для бесплатных тестовых монет。</translation>
     </message>
     <message>
         <source>You can setup {setup} with an esplora server on {server} and a block explorer on {explorer}</source>
         <translation>Вы можете настроить {setup} с сервером esplora на {server} и блок-эксплорером на {explorer}</translation>
     </message>
     <message>
+        <source>There is a {faucet} for free test coins.</source>
+        <translation>Есть {faucet} для получения бесплатных тестовых монет.</translation>
+    </message>
+    <message>
         <source>A (somtimes working) server is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
         <translation>Работающий (иногда) сервер - {link} и блок-эксплорер на {explorer}. Есть {faucet}.  </translation>
-    </message>
-    <message>
-        <source>You can connect your own Bitcoin node, such as {link}.</source>
-        <translation>Вы можете подключить свой собственный биткойн-узел, например {link}.</translation>
-    </message>
-    <message>
-        <source>Run your bitcoind with &quot;bitcoind -chain=regtest&quot;</source>
-        <translation>Запустите ваш bitcoind с &quot;bitcoind -chain=regtest&quot;</translation>
     </message>
 </context>
 <context>

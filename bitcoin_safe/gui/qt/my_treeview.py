@@ -64,6 +64,8 @@ from functools import partial
 from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence, Type, Union
 
 from bitcoin_qr_tools.data import Data
+from bitcoin_tools.gui.qt.util import str_to_qbytearray
+from bitcoin_tools.util import unique_elements
 from PyQt6 import QtCore
 from PyQt6.QtCore import (
     QAbstractItemModel,
@@ -87,7 +89,6 @@ from PyQt6.QtGui import (
     QDragEnterEvent,
     QDragMoveEvent,
     QDropEvent,
-    QFont,
     QHelpEvent,
     QKeyEvent,
     QMouseEvent,
@@ -116,10 +117,9 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe.gui.qt.dialog_import import file_to_str
 from bitcoin_safe.gui.qt.html_delegate import HTMLDelegate
-from bitcoin_safe.gui.qt.icons import SvgTools
+from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.signals import Signals
-from bitcoin_safe.util import str_to_qbytearray, unique_elements
 from bitcoin_safe.wallet import TxStatus
 
 from ...config import UserConfig
@@ -486,7 +486,7 @@ class MyTreeView(QTreeView):
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.customContextMenuRequested.connect(self.create_menu)
         self.setUniformRowHeights(True)
-        self.setIconSize(QSize(24, 24))
+        self.setIconSize(QSize(20, 20))
 
         # Control which columns are editable
         if editable_columns is None:
@@ -497,6 +497,8 @@ class MyTreeView(QTreeView):
         self.is_editor_open = False
         self._currently_updating = False
         self._scroll_position = 0
+
+        self.allow_edit = True
 
         self.setRootIsDecorated(False)  # remove left margin
 
@@ -518,10 +520,6 @@ class MyTreeView(QTreeView):
             source_model=self._source_model,
             sort_role=MyItemDataRole.ROLE_SORT_ORDER,
         )
-
-        # Here's where we set the font globally for the view
-        font = QFont("Arial", 10)
-        self.setFont(font)
 
         self.setAcceptDrops(True)
         if viewport := self.viewport():
@@ -611,7 +609,7 @@ class MyTreeView(QTreeView):
                 self.copyRowsToClipboardAsCSV,
                 [item.data(MySortModel.role_drag_key) for item in selected_items if item],
             ),
-            icon=SvgTools.get_QIcon("bi--filetype-csv.svg"),
+            icon=svg_tools.get_QIcon("bi--filetype-csv.svg"),
         )
 
         # run_hook('receive_menu', menu, addrs, self.wallet)
@@ -622,7 +620,7 @@ class MyTreeView(QTreeView):
 
     def add_copy_menu(self, menu: Menu, idx: QModelIndex, include_columns_even_if_hidden=None) -> Menu:
         copy_menu = menu.add_menu(self.tr("Copy"))
-        copy_menu.setIcon(SvgTools.get_QIcon("bi--copy.svg"))
+        copy_menu.setIcon(svg_tools.get_QIcon("bi--copy.svg"))
 
         for column in self.Columns:
             if self.isColumnHidden(column) and (
@@ -1131,7 +1129,7 @@ class MyTreeView(QTreeView):
             data_bytes = mime_data.data("application/json")
             try:
                 json_string = data_bytes.data().decode()
-                logger.debug(f"dragEnterEvent: {json_string}")
+                logger.debug(f"dragEnterEvent")
                 d = json.loads(json_string)
                 return d
             except Exception as e:
@@ -1139,6 +1137,23 @@ class MyTreeView(QTreeView):
                 return None
 
         return None
+
+    def selectionCommand(
+        self, index: QtCore.QModelIndex, event: Optional[QtCore.QEvent] = None
+    ) -> QtCore.QItemSelectionModel.SelectionFlag:
+        if not self.allow_edit:
+            return QtCore.QItemSelectionModel.SelectionFlag.NoUpdate
+
+        return super().selectionCommand(index, event)
+
+    def get_selected_keys(self) -> List[str]:
+        if not self.model():
+            return []
+        items = self.selected_in_column(self.key_column)
+        return [x.data(MyItemDataRole.ROLE_KEY) for x in items]
+
+    def set_allow_edit(self, allow_edit: bool):
+        self.allow_edit = allow_edit
 
     def close(self):
         self.proxy.close()
@@ -1192,19 +1207,20 @@ class TreeViewWithToolbar(SearchableTab):
     def create_toolbar_with_menu(self, title):
         self.menu = MyMenu(self.config)
         self.action_export_as_csv = self.menu.add_action(
-            "", self._searchable_list_export_as_csv, icon=SvgTools.get_QIcon("bi--filetype-csv.svg")
+            "", self._searchable_list_export_as_csv, icon=svg_tools.get_QIcon("bi--filetype-csv.svg")
         )
 
         toolbar_button = QToolButton()
 
         toolbar_button.clicked.connect(partial(self.menu.exec, QCursor.pos()))
-        toolbar_button.setIcon(SvgTools.get_QIcon("bi--gear.svg"))
+        toolbar_button.setIcon(svg_tools.get_QIcon("bi--gear.svg"))
         toolbar_button.setMenu(self.menu)
         toolbar_button.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
         toolbar_button.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.toolbar = QHBoxLayout()
 
         self.balance_label = QLabel()
+        self.balance_label.setVisible(False)
 
         self.search_edit = QLineEdit()
         self.search_edit.setClearButtonEnabled(True)

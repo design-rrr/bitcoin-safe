@@ -35,6 +35,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 import pytest
+from bitcoin_nostr_chat.ui.util import insert_invisible_spaces_for_wordwrap
 from PyQt6 import QtGui
 from PyQt6.QtTest import QTest
 from PyQt6.QtWidgets import (
@@ -68,21 +69,18 @@ from bitcoin_safe.gui.qt.wizard import (
     Wizard,
 )
 from bitcoin_safe.util import Satoshis
+from tests.setup_fulcrum import Faucet
 
 from ...non_gui.test_signers import test_seeds
-from ...test_helpers import test_config  # type: ignore
-from ...test_setup_bitcoin_core import Faucet, bitcoin_core, faucet  # type: ignore
-from .test_helpers import (  # type: ignore
+from .helpers import (
     CheckedDeletionContext,
     Shutter,
     close_wallet,
     do_modal_click,
     get_called_args_message_box,
     get_tab_with_title,
-    get_widget_top_level,
     main_window_context,
     save_wallet,
-    test_start_time,
     type_text_in_edit,
 )
 
@@ -104,7 +102,7 @@ def enter_text(text: str, widget: QWidget) -> None:
 def test_wizard(
     qapp: QApplication,
     qtbot: QtBot,
-    test_start_time: datetime,
+    mytest_start_time: datetime,
     test_config: UserConfig,
     bitcoin_core: Path,
     faucet: Faucet,
@@ -115,7 +113,9 @@ def test_wizard(
     logger.debug(f"start test_tutorial_wallet_setup")
     frame = inspect.currentframe()
     assert frame
-    shutter = Shutter(qtbot, name=f"{test_start_time.timestamp()}_{inspect.getframeinfo(frame).function    }")
+    shutter = Shutter(
+        qtbot, name=f"{mytest_start_time.timestamp()}_{inspect.getframeinfo(frame).function    }"
+    )
     shutter.create_symlink(test_config=test_config)
     logger.debug(f"shutter = {shutter}")
     with main_window_context(test_config=test_config) as main_window:
@@ -322,7 +322,11 @@ def test_wizard(
                 shutter.save(main_window)
                 step: ReceiveTest = wizard.tab_generators[TutorialStep.receive]
                 assert isinstance(step.quick_receive, BitcoinQuickReceive)
-                address = step.quick_receive.group_boxes[0].text_edit.input_field.toPlainText()
+                address_with_spaces = step.quick_receive.group_boxes[0].label.text()
+                assert address_with_spaces == insert_invisible_spaces_for_wordwrap(
+                    "bcrt1q3qt0n3z69sds3u6zxalds3fl67rez4u2wm4hes", max_word_length=1
+                )
+                address = step.quick_receive.group_boxes[0].address
                 assert address == "bcrt1q3qt0n3z69sds3u6zxalds3fl67rez4u2wm4hes"
                 faucet.send(address, amount=amount)
 
@@ -393,6 +397,7 @@ def test_wizard(
                 assert round(viewer.fee_info.fee_rate(), 1) == 1.0
                 assert not viewer.fee_group.allow_edit
                 assert viewer.fee_group.spin_fee_rate.value() == 1.0
+                assert viewer.fee_group.cpfp_fee_label.isVisible()
                 assert not viewer.fee_group.approximate_fee_label.isVisible()
 
                 assert not viewer.button_next.isVisible()
@@ -428,7 +433,7 @@ def test_wizard(
                         main_window.signals.wallet_signals[qt_wallet.wallet.id].updated, timeout=10000
                     ):  # Timeout after 10 seconds
                         viewer.button_send.click()
-                    qtbot.wait(1000)
+                    qtbot.wait(10000)
                     mock_message.assert_called_with(
                         main_window.tr("All Send tests done successfully."), type=MessageType.Info
                     )

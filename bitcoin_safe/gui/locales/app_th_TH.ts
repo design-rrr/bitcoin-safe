@@ -12,8 +12,8 @@
         <translation>ไม่มีลายเซ็นเพิ่มเติม  </translation>
     </message>
     <message>
-        <source>bitcoin_tx libary error. The txid should not be changed during finalizing</source>
-        <translation>ข้อผิดพลาดของไลบรารี bitcoin_tx ไม่ควรเปลี่ยนแปลง txid ระหว่างการสรุป  </translation>
+        <source>bdk libary error. The txid should not be changed during finalizing</source>
+        <translation>ข้อผิดพลาดของไลบรารี bdk ไม่ควรเปลี่ยน txid ในระหว่างการสรุปผล</translation>
     </message>
 </context>
 <context>
@@ -69,6 +69,10 @@
     <message>
         <source>Address {address}</source>
         <translation>ที่อยู่ {address}  </translation>
+    </message>
+    <message>
+        <source>change</source>
+        <translation>เปลี่ยน  </translation>
     </message>
     <message>
         <source>receiving</source>
@@ -127,8 +131,8 @@
         <translation>ยอดเงิน  </translation>
     </message>
     <message>
-        <source>change</source>
-        <translation>เปลี่ยน  </translation>
+        <source>Value</source>
+        <translation>มูลค่า</translation>
     </message>
 </context>
 <context>
@@ -200,13 +204,6 @@
     <message>
         <source>Unmatured</source>
         <translation>ยังไม่บรรลุ  </translation>
-    </message>
-</context>
-<context>
-    <name>BalanceChart</name>
-    <message>
-        <source>Date</source>
-        <translation>วันที่  </translation>
     </message>
 </context>
 <context>
@@ -579,6 +576,14 @@ Please back up this descriptor to be able to recover the funds!</source>
         <source>{rate} is the minimum for {rbf}</source>
         <translation>{rate} เป็นขั้นต่ำสำหรับ {rbf}  </translation>
     </message>
+    <message>
+        <source>{rate} combined fee rate</source>
+        <translation>{rate} อัตราค่าธรรมเนียมรวม</translation>
+    </message>
+    <message>
+        <source>This transaction has {number} unconfirmed parents with a combined fee rate of {parents_fee_rate}</source>
+        <translation>ธุรกรรมนี้มีธุรกรรมหลักที่ยังไม่ยืนยัน {number} รายการ โดยมีอัตราค่าธรรมเนียมรวม {parents_fee_rate}</translation>
+    </message>
 </context>
 <context>
     <name>FeeRateWarningBar</name>
@@ -729,6 +734,14 @@ the sending value {sent}</source>
         <translation>กระเป๋าเงิน  </translation>
     </message>
     <message>
+        <source>Speedup of {txid}</source>
+        <translation>เร่งความเร็วของ {txid}</translation>
+    </message>
+    <message>
+        <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
+        <translation>ไม่สามารถเรียกกระเป๋าเงิน &apos;{id}&apos; ได้ โปรดเปิดกระเป๋าเงินก่อน  </translation>
+    </message>
+    <message>
         <source>Status</source>
         <translation>สถานะ  </translation>
     </message>
@@ -757,8 +770,8 @@ the sending value {sent}</source>
         <translation>{number} การยืนยัน  </translation>
     </message>
     <message>
-        <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
-        <translation>ไม่สามารถเรียกกระเป๋าเงิน &apos;{id}&apos; ได้ โปรดเปิดกระเป๋าเงินก่อน  </translation>
+        <source>Cannot CPFP the transaction because no receiving output could be found</source>
+        <translation>ไม่สามารถใช้ CPFP กับธุรกรรมได้เนื่องจากไม่พบเอาต์พุตของการรับ</translation>
     </message>
 </context>
 <context>
@@ -1300,10 +1313,6 @@ Do you want to proceed anyway?</source>
         <translation>&amp;บันทึกกระเป๋าเงินปัจจุบัน  </translation>
     </message>
     <message>
-        <source>Closing wallet {id}</source>
-        <translation>กำลังปิดกระเป๋าเงิน {id}  </translation>
-    </message>
-    <message>
         <source>Do you want to save the PSBT {id}?</source>
         <translation>คุณต้องการบันทึก PSBT {id} หรือไม่?  </translation>
     </message>
@@ -1380,6 +1389,10 @@ Do you want to proceed anyway?</source>
         <translation>ขั้นสูง  </translation>
     </message>
     <message>
+        <source>SSL:</source>
+        <translation>SSL:  </translation>
+    </message>
+    <message>
         <source>Port:</source>
         <translation>พอร์ต:  </translation>
     </message>
@@ -1416,14 +1429,14 @@ Do you want to proceed anyway?</source>
         <translation>นำไปใช้แล้วปิด</translation>
     </message>
     <message>
+        <source>Automatic</source>
+        <translation>อัตโนมัติ  </translation>
+    </message>
+    <message>
         <source>Responses:
     {name}: {status}
     Mempool Instance: {server}</source>
         <translation>การตอบสนอง: {name}: {status} อินสแตนซ์ Mempool: {server}  </translation>
-    </message>
-    <message>
-        <source>Automatic</source>
-        <translation>อัตโนมัติ  </translation>
     </message>
     <message>
         <source>Please remove the &apos;{scheme}&apos; from the electrum url</source>
@@ -1449,6 +1462,10 @@ Do you want to proceed anyway?</source>
         <translation>มีข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์ {responses} คุณต้องการดำเนินการต่อหรือไม่?  </translation>
     </message>
     <message>
+        <source>Open Tor proxy configuration documentation</source>
+        <translation>เปิดเอกสารการกำหนดค่าพร็อกซี Tor  </translation>
+    </message>
+    <message>
         <source>Test Connection</source>
         <translation>ทดสอบการเชื่อมต่อ  </translation>
     </message>
@@ -1471,10 +1488,6 @@ Do you want to proceed anyway?</source>
     <message>
         <source>Enable SSL</source>
         <translation>เปิดใช้งาน SSL  </translation>
-    </message>
-    <message>
-        <source>SSL:</source>
-        <translation>SSL:  </translation>
     </message>
 </context>
 <context>
@@ -1668,6 +1681,14 @@ Do you want to proceed anyway?</source>
         <translation>ส่ง  </translation>
     </message>
     <message>
+        <source>Backup failed. Aborting Changes.</source>
+        <translation>การสำรองข้อมูลล้มเหลว ยกเลิกการเปลี่ยนแปลง  </translation>
+    </message>
+    <message>
+        <source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
+        <translation>การดำเนินการต่อไปนี้อาจเปลี่ยนที่อยู่กระเป๋าเงินทั้งหมด คุณต้องการดำเนินการต่อหรือไม่?  </translation>
+    </message>
+    <message>
         <source>Cannot move the wallet file, because {file_path} exists</source>
         <translation>ไม่สามารถย้ายไฟล์กระเป๋าเงินได้ เนื่องจาก {file_path} มีอยู่แล้ว  </translation>
     </message>
@@ -1688,10 +1709,6 @@ Do you want to proceed anyway?</source>
         <translation>ลบกระเป๋าเงิน  </translation>
     </message>
     <message>
-        <source>No file selected</source>
-        <translation>ไม่ได้เลือกไฟล์  </translation>
-    </message>
-    <message>
         <source>Password incorrect</source>
         <translation>รหัสผ่านไม่ถูกต้อง  </translation>
     </message>
@@ -1704,12 +1721,12 @@ Do you want to proceed anyway?</source>
         <translation>รหัสผ่านใหม่:  </translation>
     </message>
     <message>
-        <source>Wallet saved</source>
-        <translation>บันทึกกระเป๋าเงินแล้ว  </translation>
-    </message>
-    <message>
         <source>Descriptor</source>
         <translation>ตัวบ่งชี้  </translation>
+    </message>
+    <message>
+        <source>Wallet saved</source>
+        <translation>บันทึกกระเป๋าเงินแล้ว  </translation>
     </message>
     <message>
         <source>  {amount} in {shortid}</source>
@@ -1744,8 +1761,17 @@ Do you want to proceed anyway?</source>
         <translation>เลือกชื่อใหม่หรือชื่อที่มีอยู่สำหรับการรวม:  </translation>
     </message>
     <message>
+        <source>The addresses {used_addresses}
+have transactions linking to other addresses already. Are you sure you want to change the category?</source>
+        <translation>ที่อยู่ {used_addresses} มีรายการธุรกรรมที่เชื่อมโยงกับที่อยู่อื่นแล้ว คุณแน่ใจหรือไม่ว่าต้องการเปลี่ยนประเภท?  </translation>
+    </message>
+    <message>
         <source>Syncing with {server}</source>
         <translation>กำลังซิงค์กับ {server}  </translation>
+    </message>
+    <message>
+        <source>Sync &amp;&amp; Chat</source>
+        <translation>Sync &amp;&amp; Chat  </translation>
     </message>
     <message>
         <source>Connected to {server}</source>
@@ -1754,10 +1780,6 @@ Do you want to proceed anyway?</source>
     <message>
         <source>Disconnected from {server}</source>
         <translation>ตัดการเชื่อมต่อจาก {server}  </translation>
-    </message>
-    <message>
-        <source>Sync &amp;&amp; Chat</source>
-        <translation>Sync &amp;&amp; Chat  </translation>
     </message>
     <message>
         <source>Click for new address</source>
@@ -1784,8 +1806,16 @@ Do you want to proceed anyway?</source>
         <translation>ไฟล์ทั้งหมด (*);;ไฟล์ JSON (*.jsonl);;ไฟล์ JSON (*.json)  </translation>
     </message>
     <message>
+        <source>No file selected</source>
+        <translation>ไม่ได้เลือกไฟล์  </translation>
+    </message>
+    <message>
         <source>Import labels</source>
         <translation>นำเข้าป้ายกำกับ  </translation>
+    </message>
+    <message>
+        <source>History</source>
+        <translation>ประวัติ  </translation>
     </message>
     <message>
         <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
@@ -1800,16 +1830,20 @@ Do you want to proceed anyway?</source>
         <translation>นำเข้าป้ายกำกับกระเป๋าเงิน Electrum  </translation>
     </message>
     <message>
-        <source>History</source>
-        <translation>ประวัติ  </translation>
-    </message>
-    <message>
         <source>All Files (*);;JSON Files (*.json)</source>
         <translation>ไฟล์ทั้งหมด (*);;ไฟล์ JSON (*.json)  </translation>
     </message>
     <message>
         <source>Receive</source>
         <translation>รับ  </translation>
+    </message>
+    <message>
+        <source>Balance</source>
+        <translation>ยอดเงิน  </translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation>มูลค่า</translation>
     </message>
     <message>
         <source>No changes to apply.</source>
@@ -1819,20 +1853,19 @@ Do you want to proceed anyway?</source>
         <source>Backup saved to {filename}</source>
         <translation>การสำรองข้อมูลถูกบันทึกไว้ที่ {filename}  </translation>
     </message>
-    <message>
-        <source>Backup failed. Aborting Changes.</source>
-        <translation>การสำรองข้อมูลล้มเหลว ยกเลิกการเปลี่ยนแปลง  </translation>
-    </message>
-    <message>
-        <source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
-        <translation>การดำเนินการต่อไปนี้อาจเปลี่ยนที่อยู่กระเป๋าเงินทั้งหมด คุณต้องการดำเนินการต่อหรือไม่?  </translation>
-    </message>
 </context>
 <context>
     <name>QrToolButton</name>
     <message>
         <source>QR Code</source>
         <translation>รหัส QR  </translation>
+    </message>
+</context>
+<context>
+    <name>ReceiveGroup</name>
+    <message>
+        <source>Address</source>
+        <translation>ที่อยู่  </translation>
     </message>
 </context>
 <context>
@@ -2404,10 +2437,6 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
         <translation>เลือกหมวดหมู่ที่เหมาะสมที่สุดกับผู้รับ</translation>
     </message>
     <message>
-        <source>Adding outpoints {outpoints}</source>
-        <translation>เพิ่ม outpoints {outpoints}  </translation>
-    </message>
-    <message>
         <source>Add Inputs</source>
         <translation>เพิ่มอินพุต  </translation>
     </message>
@@ -2474,6 +2503,10 @@ below {rate}</source>
         <translation>อินพุต  </translation>
     </message>
     <message>
+        <source>Label: </source>
+        <translation>ป้ายกำกับ:  </translation>
+    </message>
+    <message>
         <source>Invalid Signatures</source>
         <translation>ลายเซ็นไม่ถูกต้อง  </translation>
     </message>
@@ -2506,6 +2539,10 @@ below {rate}</source>
         <translation>แก้ไขด้วยค่าธรรมเนียมที่สูงขึ้น (RBF)  </translation>
     </message>
     <message>
+        <source>Increase fee (RBF)</source>
+        <translation>เพิ่มค่าธรรมเนียม (RBF)</translation>
+    </message>
+    <message>
         <source>Previous step</source>
         <translation>ขั้นตอนก่อนหน้า  </translation>
     </message>
@@ -2516,10 +2553,6 @@ below {rate}</source>
     <message>
         <source>Send</source>
         <translation>ส่ง  </translation>
-    </message>
-    <message>
-        <source>Label: </source>
-        <translation>ป้ายกำกับ:  </translation>
     </message>
 </context>
 <context>
@@ -2670,10 +2703,6 @@ below {rate}</source>
     <message>
         <source>Balance ({unit})</source>
         <translation>ยอดเงิน ({unit})  </translation>
-    </message>
-    <message>
-        <source>Date</source>
-        <translation>วันที่  </translation>
     </message>
 </context>
 <context>
@@ -3064,6 +3093,14 @@ below {rate}</source>
         <translation>ลองยกเลิกธุรกรรม (RBF)  </translation>
     </message>
     <message>
+        <source>Increase fee (RBF)</source>
+        <translation>เพิ่มค่าธรรมเนียม (RBF)</translation>
+    </message>
+    <message>
+        <source>Receive faster (CPFP)</source>
+        <translation>รับเร็วขึ้น (CPFP)</translation>
+    </message>
+    <message>
         <source>Unused</source>
         <translation>ไม่ได้ใช้งาน  </translation>
     </message>
@@ -3155,8 +3192,20 @@ below {rate}</source>
         <translation>นี่คือวิธีที่เป็นส่วนตัวและรวดเร็วในการเชื่อมต่อกับเครือข่าย bitcoin  </translation>
     </message>
     <message>
+        <source>You can connect your own Bitcoin node, such as {link}.</source>
+        <translation>คุณสามารถเชื่อมต่อ Bitcoin node ของคุณเอง เช่น {link}  </translation>
+    </message>
+    <message>
+        <source>Run your bitcoind with &quot;bitcoind -chain=regtest&quot;</source>
+        <translation>เรียกใช้ bitcoind ของคุณด้วย &quot;bitcoind -chain=regtest&quot;  </translation>
+    </message>
+    <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=test&quot;</source>
         <translation>เรียกใช้ bitcoind ของคุณด้วย &quot;bitcoind -chain=test&quot;  </translation>
+    </message>
+    <message>
+        <source>Run your bitcoind with &quot;bitcoind -chain=testnet4&quot;</source>
+        <translation>เรียกใช้ bitcoind ของคุณด้วย &quot;bitcoind -chain=testnet4&quot;</translation>
     </message>
     <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=signet&quot;  This however is a different signet than mutinynet.com.</source>
@@ -3172,28 +3221,28 @@ It is best to use your own server, such as {link}.</source>
         <translation>คุณสามารถตั้งค่า {electrum} กับเซิร์ฟเวอร์ electrum บน {server} และ block explorer บน {explorer}  </translation>
     </message>
     <message>
-        <source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}</source>
-        <translation>ตัวเลือกที่ดีคือ {electrum_testnet4} และ block explorer คือ {explorer_testnet4}  </translation>
+        <source>A good option is  {electrum_testnet} and as block explorer {explorer_testnet}</source>
+        <translation>ตัวเลือกที่ดีคือ {electrum_testnet} และสำหรับบล็อกเอ็กซ์พลอเรอร์คือ {explorer_testnet}</translation>
     </message>
     <message>
-        <source>Signet choose {electrum} and a block explorer on {mempool_url}.</source>
-        <translation>เลือก Signet โดยใช้ {electrum} และ block explorer บน {mempool_url}  </translation>
+        <source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}. There is a {faucet} for free test coins.</source>
+        <translation>ตัวเลือกที่ดีคือ {electrum_testnet4} และตัวสำรวจบล็อกคือ {explorer_testnet4}. มี {faucet} สำหรับรับเหรียญทดสอบฟรี.</translation>
+    </message>
+    <message>
+        <source>Signet choose {electrum} and a block explorer on {mempool_url}. There is a {faucet} for free test coins.</source>
+        <translation>Signet เลือก {electrum} และตัวสำรวจบล็อกบน {mempool_url}. มี {faucet} สำหรับเหรียญทดสอบฟรี</translation>
     </message>
     <message>
         <source>You can setup {setup} with an esplora server on {server} and a block explorer on {explorer}</source>
         <translation>คุณสามารถตั้งค่า {setup} ด้วยเซิร์ฟเวอร์ esplora บน {server} และ block explorer บน {explorer}  </translation>
     </message>
     <message>
+        <source>There is a {faucet} for free test coins.</source>
+        <translation>มี {faucet} สำหรับรับเหรียญทดสอบฟรี.</translation>
+    </message>
+    <message>
         <source>A (somtimes working) server is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
         <translation>เซิร์ฟเวอร์ (บางครั้งทำงานได้) คือ {link} และ block explorer บน {explorer} มี {faucet}  </translation>
-    </message>
-    <message>
-        <source>You can connect your own Bitcoin node, such as {link}.</source>
-        <translation>คุณสามารถเชื่อมต่อ Bitcoin node ของคุณเอง เช่น {link}  </translation>
-    </message>
-    <message>
-        <source>Run your bitcoind with &quot;bitcoind -chain=regtest&quot;</source>
-        <translation>เรียกใช้ bitcoind ของคุณด้วย &quot;bitcoind -chain=regtest&quot;  </translation>
     </message>
 </context>
 <context>

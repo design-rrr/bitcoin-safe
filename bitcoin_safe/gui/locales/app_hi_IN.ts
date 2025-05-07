@@ -12,8 +12,8 @@
         <translation>कोई अतिरिक्त हस्ताक्षर नहीं जोड़े गए  </translation>
     </message>
     <message>
-        <source>bitcoin_tx libary error. The txid should not be changed during finalizing</source>
-        <translation>bitcoin_tx पुस्तकालय त्रुटि। txid को अंतिम रूप देते समय बदला नहीं जाना चाहिए</translation>
+        <source>bdk libary error. The txid should not be changed during finalizing</source>
+        <translation>bdk लाइब्रेरी त्रुटि। अंतिम चरण के दौरान txid को नहीं बदला जाना चाहिए</translation>
     </message>
 </context>
 <context>
@@ -69,6 +69,10 @@
     <message>
         <source>Address {address}</source>
         <translation>पता {address}</translation>
+    </message>
+    <message>
+        <source>change</source>
+        <translation>परिवर्तन</translation>
     </message>
     <message>
         <source>receiving</source>
@@ -127,8 +131,8 @@
         <translation>बैलेंस</translation>
     </message>
     <message>
-        <source>change</source>
-        <translation>परिवर्तन</translation>
+        <source>Value</source>
+        <translation>मान</translation>
     </message>
 </context>
 <context>
@@ -200,13 +204,6 @@
     <message>
         <source>Unmatured</source>
         <translation>परिपक्व नहीं</translation>
-    </message>
-</context>
-<context>
-    <name>BalanceChart</name>
-    <message>
-        <source>Date</source>
-        <translation>तारीख</translation>
     </message>
 </context>
 <context>
@@ -579,6 +576,14 @@ Please back up this descriptor to be able to recover the funds!</source>
         <source>{rate} is the minimum for {rbf}</source>
         <translation>{rate} {rbf} के लिए न्यूनतम है</translation>
     </message>
+    <message>
+        <source>{rate} combined fee rate</source>
+        <translation>{rate} संयुक्त शुल्क दर</translation>
+    </message>
+    <message>
+        <source>This transaction has {number} unconfirmed parents with a combined fee rate of {parents_fee_rate}</source>
+        <translation>इस लेनदेन के {number} अप्रमाणित पैरेंट लेनदेन हैं, जिनकी संयुक्त शुल्क दर {parents_fee_rate} है</translation>
+    </message>
 </context>
 <context>
     <name>FeeRateWarningBar</name>
@@ -729,6 +734,14 @@ the sending value {sent}</source>
         <translation>वॉलेट</translation>
     </message>
     <message>
+        <source>Speedup of {txid}</source>
+        <translation>{txid} का स्पीडअप</translation>
+    </message>
+    <message>
+        <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
+        <translation>वॉलेट &apos;{id}&apos; नहीं खोल सकता। कृपया पहले वॉलेट खोलें।</translation>
+    </message>
+    <message>
         <source>Status</source>
         <translation>स्थिति</translation>
     </message>
@@ -757,8 +770,8 @@ the sending value {sent}</source>
         <translation>{number} पुष्टिकरण</translation>
     </message>
     <message>
-        <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
-        <translation>वॉलेट &apos;{id}&apos; नहीं खोल सकता। कृपया पहले वॉलेट खोलें।</translation>
+        <source>Cannot CPFP the transaction because no receiving output could be found</source>
+        <translation>ट्रांजैक्शन पर CPFP नहीं किया जा सकता क्योंकि रिसीविंग आउटपुट नहीं मिला</translation>
     </message>
 </context>
 <context>
@@ -1300,10 +1313,6 @@ Do you want to proceed anyway?</source>
         <translation>&amp;मौजूदा वॉलेट सहेजें</translation>
     </message>
     <message>
-        <source>Closing wallet {id}</source>
-        <translation>वॉलेट {id} बंद करना</translation>
-    </message>
-    <message>
         <source>Do you want to save the PSBT {id}?</source>
         <translation>क्या आप PSBT {id} को सहेजना चाहते हैं?  </translation>
     </message>
@@ -1380,6 +1389,10 @@ Do you want to proceed anyway?</source>
         <translation>उन्नत</translation>
     </message>
     <message>
+        <source>SSL:</source>
+        <translation>SSL:</translation>
+    </message>
+    <message>
         <source>Port:</source>
         <translation>पोर्ट:</translation>
     </message>
@@ -1416,14 +1429,14 @@ Do you want to proceed anyway?</source>
         <translation>लागू करें &amp;&amp; बंद करें  </translation>
     </message>
     <message>
+        <source>Automatic</source>
+        <translation>स्वचालित</translation>
+    </message>
+    <message>
         <source>Responses:
     {name}: {status}
     Mempool Instance: {server}</source>
         <translation>प्रतिक्रियाएँ: {name}: {status} मेमपूल इंस्टेंस: {server}</translation>
-    </message>
-    <message>
-        <source>Automatic</source>
-        <translation>स्वचालित</translation>
     </message>
     <message>
         <source>Please remove the &apos;{scheme}&apos; from the electrum url</source>
@@ -1452,6 +1465,10 @@ Do you want to proceed anyway?</source>
 क्या आप फिर भी आगे बढ़ना चाहते हैं?</translation>
     </message>
     <message>
+        <source>Open Tor proxy configuration documentation</source>
+        <translation>Tor प्रॉक्सी कॉन्फ़िगरेशन दस्तावेज़ खोलें  </translation>
+    </message>
+    <message>
         <source>Test Connection</source>
         <translation>कनेक्शन का परीक्षण करें</translation>
     </message>
@@ -1474,10 +1491,6 @@ Do you want to proceed anyway?</source>
     <message>
         <source>Enable SSL</source>
         <translation>SSL सक्षम करें</translation>
-    </message>
-    <message>
-        <source>SSL:</source>
-        <translation>SSL:</translation>
     </message>
 </context>
 <context>
@@ -1671,6 +1684,14 @@ Do you want to proceed anyway?</source>
         <translation>भेजें</translation>
     </message>
     <message>
+        <source>Backup failed. Aborting Changes.</source>
+        <translation>बैकअप विफल। परिवर्तन रद्द करना।</translation>
+    </message>
+    <message>
+        <source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
+        <translation>आगे बढ़ने से सभी वॉलेट पते बदल सकते हैं। क्या आप आगे बढ़ना चाहते हैं?  </translation>
+    </message>
+    <message>
         <source>Cannot move the wallet file, because {file_path} exists</source>
         <translation>वॉलेट फ़ाइल को स्थानांतरित नहीं किया जा सकता, क्योंकि {file_path} मौजूद है</translation>
     </message>
@@ -1691,10 +1712,6 @@ Do you want to proceed anyway?</source>
         <translation>वॉलेट हटाएं  </translation>
     </message>
     <message>
-        <source>No file selected</source>
-        <translation>कोई फ़ाइल नहीं चुनी गई  </translation>
-    </message>
-    <message>
         <source>Password incorrect</source>
         <translation>पासवर्ड गलत है</translation>
     </message>
@@ -1707,12 +1724,12 @@ Do you want to proceed anyway?</source>
         <translation>नया पासवर्ड:</translation>
     </message>
     <message>
-        <source>Wallet saved</source>
-        <translation>वॉलेट सहेजा गया</translation>
-    </message>
-    <message>
         <source>Descriptor</source>
         <translation>वर्णनकर्ता</translation>
+    </message>
+    <message>
+        <source>Wallet saved</source>
+        <translation>वॉलेट सहेजा गया</translation>
     </message>
     <message>
         <source>  {amount} in {shortid}</source>
@@ -1747,8 +1764,17 @@ Do you want to proceed anyway?</source>
         <translation>नया नाम चुनें, या विलय के लिए मौजूदा नाम चुनें:</translation>
     </message>
     <message>
+        <source>The addresses {used_addresses}
+have transactions linking to other addresses already. Are you sure you want to change the category?</source>
+        <translation>पते {used_addresses} के लेनदेन पहले से ही अन्य पतों से जुड़े हुए हैं। क्या आप वाकई श्रेणी बदलना चाहते हैं?  </translation>
+    </message>
+    <message>
         <source>Syncing with {server}</source>
         <translation>{server} के साथ सिंकिंग  </translation>
+    </message>
+    <message>
+        <source>Sync &amp;&amp; Chat</source>
+        <translation>सिंक &amp;&amp; चैट  </translation>
     </message>
     <message>
         <source>Connected to {server}</source>
@@ -1757,10 +1783,6 @@ Do you want to proceed anyway?</source>
     <message>
         <source>Disconnected from {server}</source>
         <translation>{server} से डिस्कनेक्टेड  </translation>
-    </message>
-    <message>
-        <source>Sync &amp;&amp; Chat</source>
-        <translation>सिंक &amp;&amp; चैट  </translation>
     </message>
     <message>
         <source>Click for new address</source>
@@ -1787,8 +1809,16 @@ Do you want to proceed anyway?</source>
         <translation>सभी फाइलें (*);;JSON फाइलें (*.jsonl);;JSON फाइलें (*.json)</translation>
     </message>
     <message>
+        <source>No file selected</source>
+        <translation>कोई फ़ाइल नहीं चुनी गई  </translation>
+    </message>
+    <message>
         <source>Import labels</source>
         <translation>लेबल आयात करें</translation>
+    </message>
+    <message>
+        <source>History</source>
+        <translation>इतिहास</translation>
     </message>
     <message>
         <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
@@ -1803,16 +1833,20 @@ Do you want to proceed anyway?</source>
         <translation>इलेक्ट्रम वॉलेट लेबल आयात करें</translation>
     </message>
     <message>
-        <source>History</source>
-        <translation>इतिहास</translation>
-    </message>
-    <message>
         <source>All Files (*);;JSON Files (*.json)</source>
         <translation>सभी फ़ाइलें (*);;JSON फ़ाइलें (*.json)</translation>
     </message>
     <message>
         <source>Receive</source>
         <translation>प्राप्त करें</translation>
+    </message>
+    <message>
+        <source>Balance</source>
+        <translation>बैलेंस</translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation>मान</translation>
     </message>
     <message>
         <source>No changes to apply.</source>
@@ -1822,20 +1856,19 @@ Do you want to proceed anyway?</source>
         <source>Backup saved to {filename}</source>
         <translation>बैकअप {filename} में सहेजा गया</translation>
     </message>
-    <message>
-        <source>Backup failed. Aborting Changes.</source>
-        <translation>बैकअप विफल। परिवर्तन रद्द करना।</translation>
-    </message>
-    <message>
-        <source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
-        <translation>आगे बढ़ने से सभी वॉलेट पते बदल सकते हैं। क्या आप आगे बढ़ना चाहते हैं?  </translation>
-    </message>
 </context>
 <context>
     <name>QrToolButton</name>
     <message>
         <source>QR Code</source>
         <translation>क्यूआर कोड  </translation>
+    </message>
+</context>
+<context>
+    <name>ReceiveGroup</name>
+    <message>
+        <source>Address</source>
+        <translation>पता</translation>
     </message>
 </context>
 <context>
@@ -2407,10 +2440,6 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
         <translation>प्राप्तकर्ता के लिए सबसे उपयुक्त श्रेणी चुनें</translation>
     </message>
     <message>
-        <source>Adding outpoints {outpoints}</source>
-        <translation>आउटपॉइंट्स {outpoints} जोड़ना</translation>
-    </message>
-    <message>
         <source>Add Inputs</source>
         <translation>इनपुट्स जोड़ें</translation>
     </message>
@@ -2477,6 +2506,10 @@ below {rate}</source>
         <translation>इनपुट्स</translation>
     </message>
     <message>
+        <source>Label: </source>
+        <translation>लेबल:  </translation>
+    </message>
+    <message>
         <source>Invalid Signatures</source>
         <translation>अमान्य हस्ताक्षर</translation>
     </message>
@@ -2509,6 +2542,10 @@ below {rate}</source>
         <translation>बढ़ी हुई फीस के साथ संपादित करें (RBF)</translation>
     </message>
     <message>
+        <source>Increase fee (RBF)</source>
+        <translation>शुल्क बढ़ाएँ (RBF)</translation>
+    </message>
+    <message>
         <source>Previous step</source>
         <translation>पिछला चरण</translation>
     </message>
@@ -2519,10 +2556,6 @@ below {rate}</source>
     <message>
         <source>Send</source>
         <translation>भेजें</translation>
-    </message>
-    <message>
-        <source>Label: </source>
-        <translation>लेबल:  </translation>
     </message>
 </context>
 <context>
@@ -2673,10 +2706,6 @@ below {rate}</source>
     <message>
         <source>Balance ({unit})</source>
         <translation>बैलेंस ({unit})</translation>
-    </message>
-    <message>
-        <source>Date</source>
-        <translation>तारीख</translation>
     </message>
 </context>
 <context>
@@ -3067,6 +3096,14 @@ below {rate}</source>
         <translation>लेन-देन रद्द करने का प्रयास करें (RBF)</translation>
     </message>
     <message>
+        <source>Increase fee (RBF)</source>
+        <translation>शुल्क बढ़ाएँ (RBF)</translation>
+    </message>
+    <message>
+        <source>Receive faster (CPFP)</source>
+        <translation>तेज़ी से प्राप्त करें (CPFP)</translation>
+    </message>
+    <message>
         <source>Unused</source>
         <translation>अप्रयुक्त</translation>
     </message>
@@ -3158,8 +3195,20 @@ below {rate}</source>
         <translation>यह बिटकॉइन नेटवर्क से जुड़ने का एक निजी और तेज़ तरीका है।</translation>
     </message>
     <message>
+        <source>You can connect your own Bitcoin node, such as {link}.</source>
+        <translation>आप अपना खुद का बिटकॉइन नोड, जैसे कि {link}, कनेक्ट कर सकते हैं।</translation>
+    </message>
+    <message>
+        <source>Run your bitcoind with &quot;bitcoind -chain=regtest&quot;</source>
+        <translation>&quot;bitcoind -chain=regtest&quot; के साथ अपना bitcoind चलाएं</translation>
+    </message>
+    <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=test&quot;</source>
         <translation>&quot;bitcoind -chain=test&quot; के साथ अपना bitcoind चलाएं</translation>
+    </message>
+    <message>
+        <source>Run your bitcoind with &quot;bitcoind -chain=testnet4&quot;</source>
+        <translation>&quot;bitcoind -chain=testnet4&quot; के साथ अपना bitcoind चलाएँ</translation>
     </message>
     <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=signet&quot;  This however is a different signet than mutinynet.com.</source>
@@ -3175,28 +3224,28 @@ It is best to use your own server, such as {link}.</source>
         <translation>आप {server} पर एक इलेक्ट्रम सर्वर के साथ {electrum} सेटअप कर सकते हैं और एक ब्लॉक एक्सप्लोरर {explorer} पर  </translation>
     </message>
     <message>
-        <source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}</source>
-        <translation>एक अच्छा विकल्प है {electrum_testnet4} और ब्लॉक एक्सप्लोरर के रूप में {explorer_testnet4}  </translation>
+        <source>A good option is  {electrum_testnet} and as block explorer {explorer_testnet}</source>
+        <translation>एक अच्छा विकल्प है {electrum_testnet} और ब्लॉक एक्सप्लोरर के रूप में {explorer_testnet}</translation>
     </message>
     <message>
-        <source>Signet choose {electrum} and a block explorer on {mempool_url}.</source>
-        <translation>Signet चुनें {electrum} और एक ब्लॉक एक्सप्लोरर पर {mempool_url}।  </translation>
+        <source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}. There is a {faucet} for free test coins.</source>
+        <translation>एक अच्छा विकल्प {electrum_testnet4} है और ब्लॉक एक्सप्लोरर के लिए {explorer_testnet4} है। मुफ्त टेस्ट कॉइन्स के लिए एक {faucet} है।</translation>
+    </message>
+    <message>
+        <source>Signet choose {electrum} and a block explorer on {mempool_url}. There is a {faucet} for free test coins.</source>
+        <translation>Signet {electrum} चुनता है और {mempool_url} पर एक ब्लॉक एक्सप्लोरर का उपयोग करता है। मुफ्त परीक्षण सिक्कों के लिए एक {faucet} है।</translation>
     </message>
     <message>
         <source>You can setup {setup} with an esplora server on {server} and a block explorer on {explorer}</source>
         <translation>आप {setup} के साथ एक esplora सर्वर पर {server} और एक ब्लॉक एक्सप्लोरर पर {explorer} के साथ सेटअप कर सकते हैं</translation>
     </message>
     <message>
+        <source>There is a {faucet} for free test coins.</source>
+        <translation>मुफ्त टेस्ट कॉइन्स के लिए एक {faucet} है।</translation>
+    </message>
+    <message>
         <source>A (somtimes working) server is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
         <translation>एक (कभी-कभी काम करने वाला) सर्वर है {link} और एक ब्लॉक एक्सप्लोरर पर {explorer}। एक {faucet} है।  </translation>
-    </message>
-    <message>
-        <source>You can connect your own Bitcoin node, such as {link}.</source>
-        <translation>आप अपना खुद का बिटकॉइन नोड, जैसे कि {link}, कनेक्ट कर सकते हैं।</translation>
-    </message>
-    <message>
-        <source>Run your bitcoind with &quot;bitcoind -chain=regtest&quot;</source>
-        <translation>&quot;bitcoind -chain=regtest&quot; के साथ अपना bitcoind चलाएं</translation>
     </message>
 </context>
 <context>

@@ -30,7 +30,7 @@
 import logging
 import random
 from dataclasses import dataclass
-from pathlib import Path
+from time import sleep
 
 import bdkpython as bdk
 import numpy as np
@@ -43,12 +43,9 @@ from bitcoin_safe.pythonbdk_types import Recipient
 from bitcoin_safe.tx import TxUiInfos, transaction_to_dict
 from bitcoin_safe.wallet import Wallet
 
-from ..test_helpers import test_config  # type: ignore
-from ..test_setup_bitcoin_core import Faucet, bitcoin_core, faucet  # type: ignore
-from .test_signers import test_seeds  # type: ignore
+from ..setup_fulcrum import Faucet
 
 logger = logging.getLogger(__name__)
-import logging
 
 
 def compare_dicts(d1, d2, ignore_value="value_to_be_ignored") -> bool:
@@ -142,14 +139,15 @@ def test_coin_control_config(request) -> TestCoinControlConfig:
 # [(utxo_value_private, utxo_value_kyc)]
 @pytest.fixture(scope="session")
 def test_funded_wallet(
-    test_config: UserConfig,
-    bitcoin_core: Path,
+    test_config_session: UserConfig,
     faucet: Faucet,
     test_wallet_config: TestWalletConfig,
     wallet_name="test_tutorial_wallet_setup",
 ) -> Wallet:
 
-    descriptor_str = "wpkh([5aa39a43/84'/1'/0']tpubDD2ww8jti4Xc8vkaJH2yC1r7C9TVb9bG3kTi6BFm5w3aAZmtFHktK6Mv2wfyBvSPqV9QeH1QXrmHzabuNh1sgRtAsUoG7dzVjc9WvGm78PD/<0;1>/*)#xaf9qzlf"
+    # for test_seed: ensure diet bench scale future thumb holiday wild erupt cancel paper system
+
+    descriptor_str = "wpkh([41c5c760/84'/1'/0']tpubDDRVgaxjgMghgZzWSG4NL6D7M5wL1CXM3x98prqjmqU9zs2wfRZmYXWWamk4sxsQEQMX6Rmkc1i6G74zTD7xUxoojmijJiA3QPdJyyrWFKz/<0;1>/*)#numnatkk"
 
     descriptor_info = DescriptorInfo.from_str(descriptor_str=descriptor_str)
     keystore = KeyStore(
@@ -157,33 +155,35 @@ def test_funded_wallet(
         fingerprint=descriptor_info.spk_providers[0].fingerprint,
         key_origin=descriptor_info.spk_providers[0].key_origin,
         label="test",
-        network=test_config.network,
+        network=test_config_session.network,
     )
     wallet = Wallet(
         id=wallet_name,
         descriptor_str=descriptor_str,
         keystores=[keystore],
-        network=test_config.network,
-        config=test_config,
+        network=test_config_session.network,
+        config=test_config_session,
     )
 
     # fund the wallet
     addresses_private = [
-        wallet.get_address(force_new=True).address.as_string() for i in range(test_wallet_config.num_private)
+        str(wallet.get_address(force_new=True).address) for i in range(test_wallet_config.num_private)
     ]
     for address in addresses_private:
         wallet.labels.set_addr_category(address, "Private")
         faucet.send(address, amount=test_wallet_config.utxo_value_private)
 
     addresses_kyc = [
-        wallet.get_address(force_new=True).address.as_string() for i in range(test_wallet_config.num_kyc)
+        str(wallet.get_address(force_new=True).address) for i in range(test_wallet_config.num_kyc)
     ]
     for address in addresses_kyc:
         wallet.labels.set_addr_category(address, "KYC")
         faucet.send(address, amount=test_wallet_config.utxo_value_kyc)
 
     faucet.mine()
-    wallet.sync()
+    while wallet.get_balance().total == 0:
+        sleep(0.5)
+        wallet.sync()
 
     return wallet
 
@@ -213,17 +213,17 @@ def test_manual_coin_selection(
     txinfos.main_wallet_id = wallet.id
 
     recpient_amounts = [15_000, 25_000]
-    addresses = [wallet.get_address(force_new=True).address.as_string() for amount in recpient_amounts]
+    addresses = [str(wallet.get_address(force_new=True).address) for amount in recpient_amounts]
     recipients = [
         Recipient(address=address, amount=amount) for address, amount in zip(addresses, recpient_amounts)
     ]
     txinfos.recipients = recipients
 
     builder_infos = wallet.create_psbt(txinfos)
-    psbt: bdk.PartiallySignedTransaction = builder_infos.builder_result.psbt
+    psbt: bdk.Psbt = builder_infos.psbt
 
     tx_dict = transaction_to_dict(psbt.extract_tx(), wallet.network)
-    assert psbt.fee_amount() == 1332
+    assert psbt.fee() == 1331
     assert compare_dicts(
         tx_dict,
         {
@@ -235,7 +235,7 @@ def test_manual_coin_selection(
             "is_coin_base": False,
             "is_explicitly_rbf": True,
             "is_lock_time_enabled": True,
-            "version": 1,
+            "version": 2,
             "lock_time": "value_to_be_ignored",
             "input": "value_to_be_ignored",
             "output": "value_to_be_ignored",
@@ -248,7 +248,7 @@ def test_manual_coin_selection(
         recpient_amounts
         + [
             test_wallet_config.num_private * test_wallet_config.utxo_value_private
-            - psbt.fee_amount()
+            - psbt.fee()
             - sum(recpient_amounts)
         ]
     )
@@ -285,7 +285,7 @@ def test_manual_coin_selection_1_max(
     txinfos.main_wallet_id = wallet.id
 
     recpient_amounts = [15_000]
-    addresses = [wallet.get_address(force_new=True).address.as_string() for i in range(2)]
+    addresses = [str(wallet.get_address(force_new=True).address) for i in range(2)]
     recipients = [
         Recipient(address=addresses[0], amount=recpient_amounts[0]),
         Recipient(
@@ -297,10 +297,10 @@ def test_manual_coin_selection_1_max(
     txinfos.recipients = recipients
 
     builder_infos = wallet.create_psbt(txinfos)
-    psbt: bdk.PartiallySignedTransaction = builder_infos.builder_result.psbt
+    psbt: bdk.Psbt = builder_infos.psbt
 
     tx_dict = transaction_to_dict(psbt.extract_tx(), wallet.network)
-    assert psbt.fee_amount() == 1239
+    assert psbt.fee() == 1238
     assert compare_dicts(
         tx_dict,
         {
@@ -312,7 +312,7 @@ def test_manual_coin_selection_1_max(
             "is_coin_base": False,
             "is_explicitly_rbf": True,
             "is_lock_time_enabled": True,
-            "version": 1,
+            "version": 2,
             "lock_time": "value_to_be_ignored",
             "input": "value_to_be_ignored",
             "output": "value_to_be_ignored",
@@ -328,7 +328,7 @@ def test_manual_coin_selection_1_max(
         recpient_amounts
         + [
             test_wallet_config.num_private * test_wallet_config.utxo_value_private
-            - psbt.fee_amount()
+            - psbt.fee()
             - sum(recpient_amounts)
         ]
     )
@@ -368,7 +368,7 @@ def test_manual_coin_selection_2_max(
 
     recpient_amounts = [15_000]
     estimated_max_amount_of_first_max = (input_value - sum(recpient_amounts)) // 2
-    addresses = [wallet.get_address(force_new=True).address.as_string() for i in range(3)]
+    addresses = [str(wallet.get_address(force_new=True).address) for i in range(3)]
     recipients = [
         Recipient(address=addresses[0], amount=recpient_amounts[0]),
         Recipient(
@@ -385,10 +385,10 @@ def test_manual_coin_selection_2_max(
     txinfos.recipients = recipients
 
     builder_infos = wallet.create_psbt(txinfos)
-    psbt: bdk.PartiallySignedTransaction = builder_infos.builder_result.psbt
+    psbt: bdk.Psbt = builder_infos.psbt
 
     tx_dict = transaction_to_dict(psbt.extract_tx(), wallet.network)
-    assert psbt.fee_amount() == 1332
+    assert psbt.fee() == 1331
     assert compare_dicts(
         tx_dict,
         {
@@ -400,7 +400,7 @@ def test_manual_coin_selection_2_max(
             "is_coin_base": False,
             "is_explicitly_rbf": True,
             "is_lock_time_enabled": True,
-            "version": 1,
+            "version": 2,
             "lock_time": "value_to_be_ignored",
             "input": "value_to_be_ignored",
             "output": "value_to_be_ignored",
@@ -415,7 +415,7 @@ def test_manual_coin_selection_2_max(
         + [estimated_max_amount_of_first_max]
         + [
             test_wallet_config.num_private * test_wallet_config.utxo_value_private
-            - psbt.fee_amount()
+            - psbt.fee()
             - sum(recpient_amounts)
             - estimated_max_amount_of_first_max
         ]
@@ -456,17 +456,17 @@ def test_category_coin_selection(
     txinfos.main_wallet_id = wallet.id
 
     recpient_amounts = [15_000, 25_000, 35_000]
-    addresses = [wallet.get_address(force_new=True).address.as_string() for amount in recpient_amounts]
+    addresses = [str(wallet.get_address(force_new=True).address) for amount in recpient_amounts]
     recipients = [
         Recipient(address=address, amount=amount) for address, amount in zip(addresses, recpient_amounts)
     ]
     txinfos.recipients = recipients
 
     builder_infos = wallet.create_psbt(txinfos)
-    psbt: bdk.PartiallySignedTransaction = builder_infos.builder_result.psbt
+    psbt: bdk.Psbt = builder_infos.psbt
 
     tx_dict = transaction_to_dict(psbt.extract_tx(), wallet.network)
-    assert psbt.fee_amount() == 609
+    assert psbt.fee() == 608
     assert compare_dicts(
         tx_dict,
         {
@@ -478,7 +478,7 @@ def test_category_coin_selection(
             "is_coin_base": False,
             "is_explicitly_rbf": True,
             "is_lock_time_enabled": True,
-            "version": 1,
+            "version": 2,
             "lock_time": "value_to_be_ignored",
             "input": "value_to_be_ignored",
             "output": "value_to_be_ignored",
@@ -493,11 +493,7 @@ def test_category_coin_selection(
     # also check if the correct coin categories were selected
     expected_output_values = sorted(
         recpient_amounts
-        + [
-            num_inputs_needed * test_wallet_config.utxo_value_private
-            - psbt.fee_amount()
-            - sum(recpient_amounts)
-        ]
+        + [num_inputs_needed * test_wallet_config.utxo_value_private - psbt.fee() - sum(recpient_amounts)]
     )
     values = sorted([output["value"] for output in tx_dict["output"]])
     assert values == expected_output_values
@@ -535,7 +531,7 @@ def test_category_coin_selection_1_max(
     txinfos.main_wallet_id = wallet.id
 
     recpient_amounts = [15_000]
-    addresses = [wallet.get_address(force_new=True).address.as_string() for i in range(2)]
+    addresses = [str(wallet.get_address(force_new=True).address) for i in range(2)]
     recipients = [
         Recipient(address=addresses[0], amount=recpient_amounts[0]),
         Recipient(
@@ -547,10 +543,10 @@ def test_category_coin_selection_1_max(
     txinfos.recipients = recipients
 
     builder_infos = wallet.create_psbt(txinfos)
-    psbt: bdk.PartiallySignedTransaction = builder_infos.builder_result.psbt
+    psbt: bdk.Psbt = builder_infos.psbt
 
     tx_dict = transaction_to_dict(psbt.extract_tx(), wallet.network)
-    assert psbt.fee_amount() == 1239
+    assert psbt.fee() == 1238
     assert compare_dicts(
         tx_dict,
         {
@@ -562,7 +558,7 @@ def test_category_coin_selection_1_max(
             "is_coin_base": False,
             "is_explicitly_rbf": True,
             "is_lock_time_enabled": True,
-            "version": 1,
+            "version": 2,
             "lock_time": "value_to_be_ignored",
             "input": "value_to_be_ignored",
             "output": "value_to_be_ignored",
@@ -578,7 +574,7 @@ def test_category_coin_selection_1_max(
         recpient_amounts
         + [
             test_wallet_config.num_private * test_wallet_config.utxo_value_private
-            - psbt.fee_amount()
+            - psbt.fee()
             - sum(recpient_amounts)
         ]
     )
@@ -619,7 +615,7 @@ def test_category_coin_selection_2_max(
 
     recpient_amounts = [15_000]
     estimated_max_amount_of_first_max = (input_value - sum(recpient_amounts)) // 2
-    addresses = [wallet.get_address(force_new=True).address.as_string() for i in range(3)]
+    addresses = [str(wallet.get_address(force_new=True).address) for i in range(3)]
     recipients = [
         Recipient(address=addresses[0], amount=recpient_amounts[0]),
         Recipient(
@@ -636,10 +632,10 @@ def test_category_coin_selection_2_max(
     txinfos.recipients = recipients
 
     builder_infos = wallet.create_psbt(txinfos)
-    psbt: bdk.PartiallySignedTransaction = builder_infos.builder_result.psbt
+    psbt: bdk.Psbt = builder_infos.psbt
 
     tx_dict = transaction_to_dict(psbt.extract_tx(), wallet.network)
-    assert psbt.fee_amount() == 1332
+    assert psbt.fee() == 1331
     assert compare_dicts(
         tx_dict,
         {
@@ -651,7 +647,7 @@ def test_category_coin_selection_2_max(
             "is_coin_base": False,
             "is_explicitly_rbf": True,
             "is_lock_time_enabled": True,
-            "version": 1,
+            "version": 2,
             "lock_time": "value_to_be_ignored",
             "input": "value_to_be_ignored",
             "output": "value_to_be_ignored",
@@ -665,7 +661,7 @@ def test_category_coin_selection_2_max(
         + [estimated_max_amount_of_first_max]
         + [
             test_wallet_config.num_private * test_wallet_config.utxo_value_private
-            - psbt.fee_amount()
+            - psbt.fee()
             - sum(recpient_amounts)
             - estimated_max_amount_of_first_max
         ]
@@ -707,9 +703,7 @@ def test_category_coin_selection_6_max(
 
     recpient_amounts = [15_000]
     num_max_recipients = 6
-    addresses = [
-        wallet.get_address(force_new=True).address.as_string() for i in range(num_max_recipients + 1)
-    ]
+    addresses = [str(wallet.get_address(force_new=True).address) for i in range(num_max_recipients + 1)]
     estimated_max_amount_of_first_max = (input_value - sum(recpient_amounts)) // num_max_recipients
     recipients = [Recipient(address=addresses[0], amount=recpient_amounts[0])] + [
         Recipient(
@@ -723,10 +717,10 @@ def test_category_coin_selection_6_max(
     txinfos.recipients = recipients
 
     builder_infos = wallet.create_psbt(txinfos)
-    psbt: bdk.PartiallySignedTransaction = builder_infos.builder_result.psbt
+    psbt: bdk.Psbt = builder_infos.psbt
 
     tx_dict = transaction_to_dict(psbt.extract_tx(), wallet.network)
-    assert psbt.fee_amount() == 1704
+    assert psbt.fee() == 1703
     assert compare_dicts(
         tx_dict,
         {
@@ -738,7 +732,7 @@ def test_category_coin_selection_6_max(
             "is_coin_base": False,
             "is_explicitly_rbf": True,
             "is_lock_time_enabled": True,
-            "version": 1,
+            "version": 2,
             "lock_time": "value_to_be_ignored",
             "input": "value_to_be_ignored",
             "output": "value_to_be_ignored",
@@ -751,7 +745,7 @@ def test_category_coin_selection_6_max(
         recpient_amounts
         + [
             test_wallet_config.num_private * test_wallet_config.utxo_value_private
-            - psbt.fee_amount()
+            - psbt.fee()
             - sum(recpient_amounts)
             - estimated_max_amount_of_first_max * (num_max_recipients - 1)
         ]
@@ -801,17 +795,17 @@ def test_category_coin_selection_opportunistic(
     txinfos.main_wallet_id = wallet.id
 
     recpient_amounts = [15_000, 25_000, 35_000]
-    addresses = [wallet.get_address(force_new=True).address.as_string() for amount in recpient_amounts]
+    addresses = [str(wallet.get_address(force_new=True).address) for amount in recpient_amounts]
     recipients = [
         Recipient(address=address, amount=amount) for address, amount in zip(addresses, recpient_amounts)
     ]
     txinfos.recipients = recipients
 
     builder_infos = wallet.create_psbt(txinfos)
-    psbt: bdk.PartiallySignedTransaction = builder_infos.builder_result.psbt
+    psbt: bdk.Psbt = builder_infos.psbt
 
     tx_dict = transaction_to_dict(psbt.extract_tx(), wallet.network)
-    assert psbt.fee_amount() == 813
+    assert psbt.fee() == 812
     assert compare_dicts(
         tx_dict,
         {
@@ -823,7 +817,7 @@ def test_category_coin_selection_opportunistic(
             "is_coin_base": False,
             "is_explicitly_rbf": True,
             "is_lock_time_enabled": True,
-            "version": 1,
+            "version": 2,
             "lock_time": "value_to_be_ignored",
             "input": "value_to_be_ignored",
             "output": "value_to_be_ignored",
@@ -838,11 +832,7 @@ def test_category_coin_selection_opportunistic(
     # also check if the correct coin categories were selected
     expected_output_values = sorted(
         recpient_amounts
-        + [
-            num_inputs_chosen * test_wallet_config.utxo_value_private
-            - psbt.fee_amount()
-            - sum(recpient_amounts)
-        ]
+        + [num_inputs_chosen * test_wallet_config.utxo_value_private - psbt.fee() - sum(recpient_amounts)]
     )
     values = sorted([output["value"] for output in tx_dict["output"]])
     assert values == expected_output_values
@@ -884,17 +874,17 @@ def test_category_coin_selection_opportunistic_different_seed(
     txinfos.main_wallet_id = wallet.id
 
     recpient_amounts = [15_000, 25_000, 35_000]
-    addresses = [wallet.get_address(force_new=True).address.as_string() for amount in recpient_amounts]
+    addresses = [str(wallet.get_address(force_new=True).address) for amount in recpient_amounts]
     recipients = [
         Recipient(address=address, amount=amount) for address, amount in zip(addresses, recpient_amounts)
     ]
     txinfos.recipients = recipients
 
     builder_infos = wallet.create_psbt(txinfos)
-    psbt: bdk.PartiallySignedTransaction = builder_infos.builder_result.psbt
+    psbt: bdk.Psbt = builder_infos.psbt
 
     tx_dict = transaction_to_dict(psbt.extract_tx(), wallet.network)
-    assert psbt.fee_amount() == 609
+    assert psbt.fee() == 608
     assert compare_dicts(
         tx_dict,
         {
@@ -906,7 +896,7 @@ def test_category_coin_selection_opportunistic_different_seed(
             "is_coin_base": False,
             "is_explicitly_rbf": True,
             "is_lock_time_enabled": True,
-            "version": 1,
+            "version": 2,
             "lock_time": "value_to_be_ignored",
             "input": "value_to_be_ignored",
             "output": "value_to_be_ignored",
@@ -921,11 +911,7 @@ def test_category_coin_selection_opportunistic_different_seed(
     # also check if the correct coin categories were selected
     expected_output_values = sorted(
         recpient_amounts
-        + [
-            num_inputs_chosen * test_wallet_config.utxo_value_private
-            - psbt.fee_amount()
-            - sum(recpient_amounts)
-        ]
+        + [num_inputs_chosen * test_wallet_config.utxo_value_private - psbt.fee() - sum(recpient_amounts)]
     )
     values = sorted([output["value"] for output in tx_dict["output"]])
     assert values == expected_output_values

@@ -53,7 +53,7 @@ from reportlab.platypus import (
     TableStyle,
 )
 
-from bitcoin_safe.gui.qt.icons import SvgTools
+from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.i18n import translate
 
 from .gui.qt.util import qicon_to_pil
@@ -269,8 +269,8 @@ class BitcoinWalletRecoveryPDF:
             )
 
         # No photography icon
-        icon = SvgTools.get_QIcon("no-typing-icon.svg")
-        icon2 = SvgTools.get_QIcon("no-photography-icon.svg")
+        icon = svg_tools.get_QIcon("no-typing-icon.svg")
+        icon2 = svg_tools.get_QIcon("no-photography-icon.svg")
         reportlab_icon = pilimage_to_reportlab(qicon_to_pil(icon), width=50, height=50)
         reportlab_icon2 = pilimage_to_reportlab(qicon_to_pil(icon2), width=50, height=50)
 
@@ -476,7 +476,7 @@ class BitcoinWalletRecoveryPDF:
 
 
 def make_and_open_pdf(wallet: Wallet, lang_code: str) -> None:
-    info = DescriptorInfo.from_str(wallet.multipath_descriptor.as_string())
+    info = DescriptorInfo.from_str(str(wallet.multipath_descriptor))
     pdf_recovery = BitcoinWalletRecoveryPDF(lang_code=lang_code)
 
     for i, keystore in enumerate(wallet.keystores):
@@ -491,7 +491,7 @@ def make_and_open_pdf(wallet: Wallet, lang_code: str) -> None:
         )
         pdf_recovery.create_pdf(
             title=title,
-            wallet_descriptor_string=wallet.multipath_descriptor.as_string(),
+            wallet_descriptor_string=str(wallet.multipath_descriptor),
             threshold=info.threshold,
             seed=keystore.mnemonic,
             num_signers=len(wallet.keystores),

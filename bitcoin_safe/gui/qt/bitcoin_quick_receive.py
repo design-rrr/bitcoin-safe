@@ -34,6 +34,7 @@ import bdkpython as bdk
 from PyQt6.QtGui import QShowEvent
 
 from bitcoin_safe.gui.qt.util import category_color
+from bitcoin_safe.pythonbdk_types import AddressInfoMin
 
 from ...signals import SignalsMin, UpdateFilter, UpdateFilterReason, WalletSignals
 from ...wallet import Wallet
@@ -60,7 +61,8 @@ class BitcoinQuickReceive(
         self.limit_to_categories = limit_to_categories
         self._pending_update = False
 
-        self.setFixedHeight(250)
+        # fixed height
+        self.setFixedHeight(220)
 
         # signals
         self.wallet_signals.updated.connect(self.update_content)
@@ -70,16 +72,23 @@ class BitcoinQuickReceive(
         self.update_content(UpdateFilter(refresh_all=True))
 
     def set_address(self, category: str, address_info: bdk.AddressInfo):
-        address = address_info.address.as_string()
+        receive_group = ReceiveGroup(
+            category,
+            category_color(category).name(),
+            AddressInfoMin.from_bdk_address_info(address_info),
+            address_info.address.to_qr_uri(),
+            parent=self,
+        )
+        receive_group.signal_set_address_as_used.connect(self.on_signal_set_address_as_used)
+        self.add_box(receive_group)
 
-        self.add_box(
-            ReceiveGroup(
-                category,
-                category_color(category).name(),
-                address,
-                address_info.address.to_qr_uri(),
-                parent=self,
-                close_all_video_widgets=self.signals_min.close_all_video_widgets,
+    def on_signal_set_address_as_used(self, address_info: AddressInfoMin):
+        self.wallet.bdkwallet.mark_used(keychain=address_info.keychain, index=address_info.index)
+        self.wallet_signals.updated.emit(
+            UpdateFilter(
+                addresses=[address_info.address],
+                categories=[],
+                reason=UpdateFilterReason.AddressMarkedUsed,
             )
         )
 
@@ -110,7 +119,12 @@ class BitcoinQuickReceive(
             return
 
         should_update = False
-        if should_update or update_filter.refresh_all:
+        if (
+            should_update
+            or update_filter.refresh_all
+            or update_filter.reason
+            in [UpdateFilterReason.CategoryAdded, UpdateFilterReason.AddressMarkedUsed]
+        ):
             should_update = True
         if should_update or set(self.addresses).intersection(update_filter.addresses):
             should_update = True
@@ -120,7 +134,7 @@ class BitcoinQuickReceive(
         if not should_update:
             return
 
-        logger.debug(f"{self.__class__.__name__} update_with_filter {update_filter}")
+        logger.debug(f"{self.__class__.__name__} update_with_filter")
         super().update()
 
         self.clear_boxes()
@@ -134,13 +148,13 @@ class BitcoinQuickReceive(
                 continue
 
             address_info = self.wallet.get_unused_category_address(category)
-            updated_addressed.add(address_info.address.as_string())
+            updated_addressed.add(str(address_info.address))
             updated_categories.add(category)
             self.set_address(category, address_info)
 
         if not self.wallet.labels.categories:
             address_info = self.wallet.get_unused_category_address(None)
-            address = address_info.address.as_string()
+            address = str(address_info.address)
             category = self.wallet.labels.get_category(address)
             self.set_address(category, address_info)
             updated_addressed.add(address)

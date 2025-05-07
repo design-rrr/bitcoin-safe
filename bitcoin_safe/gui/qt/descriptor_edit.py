@@ -26,20 +26,19 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
 import logging
 from typing import Optional
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data
 from bitcoin_qr_tools.multipath_descriptor import (
-    MultipathDescriptor as BitcoinQRMultipathDescriptor,
+    convert_to_multipath_descriptor,
+    is_valid_descriptor,
 )
-from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtCore import QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QCloseEvent
 from PyQt6.QtWidgets import QDialog, QVBoxLayout, QWidget
 
-from bitcoin_safe.descriptors import MultipathDescriptor
 from bitcoin_safe.gui.qt.analyzers import DescriptorAnalyzer
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
 from bitcoin_safe.gui.qt.custom_edits import AnalyzerTextEdit
@@ -60,7 +59,7 @@ class DescriptorExport(QDialog):
 
     def __init__(
         self,
-        descriptor: MultipathDescriptor,
+        descriptor: bdk.Descriptor,
         signals_min: SignalsMin,
         network: bdk.Network,
         parent=None,
@@ -72,7 +71,7 @@ class DescriptorExport(QDialog):
         self.setModal(True)
 
         self.descriptor = descriptor
-        self.data = Data.from_multipath_descriptor(descriptor, network=network)
+        self.data = Data.from_descriptor(descriptor, network=network)
 
         self.export_widget = ExportDataSimple(
             data=self.data,
@@ -93,6 +92,14 @@ class DescriptorExport(QDialog):
         super().closeEvent(event)
 
 
+class DescriptorInputField(AnalyzerTextEdit):
+
+    def sizeHint(self) -> QSize:
+        size = super().sizeHint()
+        size.setHeight(30)
+        return size
+
+
 class DescriptorEdit(ButtonEdit, ThreadingManager):
     signal_descriptor_change: TypedPyQtSignal[str] = pyqtSignal(str)  # type: ignore
 
@@ -105,7 +112,7 @@ class DescriptorEdit(ButtonEdit, ThreadingManager):
         threading_parent: ThreadingManager | None = None,
     ) -> None:
         super().__init__(
-            input_field=AnalyzerTextEdit(),
+            input_field=DescriptorInputField(),
             button_vertical_align=Qt.AlignmentFlag.AlignBottom,
             signal_update=signal_update,
             signals_min=signals_min,
@@ -146,7 +153,7 @@ class DescriptorEdit(ButtonEdit, ThreadingManager):
 
         try:
             dialog = DescriptorExport(
-                descriptor=MultipathDescriptor.from_descriptor_str(self.text(), self.network),
+                descriptor=convert_to_multipath_descriptor(self.text().strip(), self.network),
                 signals_min=self.signals_min,
                 parent=self,
                 network=self.network,
@@ -156,13 +163,11 @@ class DescriptorEdit(ButtonEdit, ThreadingManager):
             dialog.show()
         except Exception as e:
             logger.debug(f"{self.__class__.__name__}: {e}")
-            logger.error(
-                f"Could not create a DescriptorExport for {self.__class__.__name__} with text {self.text()}"
-            )
+            logger.error(f"Could not create a DescriptorExport for {self.__class__.__name__}: {e}")
             return
 
     def _check_if_valid(self) -> bool:
         if not self.text():
             return True
 
-        return BitcoinQRMultipathDescriptor.is_valid(self.text(), network=self.network)
+        return is_valid_descriptor(self.text(), network=self.network)

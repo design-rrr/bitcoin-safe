@@ -26,7 +26,6 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
 import enum
 import logging
 import threading
@@ -77,6 +76,7 @@ class UpdateFilterReason(Enum):
     ForceRefresh = enum.auto()
     ChainHeightAdvanced = enum.auto()
     NewFxRates = enum.auto()
+    AddressMarkedUsed = enum.auto()
 
 
 class UpdateFilter:

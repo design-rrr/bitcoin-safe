@@ -30,6 +30,7 @@ import logging
 from functools import partial
 from typing import Callable, List, Optional, Union
 
+import bdkpython as bdk
 from bdkpython import bdk
 from bitcoin_qr_tools.data import Data, DecodingException
 from bitcoin_qr_tools.gui.bitcoin_video_widget import BitcoinVideoWidget
@@ -45,6 +46,7 @@ from PyQt6.QtWidgets import (
     QSizePolicy,
     QStyle,
     QTextEdit,
+    QToolButton,
     QVBoxLayout,
     QWidget,
 )
@@ -54,8 +56,13 @@ from bitcoin_safe.gui.qt.custom_edits import (
     AnalyzerState,
     AnalyzerTextEdit,
 )
-from bitcoin_safe.gui.qt.icons import SvgTools
-from bitcoin_safe.gui.qt.util import Message, clear_layout, do_copy, icon_path
+from bitcoin_safe.gui.qt.util import (
+    Message,
+    clear_layout,
+    do_copy,
+    get_icon_path,
+    svg_tools,
+)
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.signal_tracker import SignalTools, SignalTracker
 from bitcoin_safe.typestubs import TypedPyQtSignalNo
@@ -65,10 +72,11 @@ from ...signals import TypedPyQtSignal
 logger = logging.getLogger(__name__)
 
 
-class SquareButton(QPushButton):
+class SquareButton(QToolButton):
     def __init__(self, qicon: QIcon, parent) -> None:
-        super().__init__(qicon, "", parent)
-        self.setMaximumSize(24, 24)
+        super().__init__(parent)
+        self.setIcon(qicon)
+        self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonIconOnly)
 
 
 class ButtonsField(QWidget):
@@ -78,7 +86,7 @@ class ButtonsField(QWidget):
         self.grid_layout.setContentsMargins(0, 0, 0, 0)
         self.grid_layout.setSpacing(0)
         self.vertical_align = vertical_align
-        self.buttons: List[QPushButton] = []
+        self.buttons: List[QPushButton | QToolButton] = []
 
     def minimumSizeHint(self) -> QSize:
         # Initialize minimum width and height
@@ -147,7 +155,7 @@ class ButtonsField(QWidget):
         if self.vertical_align == Qt.AlignmentFlag.AlignTop:
             self.grid_layout.setRowStretch(num_rows + 1, 1)
 
-    def append_button(self, button: QPushButton):
+    def append_button(self, button: QPushButton | QToolButton):
         self.buttons.append(button)
         self.rearrange_buttons()
 
@@ -258,7 +266,7 @@ class ButtonEdit(QWidget):
     def add_button(
         self, icon_path: Optional[str], button_callback: Callable, tooltip: str = ""
     ) -> SquareButton:
-        button = SquareButton(SvgTools.get_QIcon(icon_path), parent=self)  # Create the button with the icon
+        button = SquareButton(svg_tools.get_QIcon(icon_path), parent=self)  # Create the button with the icon
         if tooltip:
             button.setToolTip(tooltip)
         button.clicked.connect(button_callback)  # Connect the button's clicked signal to the callback
@@ -370,7 +378,7 @@ class ButtonEdit(QWidget):
         return self.pdf_button
 
     def _on_click_add_random_mnemonic_button(self, callback_seed: Callable | None = None) -> None:
-        seed = bdk.Mnemonic(bdk.WordCount.WORDS12).as_string()
+        seed = str(bdk.Mnemonic(bdk.WordCount.WORDS12))
         self.setText(seed)
         if callback_seed:
             callback_seed(seed)
@@ -381,7 +389,7 @@ class ButtonEdit(QWidget):
     ) -> SquareButton:
 
         self.mnemonic_button = self.add_button(
-            icon_path("bi--dice-5.svg"),
+            get_icon_path("bi--dice-5.svg"),
             partial(self._on_click_add_random_mnemonic_button, callback_seed=callback_seed),
             tooltip=translate("d", "Create random mnemonic"),
         )
@@ -412,7 +420,7 @@ class ButtonEdit(QWidget):
         self,
         callback_open_filepath: Callable | None = None,
         filter=translate("open_file", "All Files (*);;PSBT (*.psbt);;Transation (*.tx)"),
-    ) -> QPushButton:
+    ) -> QPushButton | QToolButton:
 
         button = self.add_button(
             None,
@@ -486,7 +494,7 @@ if __name__ == "__main__":
 
     text_edit = ButtonEdit(close_all_video_widgets=my.close_all_video_widgets)
     text_edit.add_copy_button()
-    text_edit.add_qr_input_from_camera_button(bdk.Network.TESTNET)
+    text_edit.add_qr_input_from_camera_button(bdk.Network.TESTNET4)
     text_edit.add_pdf_buttton(lambda: 0)
     text_edit.add_random_mnemonic_button(lambda: "some random")
     layout.addWidget(text_edit)

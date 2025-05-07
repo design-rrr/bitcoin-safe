@@ -47,7 +47,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from bitcoin_safe.gui.qt.icons import SvgTools
+from bitcoin_safe.gui.qt.util import svg_tools
 
 from .util import adjust_bg_color_for_darkmode
 
@@ -64,7 +64,7 @@ class CloseButton(QPushButton):
         option = QStyleOptionButton()
         option.initFrom(self)
         option.features = QStyleOptionButton.ButtonFeature.None_
-        option.icon = SvgTools.get_QIcon("close.svg")
+        option.icon = svg_tools.get_QIcon("close.svg")
         option.iconSize = QSize(14, 14)  # Adjust icon size as needed
         painter.drawControl(QStyle.ControlElement.CE_PushButton, option)
 

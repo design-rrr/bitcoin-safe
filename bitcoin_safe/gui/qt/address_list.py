@@ -52,25 +52,15 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import logging
-from functools import partial
-from typing import Any, Dict
-
-from bitcoin_safe.fx import FX
-from bitcoin_safe.gui.qt.icons import SvgTools
-from bitcoin_safe.gui.qt.wrappers import Menu
-
-from ...config import UserConfig
-from ...network_config import BlockchainType
-from ...signals import TypedPyQtSignal
-
-logger = logging.getLogger(__name__)
-
-
 import enum
+import logging
 from enum import IntEnum
+from functools import partial
+from typing import Any, Dict, List
 
 import bdkpython as bdk
+from bitcoin_tools.gui.qt.satoshis import Satoshis
+from bitcoin_tools.util import time_logger
 from PyQt6.QtCore import QModelIndex, QPoint, Qt, pyqtSignal
 from PyQt6.QtGui import (
     QBrush,
@@ -89,10 +79,21 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from bitcoin_safe.fx import FX
+from bitcoin_safe.gui.qt.util import svg_tools
+from bitcoin_safe.gui.qt.wrappers import Menu
+
+from ...config import UserConfig
 from ...i18n import translate
+from ...network_config import BlockchainType
 from ...rpc import send_rpc_command
-from ...signals import Signals, UpdateFilter, UpdateFilterReason, WalletSignals
-from ...util import Satoshis, block_explorer_URL, time_logger
+from ...signals import (
+    Signals,
+    TypedPyQtSignal,
+    UpdateFilter,
+    UpdateFilterReason,
+    WalletSignals,
+)
 from ...wallet import TxStatus, Wallet
 from .category_list import CategoryEditor
 from .my_treeview import (
@@ -107,12 +108,14 @@ from .taglist import AddressDragInfo
 from .util import (
     ColorScheme,
     Message,
-    category_color,
+    block_explorer_URL,
     create_color_circle,
     do_copy,
     sort_id_to_icon,
     webopen,
 )
+
+logger = logging.getLogger(__name__)
 
 
 class ImportLabelMenu:
@@ -123,20 +126,20 @@ class ImportLabelMenu:
         )
 
         self.action_import = self.import_label_menu.add_action(
-            "", self.wallet_signals.import_labels.emit, icon=SvgTools.get_QIcon("bi--upload.svg")
+            "", self.wallet_signals.import_labels.emit, icon=svg_tools.get_QIcon("bi--upload.svg")
         )
         self.action_bip329_import = self.import_label_menu.add_action(
-            "", self.wallet_signals.import_bip329_labels.emit, icon=SvgTools.get_QIcon("bi--upload.svg")
+            "", self.wallet_signals.import_bip329_labels.emit, icon=svg_tools.get_QIcon("bi--upload.svg")
         )
         self.action_electrum_import = self.import_label_menu.add_action(
             "",
             self.wallet_signals.import_electrum_wallet_labels.emit,
-            icon=SvgTools.get_QIcon("bi--upload.svg"),
+            icon=svg_tools.get_QIcon("bi--upload.svg"),
         )
         self.action_nostr_import = self.import_label_menu.add_action(
             "",
             self.import_nostr_labels,
-            icon=SvgTools.get_QIcon("bi--cloud.svg"),
+            icon=svg_tools.get_QIcon("bi--cloud.svg"),
         )
         self.updateUi()
 
@@ -166,10 +169,10 @@ class ExportLabelMenu:
         )
 
         self.action_export_full = self.export_label_menu.add_action(
-            "", self.wallet_signals.export_labels.emit, icon=SvgTools.get_QIcon("bi--download.svg")
+            "", self.wallet_signals.export_labels.emit, icon=svg_tools.get_QIcon("bi--download.svg")
         )
         self.action_bip329 = self.export_label_menu.add_action(
-            "", self.wallet_signals.export_bip329_labels.emit, icon=SvgTools.get_QIcon("bi--download.svg")
+            "", self.wallet_signals.export_bip329_labels.emit, icon=svg_tools.get_QIcon("bi--download.svg")
         )
         self.updateUi()
 
@@ -337,7 +340,6 @@ class AddressList(MyTreeView):
             if json_mime_data.get("type") == "drag_tag":
                 if hit_address is not None:
                     drag_info = AddressDragInfo([json_mime_data.get("tag")], [hit_address])
-                    logger.debug(f"drag_info {drag_info}")
                     self.signal_tag_dropped.emit(drag_info)
                 event.accept()
                 return
@@ -356,14 +358,14 @@ class AddressList(MyTreeView):
     def get_address(self, force_new=False, category: str | None = None) -> bdk.AddressInfo:
         if force_new:
             address_info = self.wallet.get_address(force_new=force_new)
-            address = address_info.address.as_string()
+            address = str(address_info.address)
             self.wallet.labels.set_addr_category(address, category, timestamp="now")
             self.wallet_signals.updated.emit(
                 UpdateFilter(addresses=set([address]), reason=UpdateFilterReason.NewAddressRevealed)
             )
         else:
             address_info = self.wallet.get_unused_category_address(category)
-            address = address_info.address.as_string()
+            address = str(address_info.address)
 
             if self.signals:
                 self.signals.wallet_signals[self.wallet.id].updated.emit(
@@ -405,7 +407,7 @@ class AddressList(MyTreeView):
     def update_with_filter(self, update_filter: UpdateFilter) -> None:
         if update_filter.refresh_all:
             return self.update_content()
-        logger.debug(f"{self.__class__.__name__}  update_with_filter {update_filter}")
+        logger.debug(f"{self.__class__.__name__}  update_with_filter")
 
         self._before_update_content()
         remaining_addresses = set(update_filter.addresses)
@@ -427,7 +429,7 @@ class AddressList(MyTreeView):
                 or address_match
                 or (not update_filter.addresses and category_match or len(update_filter.categories) > 1)
             ):
-                log_info.append((row, address))
+                log_info.append((row, str(address)[:6]))  # no sensitive info in log
                 self.refresh_row(address, row)
                 remaining_addresses = remaining_addresses - set([address])
 
@@ -439,11 +441,11 @@ class AddressList(MyTreeView):
         # i can add them here without recreating the whole model
         if remaining_addresses:
             for address in set(self.wallet.get_addresses()).intersection(remaining_addresses):
-                log_info.append((0, address))
+                log_info.append((0, str(address)[:6]))  # no sensitive info in log
                 self.append_address(address)
                 remaining_addresses = remaining_addresses - set([address])
 
-        logger.debug(f"Updated addresses  {log_info}.  remaining_addresses = {remaining_addresses}")
+        logger.debug(f"Updated addresses  {log_info}.  {len(remaining_addresses)=}")
         self._after_update_content()
 
     def get_headers(self) -> Dict:
@@ -455,7 +457,7 @@ class AddressList(MyTreeView):
             self.Columns.CATEGORY: self.tr("Category"),
             self.Columns.LABEL: self.tr("Label"),
             self.Columns.COIN_BALANCE: self.tr("Balance"),
-            self.Columns.FIAT_BALANCE: "$ " + self.tr("Balance"),
+            self.Columns.FIAT_BALANCE: "$ " + self.tr("Value"),
         }
 
     def update_content(self) -> None:
@@ -580,7 +582,7 @@ class AddressList(MyTreeView):
         # item[self.Columns.NUM_TXS].setText("%d" % num)
         item[self.Columns.NUM_TXS].setToolTip(f"{num} Transaction")
         item[self.Columns.NUM_TXS].setData(num, MyItemDataRole.ROLE_CLIPBOARD_DATA)
-        item[self.Columns.NUM_TXS].setIcon(SvgTools.get_QIcon(icon_path))
+        item[self.Columns.NUM_TXS].setIcon(svg_tools.get_QIcon(icon_path))
 
         # calculated_width = QFontMetrics(self.font()).horizontalAdvance(balance_text)
         # current_width = self.header().sectionSize(self.Columns.ADDRESS)
@@ -614,14 +616,14 @@ class AddressList(MyTreeView):
                 menu.add_action(
                     self.tr("View on block explorer"),
                     partial(webopen, addr_URL),
-                    icon=SvgTools.get_QIcon("block-explorer.svg"),
+                    icon=svg_tools.get_QIcon("block-explorer.svg"),
                 )
 
             menu.addSeparator()
-            self._add_category_menu(menu, idx)
-            menu.addSeparator()
-
             self.add_copy_menu(menu, idx, include_columns_even_if_hidden=[self.key_column])
+
+        self._add_category_menu(menu, addrs)
+        menu.addSeparator()
 
         menu.add_action(
             self.tr("Copy as csv"),
@@ -629,7 +631,7 @@ class AddressList(MyTreeView):
                 self.copyRowsToClipboardAsCSV,
                 [item.data(MySortModel.role_drag_key) for item in selected_items if item],
             ),
-            icon=SvgTools.get_QIcon("bi--filetype-csv.svg"),
+            icon=svg_tools.get_QIcon("bi--filetype-csv.svg"),
         )
         menu.addSeparator()
         self.export_label_menu = ExportLabelMenu(menu, wallet_signals=self.wallet_signals)
@@ -641,27 +643,19 @@ class AddressList(MyTreeView):
 
         return menu
 
-    def _add_category_menu(self, menu: Menu, idx: QModelIndex):
-        copy_menu = menu.add_menu(self.tr("Set category"))
+    def _add_category_menu(self, menu: Menu, addresses: List[str]):
+        category_menu = menu.add_menu(self.tr("Set category"))
 
         for category in self.wallet.labels.categories:
-            item = self.sourceModel().horizontalHeaderItem(self.Columns.ADDRESS)
-            if not item:
-                continue
-            item_col = self.item_from_index(idx.sibling(idx.row(), self.Columns.ADDRESS))
-            if not item_col:
-                continue
-            address = item_col.data(MyItemDataRole.ROLE_CLIPBOARD_DATA)
-            if address is None:
-                address = item_col.text().strip()
-
             # When the user selects the action, emit the drop signal with the category and address.
-            action = partial(self.signal_tag_dropped.emit, AddressDragInfo([category], [address]))
-            copy_menu.add_action(
+            action = partial(self.signal_tag_dropped.emit, AddressDragInfo([category], addresses))
+            category_menu.add_action(
                 category,
                 action,
-                icon=create_color_circle(category_color(category)),
+                icon=create_color_circle(CategoryEditor.color(category)),
             )
+
+        return menu
 
     def get_edit_key_from_coordinate(self, row, col) -> Any:
         if col != self.Columns.LABEL:

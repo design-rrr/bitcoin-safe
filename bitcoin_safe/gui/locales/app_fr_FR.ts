@@ -12,8 +12,8 @@
         <translation>Aucune signature supplémentaire n&apos;a été ajoutée  </translation>
     </message>
     <message>
-        <source>bitcoin_tx libary error. The txid should not be changed during finalizing</source>
-        <translation>Erreur de la bibliothèque bitcoin_tx. L&apos;ID de transaction ne doit pas être modifié lors de la finalisation  </translation>
+        <source>bdk libary error. The txid should not be changed during finalizing</source>
+        <translation>Erreur de la bibliothèque bdk. Le txid ne doit pas être modifié lors de la finalisation</translation>
     </message>
 </context>
 <context>
@@ -69,6 +69,10 @@
     <message>
         <source>Address {address}</source>
         <translation>Adresse {address}  </translation>
+    </message>
+    <message>
+        <source>change</source>
+        <translation>change  </translation>
     </message>
     <message>
         <source>receiving</source>
@@ -127,8 +131,8 @@
         <translation>Solde  </translation>
     </message>
     <message>
-        <source>change</source>
-        <translation>change  </translation>
+        <source>Value</source>
+        <translation>Valeur</translation>
     </message>
 </context>
 <context>
@@ -200,13 +204,6 @@
     <message>
         <source>Unmatured</source>
         <translation>Non mûri  </translation>
-    </message>
-</context>
-<context>
-    <name>BalanceChart</name>
-    <message>
-        <source>Date</source>
-        <translation>Date  </translation>
     </message>
 </context>
 <context>
@@ -579,6 +576,14 @@ Please back up this descriptor to be able to recover the funds!</source>
         <source>{rate} is the minimum for {rbf}</source>
         <translation>{rate} est le minimum pour {rbf}  </translation>
     </message>
+    <message>
+        <source>{rate} combined fee rate</source>
+        <translation>{rate} taux de frais combinés</translation>
+    </message>
+    <message>
+        <source>This transaction has {number} unconfirmed parents with a combined fee rate of {parents_fee_rate}</source>
+        <translation>Cette transaction a {number} parents non confirmés avec un taux de frais combinés de {parents_fee_rate}</translation>
+    </message>
 </context>
 <context>
     <name>FeeRateWarningBar</name>
@@ -729,6 +734,14 @@ the sending value {sent}</source>
         <translation>Portefeuille  </translation>
     </message>
     <message>
+        <source>Speedup of {txid}</source>
+        <translation>Accélération de {txid}</translation>
+    </message>
+    <message>
+        <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
+        <translation>Impossible de récupérer le portefeuille &apos;{id}&apos;. Veuillez d&apos;abord ouvrir le portefeuille.  </translation>
+    </message>
+    <message>
         <source>Status</source>
         <translation>Statut  </translation>
     </message>
@@ -757,8 +770,8 @@ the sending value {sent}</source>
         <translation>{number} Confirmations  </translation>
     </message>
     <message>
-        <source>Cannot fetch wallet &apos;{id}&apos;. Please open the wallet first.</source>
-        <translation>Impossible de récupérer le portefeuille &apos;{id}&apos;. Veuillez d&apos;abord ouvrir le portefeuille.  </translation>
+        <source>Cannot CPFP the transaction because no receiving output could be found</source>
+        <translation>Impossible de faire un CPFP sur la transaction car aucune sortie réceptrice n’a été trouvée</translation>
     </message>
 </context>
 <context>
@@ -1300,10 +1313,6 @@ Do you want to proceed anyway?</source>
         <translation>&amp;Sauvegarder le Portefeuille Actuel  </translation>
     </message>
     <message>
-        <source>Closing wallet {id}</source>
-        <translation>Fermeture du portefeuille {id}  </translation>
-    </message>
-    <message>
         <source>Do you want to save the PSBT {id}?</source>
         <translation>Voulez-vous sauvegarder le PSBT {id} ?  </translation>
     </message>
@@ -1380,6 +1389,10 @@ Do you want to proceed anyway?</source>
         <translation>Avancé  </translation>
     </message>
     <message>
+        <source>SSL:</source>
+        <translation>SSL :  </translation>
+    </message>
+    <message>
         <source>Port:</source>
         <translation>Port :  </translation>
     </message>
@@ -1416,14 +1429,14 @@ Do you want to proceed anyway?</source>
         <translation>Appliquer &amp; Éteindre  </translation>
     </message>
     <message>
+        <source>Automatic</source>
+        <translation>Automatique  </translation>
+    </message>
+    <message>
         <source>Responses:
     {name}: {status}
     Mempool Instance: {server}</source>
         <translation>Réponses : {name} : {status}     Instance Mempool : {server}  </translation>
-    </message>
-    <message>
-        <source>Automatic</source>
-        <translation>Automatique  </translation>
     </message>
     <message>
         <source>Please remove the &apos;{scheme}&apos; from the electrum url</source>
@@ -1449,6 +1462,10 @@ Do you want to proceed anyway?</source>
         <translation>Erreur dans la connexion au serveur. {responses}   Voulez-vous continuer malgré tout ?  </translation>
     </message>
     <message>
+        <source>Open Tor proxy configuration documentation</source>
+        <translation>Ouvrir la documentation de configuration du proxy Tor  </translation>
+    </message>
+    <message>
         <source>Test Connection</source>
         <translation>Tester la Connexion  </translation>
     </message>
@@ -1471,10 +1488,6 @@ Do you want to proceed anyway?</source>
     <message>
         <source>Enable SSL</source>
         <translation>Activer SSL  </translation>
-    </message>
-    <message>
-        <source>SSL:</source>
-        <translation>SSL :  </translation>
     </message>
 </context>
 <context>
@@ -1668,6 +1681,14 @@ Do you want to proceed anyway?</source>
         <translation>Envoyer  </translation>
     </message>
     <message>
+        <source>Backup failed. Aborting Changes.</source>
+        <translation>Échec de la sauvegarde. Annulation des changements.  </translation>
+    </message>
+    <message>
+        <source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
+        <translation>La procédure changera potentiellement toutes les adresses du portefeuille. Voulez-vous continuer ?  </translation>
+    </message>
+    <message>
         <source>Cannot move the wallet file, because {file_path} exists</source>
         <translation>Impossible de déplacer le fichier du portefeuille, car {file_path} existe  </translation>
     </message>
@@ -1688,10 +1709,6 @@ Do you want to proceed anyway?</source>
         <translation>Supprimer le portefeuille  </translation>
     </message>
     <message>
-        <source>No file selected</source>
-        <translation>Aucun fichier sélectionné  </translation>
-    </message>
-    <message>
         <source>Password incorrect</source>
         <translation>Mot de passe incorrect  </translation>
     </message>
@@ -1704,12 +1721,12 @@ Do you want to proceed anyway?</source>
         <translation>Nouveau mot de passe :  </translation>
     </message>
     <message>
-        <source>Wallet saved</source>
-        <translation>Portefeuille sauvegardé  </translation>
-    </message>
-    <message>
         <source>Descriptor</source>
         <translation>Descripteur  </translation>
+    </message>
+    <message>
+        <source>Wallet saved</source>
+        <translation>Portefeuille sauvegardé  </translation>
     </message>
     <message>
         <source>  {amount} in {shortid}</source>
@@ -1744,8 +1761,17 @@ Do you want to proceed anyway?</source>
         <translation>Choisissez un nouveau nom, ou un nom existant pour la fusion :  </translation>
     </message>
     <message>
+        <source>The addresses {used_addresses}
+have transactions linking to other addresses already. Are you sure you want to change the category?</source>
+        <translation>Les adresses {used_addresses} ont déjà des transactions liées à d&apos;autres adresses. Êtes-vous sûr de vouloir changer la catégorie ?  </translation>
+    </message>
+    <message>
         <source>Syncing with {server}</source>
         <translation>Synchronisation avec {server}  </translation>
+    </message>
+    <message>
+        <source>Sync &amp;&amp; Chat</source>
+        <translation>Sync &amp;&amp; Chat  </translation>
     </message>
     <message>
         <source>Connected to {server}</source>
@@ -1754,10 +1780,6 @@ Do you want to proceed anyway?</source>
     <message>
         <source>Disconnected from {server}</source>
         <translation>Déconnecté de {server}  </translation>
-    </message>
-    <message>
-        <source>Sync &amp;&amp; Chat</source>
-        <translation>Sync &amp;&amp; Chat  </translation>
     </message>
     <message>
         <source>Click for new address</source>
@@ -1784,8 +1806,16 @@ Do you want to proceed anyway?</source>
         <translation>Tous les fichiers (*);;Fichiers JSON (*.jsonl);;Fichiers JSON (*.json)  </translation>
     </message>
     <message>
+        <source>No file selected</source>
+        <translation>Aucun fichier sélectionné  </translation>
+    </message>
+    <message>
         <source>Import labels</source>
         <translation>Importer les étiquettes  </translation>
+    </message>
+    <message>
+        <source>History</source>
+        <translation>Historique  </translation>
     </message>
     <message>
         <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
@@ -1800,16 +1830,20 @@ Do you want to proceed anyway?</source>
         <translation>Importer les étiquettes du portefeuille Electrum  </translation>
     </message>
     <message>
-        <source>History</source>
-        <translation>Historique  </translation>
-    </message>
-    <message>
         <source>All Files (*);;JSON Files (*.json)</source>
         <translation>Tous les fichiers (*);;Fichiers JSON (*.json)  </translation>
     </message>
     <message>
         <source>Receive</source>
         <translation>Recevoir  </translation>
+    </message>
+    <message>
+        <source>Balance</source>
+        <translation>Solde  </translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation>Valeur</translation>
     </message>
     <message>
         <source>No changes to apply.</source>
@@ -1819,20 +1853,19 @@ Do you want to proceed anyway?</source>
         <source>Backup saved to {filename}</source>
         <translation>Sauvegarde enregistrée dans {filename}  </translation>
     </message>
-    <message>
-        <source>Backup failed. Aborting Changes.</source>
-        <translation>Échec de la sauvegarde. Annulation des changements.  </translation>
-    </message>
-    <message>
-        <source>Proceeding will potentially change all wallet addresses. Do you want to proceed?</source>
-        <translation>La procédure changera potentiellement toutes les adresses du portefeuille. Voulez-vous continuer ?  </translation>
-    </message>
 </context>
 <context>
     <name>QrToolButton</name>
     <message>
         <source>QR Code</source>
         <translation>Code QR  </translation>
+    </message>
+</context>
+<context>
+    <name>ReceiveGroup</name>
+    <message>
+        <source>Address</source>
+        <translation>Adresse  </translation>
     </message>
 </context>
 <context>
@@ -2404,10 +2437,6 @@ You can restore your labels at a later time with &apos;Import Sync Key&apos;.</s
         <translation>Sélectionnez une catégorie qui correspond le mieux au destinataire  </translation>
     </message>
     <message>
-        <source>Adding outpoints {outpoints}</source>
-        <translation>Ajout de points de sortie {outpoints}  </translation>
-    </message>
-    <message>
         <source>Add Inputs</source>
         <translation>Ajouter des entrées  </translation>
     </message>
@@ -2474,6 +2503,10 @@ below {rate}</source>
         <translation>Entrées  </translation>
     </message>
     <message>
+        <source>Label: </source>
+        <translation>Étiquette :  </translation>
+    </message>
+    <message>
         <source>Invalid Signatures</source>
         <translation>Signatures invalides  </translation>
     </message>
@@ -2506,6 +2539,10 @@ below {rate}</source>
         <translation>Modifier avec des frais augmentés (RBF)  </translation>
     </message>
     <message>
+        <source>Increase fee (RBF)</source>
+        <translation>Augmenter les frais (RBF)</translation>
+    </message>
+    <message>
         <source>Previous step</source>
         <translation>Étape précédente  </translation>
     </message>
@@ -2516,10 +2553,6 @@ below {rate}</source>
     <message>
         <source>Send</source>
         <translation>Envoyer  </translation>
-    </message>
-    <message>
-        <source>Label: </source>
-        <translation>Étiquette :  </translation>
     </message>
 </context>
 <context>
@@ -2670,10 +2703,6 @@ below {rate}</source>
     <message>
         <source>Balance ({unit})</source>
         <translation>Solde ({unit})  </translation>
-    </message>
-    <message>
-        <source>Date</source>
-        <translation>Date  </translation>
     </message>
 </context>
 <context>
@@ -3064,6 +3093,14 @@ below {rate}</source>
         <translation>Essayer d&apos;annuler la transaction (RBF)  </translation>
     </message>
     <message>
+        <source>Increase fee (RBF)</source>
+        <translation>Augmenter les frais (RBF)</translation>
+    </message>
+    <message>
+        <source>Receive faster (CPFP)</source>
+        <translation>Recevoir plus rapidement (CPFP)</translation>
+    </message>
+    <message>
         <source>Unused</source>
         <translation>Inutilisé  </translation>
     </message>
@@ -3155,8 +3192,20 @@ below {rate}</source>
         <translation>C&apos;est un moyen privé et rapide de se connecter au réseau Bitcoin.  </translation>
     </message>
     <message>
+        <source>You can connect your own Bitcoin node, such as {link}.</source>
+        <translation>Vous pouvez connecter votre propre nœud Bitcoin, tel que {link}.  </translation>
+    </message>
+    <message>
+        <source>Run your bitcoind with &quot;bitcoind -chain=regtest&quot;</source>
+        <translation>Exécutez votre bitcoind avec &quot;bitcoind -chain=regtest&quot;  </translation>
+    </message>
+    <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=test&quot;</source>
         <translation>Exécutez votre bitcoind avec &quot;bitcoind -chain=test&quot;  </translation>
+    </message>
+    <message>
+        <source>Run your bitcoind with &quot;bitcoind -chain=testnet4&quot;</source>
+        <translation>Lancez votre bitcoind avec &quot;bitcoind -chain=testnet4&quot;</translation>
     </message>
     <message>
         <source>Run your bitcoind with &quot;bitcoind -chain=signet&quot;  This however is a different signet than mutinynet.com.</source>
@@ -3172,28 +3221,28 @@ It is best to use your own server, such as {link}.</source>
         <translation>Vous pouvez configurer {electrum} avec un serveur electrum sur {server} et un explorateur de blocs sur {explorer}  </translation>
     </message>
     <message>
-        <source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}</source>
-        <translation>Une bonne option est {electrum_testnet4} et comme explorateur de blocs {explorer_testnet4}  </translation>
+        <source>A good option is  {electrum_testnet} and as block explorer {explorer_testnet}</source>
+        <translation>Une bonne option est {electrum_testnet} et comme explorateur de blocs {explorer_testnet}</translation>
     </message>
     <message>
-        <source>Signet choose {electrum} and a block explorer on {mempool_url}.</source>
-        <translation>Choisissez Signet avec {electrum} et un explorateur de blocs sur {mempool_url}.  </translation>
+        <source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}. There is a {faucet} for free test coins.</source>
+        <translation>Une bonne option est {electrum_testnet4} et comme explorateur de blocs {explorer_testnet4}. Il y a un {faucet} pour obtenir des jetons de test gratuits.</translation>
+    </message>
+    <message>
+        <source>Signet choose {electrum} and a block explorer on {mempool_url}. There is a {faucet} for free test coins.</source>
+        <translation>Signet choisit {electrum} et un explorateur de blocs sur {mempool_url}. Il y a un {faucet} pour obtenir des pièces de test gratuites。</translation>
     </message>
     <message>
         <source>You can setup {setup} with an esplora server on {server} and a block explorer on {explorer}</source>
         <translation>Vous pouvez configurer {setup} avec un serveur esplora sur {server} et un explorateur de blocs sur {explorer}  </translation>
     </message>
     <message>
+        <source>There is a {faucet} for free test coins.</source>
+        <translation>Il y a un {faucet} pour obtenir des jetons de test gratuits.</translation>
+    </message>
+    <message>
         <source>A (somtimes working) server is {link} and a block explorer on {explorer}. There is a {faucet}.</source>
         <translation>Un serveur (parfois fonctionnel) est {link} et un explorateur de blocs sur {explorer}. Il y a un {faucet}.  </translation>
-    </message>
-    <message>
-        <source>You can connect your own Bitcoin node, such as {link}.</source>
-        <translation>Vous pouvez connecter votre propre nœud Bitcoin, tel que {link}.  </translation>
-    </message>
-    <message>
-        <source>Run your bitcoind with &quot;bitcoind -chain=regtest&quot;</source>
-        <translation>Exécutez votre bitcoind avec &quot;bitcoind -chain=regtest&quot;  </translation>
     </message>
 </context>
 <context>

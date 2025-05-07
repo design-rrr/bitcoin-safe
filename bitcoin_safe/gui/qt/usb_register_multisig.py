@@ -31,6 +31,9 @@ import logging
 from typing import List, Optional
 
 import bdkpython as bdk
+from bitcoin_qr_tools.multipath_descriptor import (
+    address_descriptor_from_multipath_descriptor,
+)
 from bitcoin_usb.usb_gui import USBGui
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QCloseEvent
@@ -43,12 +46,11 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from bitcoin_safe.descriptors import MultipathDescriptor
 from bitcoin_safe.gui.qt.address_edit import AddressEdit
 from bitcoin_safe.gui.qt.analyzer_indicator import ElidedLabel
-from bitcoin_safe.gui.qt.icons import SvgTools
 from bitcoin_safe.gui.qt.spinning_button import SpinningButton
 from bitcoin_safe.gui.qt.tutorial_screenshots import ScreenshotsRegisterMultisig
+from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.keystore import KeyStore, KeyStoreImporterTypes
 from bitcoin_safe.signals import Signals
 from bitcoin_safe.typestubs import TypedPyQtSignalNo
@@ -68,7 +70,7 @@ class USBValidateAddressWidget(QWidget):
         super().__init__()
         self.signals = signals
         self.network = network
-        self.descriptor: Optional[MultipathDescriptor] = None
+        self.descriptor: Optional[bdk.Descriptor] = None
         self.expected_address = ""
         self.address_index = 0
         self.kind = bdk.KeychainKind.EXTERNAL
@@ -91,7 +93,7 @@ class USBValidateAddressWidget(QWidget):
         self.button_validate_address = SpinningButton(
             text="",
             enable_signal=self.usb_gui.signal_end_hwi_blocker,
-            enabled_icon=SvgTools.get_QIcon(KeyStoreImporterTypes.hwi.icon_filename),
+            enabled_icon=svg_tools.get_QIcon(KeyStoreImporterTypes.hwi.icon_filename),
             timeout=60,
             parent=self,
         )
@@ -107,7 +109,7 @@ class USBValidateAddressWidget(QWidget):
 
     def set_descriptor(
         self,
-        descriptor: MultipathDescriptor,
+        descriptor: bdk.Descriptor,
         expected_address: str,
         kind: bdk.KeychainKind = bdk.KeychainKind.EXTERNAL,
         address_index: int = 0,
@@ -127,8 +129,8 @@ class USBValidateAddressWidget(QWidget):
             logger.error("descriptor not set")
             return False
 
-        address_descriptor = self.descriptor.address_descriptor(
-            kind=self.kind, address_index=self.address_index
+        address_descriptor = address_descriptor_from_multipath_descriptor(
+            descriptor=self.descriptor, kind=self.kind, address_index=self.address_index
         )
         try:
             address = self.usb_gui.display_address(address_descriptor)
@@ -183,14 +185,14 @@ class USBRegisterMultisigWidget(USBValidateAddressWidget):
             Message(
                 self.tr("Successfully registered multisig wallet on hardware signer"),
                 type=MessageType.Info,
-                icon=SvgTools.get_QIcon("checkmark.svg"),
+                icon=svg_tools.get_QIcon("checkmark.svg"),
             )
         return result
 
     def set_descriptor(  # type: ignore
         self,
         keystores: List[KeyStore],
-        descriptor: MultipathDescriptor,
+        descriptor: bdk.Descriptor,
         expected_address: str,
         kind: bdk.KeychainKind = bdk.KeychainKind.EXTERNAL,
         address_index: int = 0,

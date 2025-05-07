@@ -52,7 +52,6 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import datetime
 import enum
 import logging
 import os
@@ -63,6 +62,9 @@ from typing import Any, Dict, Iterable, List, Optional, Set, Tuple
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data
+from bitcoin_tools.gui.qt.satoshis import Satoshis
+from bitcoin_tools.gui.qt.util import confirmation_wait_formatted
+from bitcoin_tools.util import time_logger
 from PyQt6.QtCore import QMimeData, QModelIndex, QPoint, QSize, Qt, pyqtSignal
 from PyQt6.QtGui import (
     QBrush,
@@ -74,24 +76,20 @@ from PyQt6.QtGui import (
     QFontMetrics,
     QStandardItem,
 )
-from PyQt6.QtWidgets import QAbstractItemView, QFileDialog, QPushButton, QStyle, QWidget
+from PyQt6.QtWidgets import QAbstractItemView, QFileDialog, QPushButton, QWidget
 
 from bitcoin_safe.config import MIN_RELAY_FEE, UserConfig
-from bitcoin_safe.gui.qt.icons import SvgTools
+from bitcoin_safe.execute_config import GENERAL_RBF_AVAILABLE
+from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.mempool import MempoolData
 from bitcoin_safe.psbt_util import FeeInfo
-from bitcoin_safe.pythonbdk_types import Balance, Recipient
+from bitcoin_safe.pythonbdk_types import Balance, Recipient, TransactionDetails
+from bitcoin_safe.tx import TxUiInfos, short_tx_id
 from bitcoin_safe.typestubs import TypedPyQtSignal
 
 from ...i18n import translate
 from ...signals import Signals, UpdateFilter, UpdateFilterReason
-from ...util import (
-    Satoshis,
-    block_explorer_URL,
-    confirmation_wait_formatted,
-    time_logger,
-)
 from ...wallet import ToolsTxUiInfo, TxStatus, Wallet, get_wallet, get_wallets
 from .category_list import CategoryEditor
 from .my_treeview import (
@@ -103,7 +101,7 @@ from .my_treeview import (
     needs_frequent_flag,
 )
 from .taglist import AddressDragInfo
-from .util import Message, MessageType, sort_id_to_icon, webopen
+from .util import Message, MessageType, block_explorer_URL, sort_id_to_icon, webopen
 
 logger = logging.getLogger(__name__)
 
@@ -195,7 +193,7 @@ class HistList(MyTreeView):
         self.mempool_data = mempool_data
         self.address_domain = address_domain
         self.hidden_columns = hidden_columns if hidden_columns else []
-        self._tx_dict: Dict[str, Tuple[Wallet, bdk.TransactionDetails]] = {}  # txid -> wallet, tx
+        self._tx_dict: Dict[str, Tuple[Wallet, TransactionDetails]] = {}  # txid -> wallet, tx
         self.signals = signals
         self.wallet_id = wallet_id
         self.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
@@ -320,7 +318,7 @@ class HistList(MyTreeView):
                 if json_mime_data.get("type") == "drag_tag":
                     if hit_address is not None:
                         drag_info = AddressDragInfo([json_mime_data.get("tag")], [hit_address])
-                        logger.debug(f"drag_info {drag_info}")
+                        # logger.debug(f"drag_info {drag_info}")
                         self.signal_tag_dropped.emit(drag_info)
                     event.accept()
                     return
@@ -354,7 +352,7 @@ class HistList(MyTreeView):
     def update_with_filter(self, update_filter: UpdateFilter) -> None:
         if update_filter.refresh_all:
             return self.update_content()
-        logger.debug(f"{self.__class__.__name__} update_with_filter {update_filter}")
+        logger.debug(f"{self.__class__.__name__} update_with_filter")
 
         def categories_intersect(model: MyStandardItemModel, row) -> Set:
             return set(model.data(model.index(row, self.Columns.CATEGORIES))).intersection(
@@ -368,7 +366,7 @@ class HistList(MyTreeView):
                 return set()
             return update_filter.addresses.intersection(fulltxdetail.involved_addresses())
 
-        logger.debug(f"{self.__class__.__name__}  update_with_filter {update_filter}")
+        logger.debug(f"{self.__class__.__name__}  update_with_filter")
         self._before_update_content()
 
         log_info = []
@@ -385,7 +383,7 @@ class HistList(MyTreeView):
             ) or any(
                 [txid in update_filter.txids, categories_intersect(model, row), tx_involves_address(txid)]
             ):
-                log_info.append((row, txid))
+                log_info.append((row, str(txid)[:4]))  # no sensitive info in log
                 self.refresh_row(txid, row)
 
         logger.debug(f"Updated  {log_info}")
@@ -404,7 +402,7 @@ class HistList(MyTreeView):
         }
 
     def _init_row(
-        self, wallet: Wallet, tx: bdk.TransactionDetails, status_sort_index: int, old_balance: int
+        self, wallet: Wallet, tx: TransactionDetails, status_sort_index: int, old_balance: int
     ) -> Tuple[List[QStandardItem], int]:
         """
 
@@ -522,8 +520,8 @@ class HistList(MyTreeView):
             self.mempool_data.fee_rate_to_projected_block_index(fee_rate)
         )
         status_text = (
-            datetime.datetime.fromtimestamp(tx.confirmation_time.timestamp).strftime("%Y-%m-%d %H:%M")
-            if tx.confirmation_time
+            tx.get_datetime().strftime("%Y-%m-%d %H:%M")
+            if tx.chain_position.is_confirmed()
             else estimated_duration_str
         )
         status_tooltip = (
@@ -538,7 +536,7 @@ class HistList(MyTreeView):
             item[self.key_column].setData(True, role=MyItemDataRole.ROLE_FREQUENT_UPDATEFLAG)
         item[self.Columns.STATUS].setText(status_text)
         item[self.Columns.STATUS].setData(status_text, MyItemDataRole.ROLE_CLIPBOARD_DATA)
-        item[self.Columns.STATUS].setIcon(SvgTools.get_QIcon(sort_id_to_icon(status.sort_id())))
+        item[self.Columns.STATUS].setIcon(svg_tools.get_QIcon(sort_id_to_icon(status.sort_id())))
         item[self.Columns.STATUS].setToolTip(status_tooltip)
         item[self.Columns.LABEL].setText(label)
         item[self.Columns.LABEL].setData(label, MyItemDataRole.ROLE_CLIPBOARD_DATA)
@@ -572,7 +570,7 @@ class HistList(MyTreeView):
                 menu.add_action(
                     translate("hist_list", "View on block explorer"),
                     partial(webopen, addr_URL),
-                    icon=SvgTools.get_QIcon("block-explorer.svg"),
+                    icon=svg_tools.get_QIcon("block-explorer.svg"),
                 )
             menu.addSeparator()
 
@@ -597,13 +595,13 @@ class HistList(MyTreeView):
                 self.copyRowsToClipboardAsCSV,
                 [item.data(MySortModel.role_drag_key) for item in selected_items if item],
             ),
-            icon=SvgTools.get_QIcon("bi--filetype-csv.svg"),
+            icon=svg_tools.get_QIcon("bi--filetype-csv.svg"),
         )
 
         menu.add_action(
             translate("hist_list", "Save as file"),
             partial(self.export_raw_transactions, selected_items),
-            icon=SvgTools.get_QIcon("bi--download.svg"),
+            icon=svg_tools.get_QIcon("bi--download.svg"),
         )
 
         if not multi_select:
@@ -619,13 +617,23 @@ class HistList(MyTreeView):
             tx_status = TxStatus.from_wallet(txid, wallet)
             if tx_status and tx_status.can_rbf():
                 menu.addSeparator()
-                menu.add_action(
-                    translate("hist_list", "Edit with higher fee (RBF)"), partial(self.edit_tx, tx_details)
-                )
+                if GENERAL_RBF_AVAILABLE:
+                    menu.add_action(
+                        translate("hist_list", "Edit with higher fee (RBF)"),
+                        partial(self.edit_tx, tx_details),
+                    )
+                    menu.add_action(
+                        translate("hist_list", "Try cancel transaction (RBF)"),
+                        partial(self.cancel_tx, tx_details),
+                    )
+                else:
+                    menu.add_action(
+                        translate("hist_list", "Increase fee (RBF)"), partial(self.edit_tx, tx_details)
+                    )
 
+            if tx_status and tx_status.is_unconfirmed() and self.can_cpfp(tx=tx_details.transaction):
                 menu.add_action(
-                    translate("hist_list", "Try cancel transaction (RBF)"),
-                    partial(self.cancel_tx, tx_details),
+                    translate("hist_list", "Receive faster (CPFP)"), partial(self.cpfp_tx, tx_details)
                 )
 
         # run_hook('receive_menu', menu, txids, self.wallet)
@@ -634,17 +642,51 @@ class HistList(MyTreeView):
 
         return menu
 
-    def edit_tx(self, tx_details: bdk.TransactionDetails) -> None:
+    def can_cpfp(self, tx: bdk.Transaction) -> bool:
+        wallet = get_wallet(wallet_id=self.wallet_id, signals=self.signals)
+        if not wallet:
+            return False
+        utxo = wallet.get_cpfp_utxos(tx=tx)
+        return bool(utxo)
+
+    def cpfp_tx(self, tx_details: TransactionDetails) -> None:
+        wallet = get_wallet(wallet_id=self.wallet_id, signals=self.signals)
+        if not wallet:
+            return
+        utxo = wallet.get_cpfp_utxos(tx=tx_details.transaction)
+        if not utxo:
+            Message(self.tr("Cannot CPFP the transaction because no receiving output could be found"))
+            return
+
+        txinfos = TxUiInfos()
+        txinfos.fill_utxo_dict_from_utxos(utxos=[utxo])
+        fee_info = FeeInfo.from_txdetails(tx_details)
+        txinfos.fee_rate = fee_info.fee_rate() if fee_info else MIN_RELAY_FEE
+        txinfos.recipients = [
+            Recipient(
+                address=str(wallet.get_address().address),
+                label=self.tr("Speedup of {txid}").format(txid=short_tx_id(tx_details.txid)),
+                checked_max_amount=True,
+                amount=0,
+            )
+        ]
+        txinfos.main_wallet_id = wallet.id
+        self.signals.open_tx_like.emit(txinfos)
+
+    def edit_tx(self, tx_details: TransactionDetails) -> None:
         txinfos = ToolsTxUiInfo.from_tx(
             tx_details.transaction,
             FeeInfo.from_txdetails(tx_details),
             self.config.network,
             get_wallets(self.signals),
         )
-
+        if not GENERAL_RBF_AVAILABLE:
+            txinfos.utxos_read_only = True
+            txinfos.recipient_read_only = True
+            txinfos.replace_tx = tx_details
         self.signals.open_tx_like.emit(txinfos)
 
-    def cancel_tx(self, tx_details: bdk.TransactionDetails) -> None:
+    def cancel_tx(self, tx_details: TransactionDetails) -> None:
         txinfos = ToolsTxUiInfo.from_tx(
             tx_details.transaction,
             FeeInfo.from_txdetails(tx_details),
@@ -667,7 +709,7 @@ class HistList(MyTreeView):
         amount = 0
         txinfos.recipients = [
             Recipient(
-                wallet.get_address().address.as_string(),
+                str(wallet.get_address().address),
                 amount=amount,
                 label=f"Cancel transaction {tx_details.txid}",
                 checked_max_amount=True,
@@ -730,12 +772,12 @@ class RefreshButton(QPushButton):
         self.set_icon_allow_refresh()
 
     def set_icon_allow_refresh(self) -> None:
-        icon = SvgTools.get_QIcon("bi--arrow-clockwise.svg")
+        icon = svg_tools.get_QIcon("bi--arrow-clockwise.svg")
         self.setIcon(icon)
 
     def set_icon_is_syncing(self) -> None:
 
-        icon = SvgTools.get_QIcon("status_waiting.svg")
+        icon = svg_tools.get_QIcon("status_waiting.svg")
         self.setIcon(icon)
 
 

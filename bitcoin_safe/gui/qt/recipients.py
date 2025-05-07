@@ -34,6 +34,8 @@ from typing import Any, List
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
+from bitcoin_tools.gui.qt.satoshis import unit_sat_str, unit_str
+from bitcoin_tools.util import is_int
 from PyQt6 import QtCore, QtWidgets
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import (
@@ -52,17 +54,15 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe.gui.qt.address_edit import AddressEdit
 from bitcoin_safe.gui.qt.analyzers import AmountAnalyzer
-from bitcoin_safe.gui.qt.icons import SvgTools
 from bitcoin_safe.gui.qt.labeledit import WalletLabelAndCategoryEdit
-from bitcoin_safe.gui.qt.util import Message, MessageType
+from bitcoin_safe.gui.qt.util import Message, MessageType, svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.labels import LabelType
 from bitcoin_safe.typestubs import TypedPyQtSignal
 from bitcoin_safe.wallet import get_wallet_of_address
 
 from ...pythonbdk_types import Recipient, is_address
-from ...signals import Signals
-from ...util import is_int, unit_sat_str, unit_str
+from ...signals import Signals, UpdateFilter
 from .invisible_scroll_area import InvisibleScrollArea
 from .spinbox import BTCSpinBox
 
@@ -102,12 +102,12 @@ class RecipientWidget(QWidget):
         )
 
         self.amount_layout = QHBoxLayout()
-        self.amount_spin_box = BTCSpinBox(self.signals.get_network())
+        self.amount_spin_box = BTCSpinBox(network=network)
         amount_analyzer = AmountAnalyzer()
         amount_analyzer.min_amount = 0
         amount_analyzer.max_amount = int(21e6 * 1e8)
         self.amount_spin_box.setAnalyzer(amount_analyzer)
-        self.label_unit = QLabel(unit_str(self.signals.get_network()))
+        self.label_unit = QLabel(unit_str(network=network))
         self.send_max_button = QPushButton()
         self.send_max_button.setCheckable(True)
         self.send_max_button.setMaximumWidth(80)
@@ -136,6 +136,20 @@ class RecipientWidget(QWidget):
         self.signals.language_switch.connect(self.updateUi)
         self.address_edit.signal_text_change.connect(self.on_address_change)
         self.address_edit.signal_bip21_input.connect(self.on_address_bip21_input)
+        signals.any_wallet_updated.connect(self.update_with_filter)
+
+    def update_with_filter(self, update_filter: UpdateFilter) -> None:
+        if not self.address:
+            return
+
+        should_update = False
+        if should_update or self.address in update_filter.addresses:
+            should_update = True
+
+        if not should_update:
+            return
+
+        self.label_line_edit.autofill_label_and_category(update_filter=update_filter)
 
     def _get_label_ref(self):
         return self.address_edit.address
@@ -154,7 +168,6 @@ class RecipientWidget(QWidget):
 
         self.send_max_button.setVisible(allow_edit)
 
-        self.address_edit.setReadOnly(not allow_edit)
         self.amount_spin_box.setReadOnly(not allow_edit)
         self.address_edit.set_allow_edit(allow_edit)
 
@@ -265,7 +278,7 @@ class RecipientTabWidget(QTabWidget):
             parent=self,
         )
 
-        self.addTab(self.recipient_widget, SvgTools.get_QIcon("bi--person.svg"), title)
+        self.addTab(self.recipient_widget, svg_tools.get_QIcon("bi--person.svg"), title)
 
         # connect signals
         self.tabCloseRequested.connect(self.on_tabCloseRequested)
@@ -379,24 +392,24 @@ class Recipients(QWidget):
 
         self.add_recipient_button = QPushButton("")
         self.add_recipient_button.setMaximumWidth(150)
-        self.add_recipient_button.setIcon(SvgTools.get_QIcon("bi--person-add.svg"))
+        self.add_recipient_button.setIcon(svg_tools.get_QIcon("bi--person-add.svg"))
         self.add_recipient_button.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
         self.add_recipient_button.clicked.connect(self.add_recipient)
 
         self.toolbutton_csv = QToolButton()
         self.toolbutton_csv.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
-        self.toolbutton_csv.setIcon(SvgTools.get_QIcon("bi--filetype-csv.svg"))
+        self.toolbutton_csv.setIcon(svg_tools.get_QIcon("bi--filetype-csv.svg"))
 
         menu = Menu(self)
         self.action_import_csv = menu.add_action(
-            "", self.import_csv, icon=SvgTools.get_QIcon("bi--upload.svg")
+            "", self.import_csv, icon=svg_tools.get_QIcon("bi--upload.svg")
         )
         self.action_export_csv = menu.add_action(
-            "", self.on_action_export_csv, icon=SvgTools.get_QIcon("bi--download.svg")
+            "", self.on_action_export_csv, icon=svg_tools.get_QIcon("bi--download.svg")
         )
         menu.addSeparator()
         self.action_export_csv_template = menu.add_action(
-            "", self.on_action_export_csv_template, icon=SvgTools.get_QIcon("bi--layout-three-columns.svg")
+            "", self.on_action_export_csv_template, icon=svg_tools.get_QIcon("bi--layout-three-columns.svg")
         )
 
         self.toolbutton_csv.setMenu(menu)

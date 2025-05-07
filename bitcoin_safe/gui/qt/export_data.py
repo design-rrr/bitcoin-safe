@@ -36,7 +36,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
 import bdkpython as bdk
-from bitcoin_nostr_chat.bitcoin_dm import BitcoinDM, ChatLabel
+from bitcoin_nostr_chat.chat_dm import ChatDM, ChatLabel
 from bitcoin_qr_tools.data import ConverterSignMessageRequest, Data, DataType
 from bitcoin_qr_tools.gui.qr_widgets import QRCodeWidgetSVG
 from bitcoin_qr_tools.qr_generator import QRGenerator
@@ -51,16 +51,14 @@ from PyQt6.QtWidgets import (
     QHBoxLayout,
     QPushButton,
     QSizePolicy,
-    QStyle,
     QToolButton,
     QVBoxLayout,
     QWidget,
 )
 
-from bitcoin_safe.descriptor_export_tools import DescriptorExportTools
-from bitcoin_safe.descriptors import MultipathDescriptor
-from bitcoin_safe.gui.qt.icons import SvgTools
+from bitcoin_safe.descriptor_export_tools import DescriptorExportTools, shorten_filename
 from bitcoin_safe.gui.qt.keystore_ui import SignerUI
+from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.threading_manager import TaskThread, ThreadingManager
@@ -107,27 +105,27 @@ def pretty_name(data_type: DataType) -> str:
 
 def get_txid(data: Data) -> str | None:
     if data.data_type == DataType.PSBT:
-        if not isinstance(data.data, bdk.PartiallySignedTransaction):
-            logger.error(f"{data.data} is not of type bdk.PartiallySignedTransaction")
+        if not isinstance(data.data, bdk.Psbt):
+            logger.error(f"data is not of type bdk.Psbt")
             return None
-        return data.data.txid()
+        return data.data.extract_tx().compute_txid()
     elif data.data_type == DataType.Tx:
         if not isinstance(data.data, bdk.Transaction):
-            logger.error(f"{data.data} is not of type bdk.Transaction")
+            logger.error(f"data is not of type bdk.Transaction")
             return None
-        return data.data.txid()
+        return data.data.compute_txid()
     return None
 
 
 def get_json_data(data: Data, network: bdk.Network) -> str | None:
     if data.data_type == DataType.PSBT:
-        if not isinstance(data.data, bdk.PartiallySignedTransaction):
-            logger.error(f"{data.data} is not of type bdk.PartiallySignedTransaction")
+        if not isinstance(data.data, bdk.Psbt):
+            logger.error(f"data is not of type bdk.Psbt")
             return None
         return json.dumps(json.loads(data.data.json_serialize()), indent=4)
     elif data.data_type == DataType.Tx:
         if not isinstance(data.data, bdk.Transaction):
-            logger.error(f"{data.data} is not of type bdk.Transaction")
+            logger.error(f"data is not of type bdk.Transaction")
             return None
         return json.dumps(transaction_to_dict(data.data, network=network), indent=4)
     return None
@@ -173,7 +171,7 @@ class FileToolButton(QToolButton):
         self.setMenu(self._menu)
         self.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
 
-        self.setIcon(SvgTools.get_QIcon("bi--download.svg")) 
+        self.setIcon(svg_tools.get_QIcon("bi--download.svg"))
 
         self.set_data(data=data)
         self.updateUi()
@@ -182,9 +180,7 @@ class FileToolButton(QToolButton):
         self._menu.clear()
         self._menu.blockSignals(True)
 
-        if self.data.data_type in [DataType.MultiPathDescriptor] and isinstance(
-            self.data.data, MultipathDescriptor
-        ):
+        if self.data.data_type in [DataType.Descriptor] and isinstance(self.data.data, bdk.Descriptor):
             self.fill_file_menu_descriptor_export_actions(
                 self._menu,
                 self.wallet_id if self.wallet_id else "descriptor",
@@ -208,7 +204,6 @@ class FileToolButton(QToolButton):
             default_filename = f"{short_tx_id( txid)}.{default_suffix}"
         if not default_filename and self.data.data_type in [
             DataType.Descriptor,
-            DataType.MultiPathDescriptor,
         ]:
             default_filename = (
                 (f"{filename_clean( self.wallet_id, file_extension='', replace_spaces_by='_')}.txt")
@@ -253,7 +248,7 @@ class FileToolButton(QToolButton):
     def _save_file(
         cls,
         wallet_id: str,
-        multipath_descriptor: MultipathDescriptor,
+        multipath_descriptor: bdk.Descriptor,
         network: bdk.Network,
         descripor_type: DescriptorExportType,
     ):
@@ -268,7 +263,7 @@ class FileToolButton(QToolButton):
         self,
         menu: Menu,
         wallet_id: str,
-        multipath_descriptor: MultipathDescriptor,
+        multipath_descriptor: bdk.Descriptor,
         network: bdk.Network,
     ):
         menu.blockSignals(True)
@@ -288,13 +283,13 @@ class FileToolButton(QToolButton):
             )
         menu.addSeparator()
         self.action_copy_data = menu.add_action(
-            "", self.on_action_copy_data, icon=SvgTools.get_QIcon("bi--copy.svg")
+            "", self.on_action_copy_data, icon=svg_tools.get_QIcon("bi--copy.svg")
         )
         self.action_copy_txid = menu.add_action(
-            "", self.on_action_copy_txid, icon=SvgTools.get_QIcon("bi--copy.svg")
+            "", self.on_action_copy_txid, icon=svg_tools.get_QIcon("bi--copy.svg")
         )
         self.action_copy_txid.setVisible(False)
-        self.action_json = menu.add_action("", self.on_action_json, icon=SvgTools.get_QIcon("bi--copy.svg"))
+        self.action_json = menu.add_action("", self.on_action_json, icon=svg_tools.get_QIcon("bi--copy.svg"))
         self.action_json.setVisible(False)
 
         menu.blockSignals(False)
@@ -303,7 +298,7 @@ class FileToolButton(QToolButton):
         self,
         menu: Menu,
     ):
-        file_icon = SvgTools.get_QIcon("bi--download.svg") 
+        file_icon = svg_tools.get_QIcon("bi--download.svg")
         menu.blockSignals(True)
         menu.clear()
         menu.add_action(
@@ -315,12 +310,12 @@ class FileToolButton(QToolButton):
         menu.addSeparator()
 
         self.action_copy_data = menu.add_action(
-            "", self.on_action_copy_data, icon=SvgTools.get_QIcon("bi--copy.svg")
+            "", self.on_action_copy_data, icon=svg_tools.get_QIcon("bi--copy.svg")
         )
         self.action_copy_txid = menu.add_action(
-            "", self.on_action_copy_txid, icon=SvgTools.get_QIcon("bi--copy.svg")
+            "", self.on_action_copy_txid, icon=svg_tools.get_QIcon("bi--copy.svg")
         )
-        self.action_json = menu.add_action("", self.on_action_json, icon=SvgTools.get_QIcon("bi--copy.svg"))
+        self.action_json = menu.add_action("", self.on_action_json, icon=svg_tools.get_QIcon("bi--copy.svg"))
 
         menu.blockSignals(False)
 
@@ -362,7 +357,7 @@ class SyncChatToolButton(QToolButton):
         self.setMenu(self._menu)
         self.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
 
-        self.setIcon(SvgTools.get_QIcon("bi--cloud.svg"))
+        self.setIcon(svg_tools.get_QIcon("bi--cloud.svg"))
 
         self._fill_menu()
         self.updateUi()
@@ -445,9 +440,9 @@ class SyncChatToolButton(QToolButton):
 
     def to_dm(
         self,
-    ) -> BitcoinDM:
+    ) -> ChatDM:
         txid = get_txid(self.data)
-        return BitcoinDM(
+        return ChatDM(
             label=ChatLabel.GroupChat,
             data=self.data,
             event=None,
@@ -606,15 +601,13 @@ class ExportDataSimple(HorizontalImportExportGroups, ThreadingManager):
         self.group_qr._layout.insertWidget(0, self.qr_label)
 
         self.button_enlarge_qr = QPushButton()
-        self.button_enlarge_qr.setIcon(SvgTools.get_QIcon("bi--zoom-in.svg"))
+        self.button_enlarge_qr.setIcon(svg_tools.get_QIcon("bi--zoom-in.svg"))
         # self.button_enlarge_qr.setIconSize(QSize(30, 30))  # 24x24 pixels
         self.button_enlarge_qr.clicked.connect(self.qr_label.enlarge_image)
         self.group_qr_buttons_layout.addWidget(self.button_enlarge_qr)
 
         self.button_save_qr = QPushButton()
-        self.button_save_qr.setIcon(
-            SvgTools.get_QIcon("bi--download.svg")
-        )
+        self.button_save_qr.setIcon(svg_tools.get_QIcon("bi--download.svg"))
         self.button_save_qr.clicked.connect(self.export_qrcode)
         self.group_qr_buttons_layout.addWidget(self.button_save_qr)
 
@@ -685,19 +678,19 @@ class ExportDataSimple(HorizontalImportExportGroups, ThreadingManager):
         self.data = data
         self.serialized = data.data_as_string()
         if data.data_type == DataType.PSBT:
-            if not isinstance(data.data, bdk.PartiallySignedTransaction):
-                logger.error(f"{data.data} is not of type bdk.PartiallySignedTransaction")
+            if not isinstance(data.data, bdk.Psbt):
+                logger.error(f"data is not of type bdk.Psbt")
                 return
-            self.txid = data.data.txid()
+            self.txid = data.data.extract_tx().compute_txid()
             self.json_data = json.dumps(json.loads(data.data.json_serialize()), indent=4)
         if data.data_type == DataType.Tx:
             if not isinstance(data.data, bdk.Transaction):
-                logger.error(f"{data.data} is not of type bdk.Transaction")
+                logger.error(f"data is not of type bdk.Transaction")
                 return
-            self.txid = data.data.txid()
+            self.txid = data.data.compute_txid()
             self.json_data = json.dumps(transaction_to_dict(data.data, network=self.network), indent=4)
 
-        if data.data_type in [DataType.Descriptor, DataType.MultiPathDescriptor]:
+        if data.data_type in [DataType.Descriptor, DataType.Descriptor]:
             self.qr_types = DescriptorQrExportTypes.as_list()
         elif data.data_type in [DataType.SignMessageRequest]:
             self.qr_types = SignMessageRequestQrExportTypes.as_list()
@@ -747,27 +740,27 @@ class ExportDataSimple(HorizontalImportExportGroups, ThreadingManager):
 
         ## descriptors
         if qr_export_type.name == DescriptorQrExportTypes.specterdiy.name:
-            assert data.data_type in [DataType.MultiPathDescriptor, DataType.Descriptor], "Wrong datatype"
+            assert data.data_type in [DataType.Descriptor], "Wrong datatype"
             return [
                 DescriptorExportTools._get_specter_diy_str(
                     wallet_id=self.wallet_id, descriptor_str=data.data_as_string()
                 )
             ]
         elif qr_export_type.name == DescriptorQrExportTypes.passport.name:
-            assert data.data_type in [DataType.MultiPathDescriptor, DataType.Descriptor], "Wrong datatype"
+            assert data.data_type in [DataType.Descriptor], "Wrong datatype"
             passport_str = DescriptorExportTools._get_passport_str(
                 wallet_id=self.wallet_id,
                 descriptor_str=data.data_as_string(),
             )
             return UnifiedEncoder.string_to_ur_byte_fragments(string_data=passport_str)
         elif qr_export_type.name == DescriptorQrExportTypes.keystone.name:
-            assert data.data_type in [DataType.MultiPathDescriptor, DataType.Descriptor], "Wrong datatype"
+            assert data.data_type in [DataType.Descriptor], "Wrong datatype"
             passport_str = DescriptorExportTools._get_keystone_str(
                 wallet_id=self.wallet_id, descriptor_str=data.data_as_string(), network=self.network
             )
             return UnifiedEncoder.string_to_ur_byte_fragments(string_data=passport_str)
         elif qr_export_type.name == DescriptorQrExportTypes.coldcard_legacy.name:
-            assert data.data_type in [DataType.MultiPathDescriptor, DataType.Descriptor], "Wrong datatype"
+            assert data.data_type in [DataType.Descriptor], "Wrong datatype"
             coldcard_str = DescriptorExportTools._get_coldcard_str_legacy(
                 wallet_id=self.wallet_id, descriptor_str=data.data_as_string(), network=self.network
             )
@@ -806,13 +799,15 @@ class ExportDataSimple(HorizontalImportExportGroups, ThreadingManager):
         self.append_thread(TaskThread().add_and_start(do, on_success, on_done, on_error))
 
     def _export_wallet(self, s: str, hardware_signer: HardwareSigner) -> Optional[str]:
-        if not isinstance(self.data.data, MultipathDescriptor):
+        if not isinstance(self.data.data, bdk.Descriptor):
             return None
 
         filename = save_file_dialog(
             name_filters=["Text (*.txt)", "All Files (*.*)"],
             default_suffix="txt",
-            default_filename=filename_clean(self.wallet_id, file_extension=".txt")[:24],
+            default_filename=shorten_filename(
+                filename_clean(self.wallet_id, file_extension=".txt"), max_total_length=20
+            ),
             window_title=f"Save {hardware_signer.display_name} file",
         )
         if not filename:
@@ -863,7 +858,7 @@ class QrToolButton(QToolButton):
         self.setMenu(self._menu)
         self.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
 
-        self.setIcon(SvgTools.get_QIcon("bi--qr-code.svg"))
+        self.setIcon(svg_tools.get_QIcon("bi--qr-code.svg"))
 
         self._fill_menu()
         self.updateUi()
@@ -871,7 +866,6 @@ class QrToolButton(QToolButton):
     def _show_export_widget(self, export_type: QrExportType):
         if not self.export_qr_widget:
             return
-
         self.export_qr_widget.combo_qr_type.setCurrentQrType(value=export_type)
         self.export_qr_widget.show()
 

@@ -25,22 +25,24 @@
 # ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+import os
+import subprocess
+import sys
 
+script_path = "tools-my/pre-commit-checks.sh"
 
-"""
-This file was created once to provide  the pubkeys of a TxIn
+if os.path.isfile(script_path) and os.access(script_path, os.X_OK):
+    result = subprocess.run(
+        ["bash", script_path],
+        capture_output=True,
+        text=True,
+    )
 
-- since it wasnt needed anywhere the functions were removed again
-"""
-import logging
-
-logger = logging.getLogger(__name__)
-
-
-import bdkpython as bdk
-
-from bitcoin_safe.util import hex_to_script
-
-
-def script_pubkey_to_address(script_pubkey: str, network: bdk.Network) -> str:
-    return bdk.Address.from_script(hex_to_script(script_pubkey), network).as_string()
+    if result.returncode != 0:
+        print("❌ Hook failed!")
+        print(result.stdout)
+        print(result.stderr)
+        sys.exit(result.returncode)
+else:
+    # Script not found or not executable — silently ignore
+    pass

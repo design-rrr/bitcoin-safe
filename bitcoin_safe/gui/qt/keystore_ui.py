@@ -34,7 +34,7 @@ from typing import Callable, Iterable, List, Optional, Tuple, Union
 import bdkpython as bdk
 from bitcoin_qr_tools.data import ConverterXpub, Data, DataType, SignerInfo
 from bitcoin_usb.address_types import AddressType, SimplePubKeyProvider
-from bitcoin_usb.software_signer import SoftwareSigner
+from bitcoin_usb.seed_tools import derive
 from bitcoin_usb.usb_gui import USBGui
 from PyQt6.QtCore import QObject, Qt, pyqtSignal
 from PyQt6.QtGui import QCloseEvent, QIcon
@@ -68,9 +68,9 @@ from bitcoin_safe.gui.qt.custom_edits import (
 )
 from bitcoin_safe.gui.qt.data_tab_widget import DataTabWidget
 from bitcoin_safe.gui.qt.dialogs import question_dialog
-from bitcoin_safe.gui.qt.icons import SvgTools
 from bitcoin_safe.gui.qt.spinning_button import SpinningButton
 from bitcoin_safe.gui.qt.tutorial_screenshots import ScreenshotsExportXpub
+from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
@@ -86,7 +86,6 @@ from .util import (
     add_to_buttonbox,
     create_tool_button,
     generate_help_button,
-    icon_path,
 )
 
 logger = logging.getLogger(__name__)
@@ -94,9 +93,9 @@ logger = logging.getLogger(__name__)
 
 def icon_for_label(label: str) -> QIcon:
     return (
-        SvgTools.get_QIcon("bi--key-gray.svg")
+        svg_tools.get_QIcon("bi--key-gray.svg")
         if label.startswith(translate("d", "Recovery"))
-        else SvgTools.get_QIcon("bi--key.svg")
+        else svg_tools.get_QIcon("bi--key.svg")
     )
 
 
@@ -105,7 +104,7 @@ class BaseHardwareSignerInteractionWidget(QWidget):
 
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
-        self.setWindowIcon(SvgTools.get_QIcon("logo.svg"))
+        self.setWindowIcon(svg_tools.get_QIcon("logo.svg"))
         self._layout = QVBoxLayout(self)
         self._layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
 
@@ -166,7 +165,7 @@ class HardwareSignerInteractionWidget(BaseHardwareSignerInteractionWidget):
     def add_copy_button(self) -> Tuple[QToolButton, Menu]:
         button, menu = create_tool_button(parent=self)
 
-        button.setIcon(SvgTools.get_QIcon("bi--copy.svg"))
+        button.setIcon(svg_tools.get_QIcon("bi--copy.svg"))
 
         # Add the button to the QDialogButtonBox
         self.buttonBox.addButton(button, QDialogButtonBox.ButtonRole.ActionRole)
@@ -176,7 +175,7 @@ class HardwareSignerInteractionWidget(BaseHardwareSignerInteractionWidget):
 
     def add_qr_import_buttonn(self) -> QPushButton:
         self.button_import_qr = button_import_qr = add_to_buttonbox(
-            self.buttonBox, (""), KeyStoreImporterTypes.qr.icon_filename
+            self.buttonBox, text="", icon_name=KeyStoreImporterTypes.qr.icon_filename
         )
         return button_import_qr
 
@@ -184,7 +183,7 @@ class HardwareSignerInteractionWidget(BaseHardwareSignerInteractionWidget):
         button_hwi = SpinningButton(
             text="",
             enable_signal=signal_end_hwi_blocker,
-            enabled_icon=SvgTools.get_QIcon(KeyStoreImporterTypes.hwi.icon_filename),
+            enabled_icon=svg_tools.get_QIcon(KeyStoreImporterTypes.hwi.icon_filename),
             timeout=60,
             parent=self,
         )
@@ -332,9 +331,9 @@ class KeyStoreUI(QObject):
                 self.edit_key_origin_input,
                 self.edit_xpub.input_field,
             ],
-            icon_OK=SvgTools.get_pixmap("checkmark.svg", size=(50, 50)),
-            icon_warning=SvgTools.get_pixmap("warning.svg", size=(50, 50)),
-            icon_error=SvgTools.get_pixmap("error.svg", size=(50, 50)),
+            icon_OK=svg_tools.get_pixmap("checkmark.svg", size=(50, 50)),
+            icon_warning=svg_tools.get_pixmap("warning.svg", size=(50, 50)),
+            icon_error=svg_tools.get_pixmap("error.svg", size=(50, 50)),
             hide_if_all_empty=True,
         )
         self.analyzer_indicator.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Preferred)
@@ -362,8 +361,11 @@ class KeyStoreUI(QObject):
         self.signals_min.language_switch.connect(self.updateUi)
 
     def _process_input(self, s: str) -> None:
-        res = Data.from_str(s, network=self.network)
-        self._on_handle_input(res)
+        try:
+            res = Data.from_str(s, network=self.network)
+            self._on_handle_input(res)
+        except Exception as e:
+            Message(str(e), type=MessageType.Error)
 
     def _import_dialog(self):
         ImportDialog(
@@ -499,7 +501,6 @@ class KeyStoreUI(QObject):
             self.edit_fingerprint.setText(data.data)
         elif data.data_type in [
             DataType.Descriptor,
-            DataType.MultiPathDescriptor,
             DataType.MultisigWalletExport,
         ]:
             Message(self.tr("Please paste descriptors into the descriptor field in the top right."))
@@ -597,13 +598,11 @@ class KeyStoreUI(QObject):
         seed_str = self.edit_seed.text().strip()
 
         if seed_str:
-            mnemonic = bdk.Mnemonic.from_string(seed_str).as_string()
-            software_signer = SoftwareSigner(mnemonic, self.network)
+            mnemonic = str(bdk.Mnemonic.from_string(seed_str))
             key_origin = self.edit_key_origin.text().strip()
             # if key_origin is empty  fill it with the default
             key_origin = key_origin if key_origin else self.get_address_type().key_origin(self.network)
-            xpub = software_signer.derive(key_origin)
-            fingerprint = software_signer.get_fingerprint()
+            xpub, fingerprint = derive(mnemonic=mnemonic, key_origin=key_origin, network=self.network)
         else:
             mnemonic = None
             fingerprint = self.edit_fingerprint.text()
@@ -656,7 +655,7 @@ class SignedUI(QWidget):
     def __init__(
         self,
         text: str,
-        psbt: bdk.PartiallySignedTransaction,
+        psbt: bdk.Psbt,
         network: bdk.Network,
     ) -> None:
         super().__init__()
@@ -674,13 +673,13 @@ class SignedUI(QWidget):
 
 
 class SignerUI(QWidget):
-    signal_signature_added: TypedPyQtSignal[bdk.PartiallySignedTransaction] = pyqtSignal(bdk.PartiallySignedTransaction)  # type: ignore
+    signal_signature_added: TypedPyQtSignal[bdk.Psbt] = pyqtSignal(bdk.Psbt)  # type: ignore
     signal_tx_received: TypedPyQtSignal[bdk.Transaction] = pyqtSignal(bdk.Transaction)  # type: ignore
 
     def __init__(
         self,
         signature_importers: Iterable[AbstractSignatureImporter],
-        psbt: bdk.PartiallySignedTransaction,
+        psbt: bdk.Psbt,
         network: bdk.Network,
         button_prefix: str = "",
     ) -> None:
@@ -699,15 +698,14 @@ class SignerUI(QWidget):
                 button = SpinningButton(
                     text=button_prefix + signer.label,
                     enable_signal=signal_end_hwi_blocker,
-                    enabled_icon=SvgTools.get_QIcon(KeyStoreImporterTypes.hwi.icon_filename),
+                    enabled_icon=svg_tools.get_QIcon(KeyStoreImporterTypes.hwi.icon_filename),
                     timeout=60,
                     parent=self,
                 )
             else:
                 button = QPushButton(button_prefix + signer.label)
-                button.setIcon(QIcon(icon_path(signer.keystore_type.icon_filename)))
+                button.setIcon(svg_tools.get_QIcon(signer.keystore_type.icon_filename))
             self.buttons.append(button)
-            button.setMinimumHeight(30)
             callback = partial(signer.sign, self.psbt)
             button.clicked.connect(callback)
             self.layout_keystore_buttons.addWidget(button)
@@ -718,13 +716,13 @@ class SignerUI(QWidget):
 
 
 class SignerUIHorizontal(QWidget):
-    signal_signature_added: TypedPyQtSignal[bdk.PartiallySignedTransaction] = pyqtSignal(bdk.PartiallySignedTransaction)  # type: ignore
+    signal_signature_added: TypedPyQtSignal[bdk.Psbt] = pyqtSignal(bdk.Psbt)  # type: ignore
     signal_tx_received: TypedPyQtSignal[bdk.Transaction] = pyqtSignal(bdk.Transaction)  # type: ignore
 
     def __init__(
         self,
         signature_importers: List[AbstractSignatureImporter],
-        psbt: bdk.PartiallySignedTransaction,
+        psbt: bdk.Psbt,
         network: bdk.Network,
     ) -> None:
         super().__init__()
@@ -737,8 +735,7 @@ class SignerUIHorizontal(QWidget):
         for signer in self.signature_importers:
 
             button = QPushButton(signer.label)
-            button.setMinimumHeight(30)
-            button.setIcon(QIcon(icon_path(signer.keystore_type.icon_filename)))
+            button.setIcon(svg_tools.get_QIcon(signer.keystore_type.icon_filename))
             action = partial(signer.sign, self.psbt)
             button.clicked.connect(action)
             self.layout_keystore_buttons.addWidget(button)

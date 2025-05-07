@@ -31,11 +31,14 @@ import logging
 from typing import Optional, Tuple
 
 from bitcoin_qr_tools.data import ConverterMultisigWalletExport, Data, DataType
-from bitcoin_qr_tools.gui.bitcoin_video_widget import BitcoinVideoWidget
-from bitcoin_qr_tools.multipath_descriptor import (
-    MultipathDescriptor as BitcoinQRMultipathDescriptor,
+from bitcoin_qr_tools.gui.bitcoin_video_widget import (
+    BitcoinVideoWidget,
+    DecodingException,
 )
-from bitcoin_qr_tools.utils import DecodingException
+from bitcoin_qr_tools.multipath_descriptor import (
+    convert_to_multipath_descriptor,
+    is_valid_descriptor,
+)
 from bitcoin_usb.address_types import get_address_types
 from PyQt6.QtCore import QMargins, Qt, pyqtSignal
 from PyQt6.QtWidgets import (
@@ -56,14 +59,17 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe.gui.qt.descriptor_edit import DescriptorEdit
 from bitcoin_safe.gui.qt.dialogs import question_dialog
-from bitcoin_safe.gui.qt.icons import SvgTools
 from bitcoin_safe.gui.qt.keystore_uis import KeyStoreUIs
-from bitcoin_safe.gui.qt.util import Message, MessageType
+from bitcoin_safe.gui.qt.util import Message, MessageType, svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.signal_tracker import SignalTools, SignalTracker
 from bitcoin_safe.threading_manager import ThreadingManager
 
-from ...descriptors import AddressType, MultipathDescriptor, get_default_address_type
+from ...descriptors import (
+    AddressType,
+    from_multisig_wallet_export,
+    get_default_address_type,
+)
 from ...signals import SignalsMin, TypedPyQtSignalNo
 from ...wallet import ProtoWallet, Wallet
 from .block_change_signals import BlockChangesSignals
@@ -267,7 +273,7 @@ class DescriptorUI(QWidget):
         try:
             multipath_descriptor = self.protowallet.to_multipath_descriptor()
             if multipath_descriptor:
-                self.edit_descriptor.setText(multipath_descriptor.as_string_private())
+                self.edit_descriptor.setText(multipath_descriptor.to_string_with_secret())
             else:
                 self.edit_descriptor.setText("")
         except Exception as e:
@@ -276,8 +282,8 @@ class DescriptorUI(QWidget):
         self.edit_descriptor.format_and_apply_validator()
 
     def disable_fields(self) -> None:
-        self.comboBox_address_type.setHidden(self.no_edit_mode)
-        self.label_address_type.setHidden(self.no_edit_mode)
+        self.comboBox_address_type.setEnabled(not self.no_edit_mode)
+        self.label_address_type.setHidden(False)
         self.spin_signers.setHidden(self.no_edit_mode)
         self.spin_req.setHidden(self.no_edit_mode)
         self.label_signers.setHidden(self.no_edit_mode)
@@ -421,10 +427,10 @@ class DescriptorUI(QWidget):
         # self.import_button.setIcon((self.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_DialogSaveButton))
         self.horizontalLayout_4.addWidget(self.import_button)
         self.action_import_qr = self.import_button_menu.add_action(
-            text="", slot=self.on_action_import_qr, icon=SvgTools.get_QIcon("camera.svg")
+            text="", slot=self.on_action_import_qr, icon=svg_tools.get_QIcon("camera.svg")
         )
         self.action_import_clipbard = self.import_button_menu.add_action(
-            text="", slot=self.on_action_import_from_clipboard, icon=SvgTools.get_QIcon("clip.svg")
+            text="", slot=self.on_action_import_from_clipboard, icon=svg_tools.get_QIcon("clip.svg")
         )
 
         box_wallet_type_and_descriptor_layout.addWidget(self.groupBox_wallet_descriptor)
@@ -442,7 +448,7 @@ class DescriptorUI(QWidget):
             return
         corrected_descriptor = self._data_to_descriptor(data)
         if not corrected_descriptor:
-            logger.debug(f"{data.data_as_string()} could not be decoded into a descriptor")
+            logger.debug(f"data could not be decoded into a descriptor")
             return
 
         if corrected_descriptor != user_input:
@@ -455,25 +461,26 @@ class DescriptorUI(QWidget):
             ):
                 self.edit_descriptor.input_field.clear()
                 self.edit_descriptor.reset_formatting()
-                logger.debug(f"autocorrection {user_input} --> {corrected_descriptor} accepted")
                 return
             else:
                 self.edit_descriptor.input_field.setText(corrected_descriptor)
                 self.edit_descriptor.reset_formatting()
-                logger.debug(f"autocorrection {user_input} --> {corrected_descriptor} denied")
+                logger.debug(
+                    f"autocorrection {str(user_input)[:10]=} --> {str(corrected_descriptor)[:10]=} denied"
+                )
                 return
 
-        if not BitcoinQRMultipathDescriptor.is_valid(user_input, network=self.protowallet.network):
+        if not is_valid_descriptor(user_input, network=self.protowallet.network):
             logger.debug("Descriptor invalid")
             return
 
         old_descriptor = self.protowallet.to_multipath_descriptor()
 
-        if old_descriptor and (user_input == old_descriptor.as_string()):
+        if old_descriptor and (user_input == str(old_descriptor)):
             logger.info(self.tr("Descriptor unchanged"))
             return
         else:
-            logger.info(f"Descriptor changed: {old_descriptor}  -->  {user_input}")
+            logger.info(f"Descriptor changed: {str(old_descriptor)[:10]=}  -->  {str(user_input)[:10]=}")
             if not question_dialog(
                 text=self.tr(
                     f"Fill signer information based on the new descriptor?",
@@ -485,7 +492,7 @@ class DescriptorUI(QWidget):
 
         try:
             self.set_protowallet_from_descriptor_str(user_input)
-            logger.info(f"Successfully set protwallet from descriptor {user_input}")
+            logger.info(f"Successfully set protwallet from descriptor {str(user_input)[:10]=}")
 
             self.set_wallet_ui_from_protowallet()
             self.keystore_uis.set_keystore_ui_from_protowallet()
@@ -512,17 +519,19 @@ class DescriptorUI(QWidget):
 
     def _data_to_descriptor(self, data: Data) -> str | None:
         if data.data_type in [DataType.Descriptor]:
-            return MultipathDescriptor.from_descriptor_str(
-                descriptor_str=data.data_as_string(), network=self.protowallet.network
-            ).as_string_private()
+            return str(
+                convert_to_multipath_descriptor(
+                    descriptor_str=data.data_as_string(), network=self.protowallet.network
+                )
+            )
         if data.data_type in [DataType.MultiPathDescriptor]:
             return data.data_as_string()
         if data.data_type in [DataType.MultisigWalletExport] and isinstance(
             data.data, ConverterMultisigWalletExport
         ):
-            return MultipathDescriptor.from_multisig_wallet_export(
+            return from_multisig_wallet_export(
                 data.data, network=self.protowallet.network
-            ).as_string_private()
+            ).to_string_with_secret()
 
         return None
 

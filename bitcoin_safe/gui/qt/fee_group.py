@@ -31,6 +31,7 @@ import logging
 from typing import List, Optional
 
 import bdkpython as bdk
+from bitcoin_tools.gui.qt.satoshis import Satoshis, format_fee_rate, unit_fee_str
 from PyQt6.QtCore import QObject, Qt, pyqtSignal
 from PyQt6.QtGui import QColor
 from PyQt6.QtWidgets import (
@@ -43,17 +44,16 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.fx import FX
-from bitcoin_safe.gui.qt.icons import SvgTools
 from bitcoin_safe.gui.qt.notification_bar import NotificationBar
+from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.html_utils import html_f, link
-from bitcoin_safe.network_config import FEE_RATIO_HIGH_WARNING
 from bitcoin_safe.psbt_util import FeeInfo
+from bitcoin_safe.pythonbdk_types import TransactionDetails
 from bitcoin_safe.typestubs import TypedPyQtSignal
 from bitcoin_safe.wallet import TxConfirmationStatus
 
-from ...config import NO_FEE_WARNING_BELOW, UserConfig
+from ...config import FEE_RATIO_HIGH_WARNING, NO_FEE_WARNING_BELOW, UserConfig
 from ...mempool import MempoolData, TxPrio
-from ...util import Satoshis, format_fee_rate, unit_fee_str
 from .block_buttons import (
     BaseBlock,
     ConfirmedBlock,
@@ -73,7 +73,7 @@ class FeeRateWarningBar(NotificationBar):
             has_close_button=False,
         )
         self.set_background_color(adjust_bg_color_for_darkmode(QColor("#FFDF00")))
-        self.set_icon(SvgTools.get_QIcon("warning.svg"))
+        self.set_icon(svg_tools.get_QIcon("warning.svg"))
         self.network = network
 
         self.optionalButton.setVisible(False)
@@ -117,7 +117,7 @@ class FeeWarningBar(NotificationBar):
         )
         self.network = network
         self.set_background_color(adjust_bg_color_for_darkmode(QColor("#FFDF00")))
-        self.set_icon(SvgTools.get_QIcon("warning.svg"))
+        self.set_icon(svg_tools.get_QIcon("warning.svg"))
 
         self.optionalButton.setVisible(False)
 
@@ -131,7 +131,7 @@ class FeeWarningBar(NotificationBar):
         fee_info: FeeInfo | None,
         total_non_change_output_amount: int,
         network: bdk.Network,
-        confirmation_time: bdk.BlockTime | None,
+        chain_position: bdk.ChainPosition | None,
         force_show_fee_warning_on_0_amont=False,
     ) -> None:
         if not fee_info:
@@ -155,7 +155,7 @@ class FeeWarningBar(NotificationBar):
             return
 
         too_high = fee_info.fee_amount / total_non_change_output_amount > FEE_RATIO_HIGH_WARNING
-        self.setVisible(too_high and not confirmation_time)
+        self.setVisible(too_high and (not chain_position or not chain_position.is_confirmed()))
         if too_high:
             s = (
                 self.tr(
@@ -192,10 +192,11 @@ class FeeGroup(QObject):
         fee_info: FeeInfo | None = None,
         allow_edit=True,
         is_viewer=False,
-        confirmation_time: bdk.BlockTime | None = None,
+        chain_position: bdk.ChainPosition | None = None,
         url: str | None = None,
         fee_rate: float | None = None,
         decimal_precision: int = 1,
+        enable_approximate_fee_label: bool = True,
     ) -> None:
         super().__init__()
         self.is_viewer = is_viewer
@@ -203,6 +204,7 @@ class FeeGroup(QObject):
         self.allow_edit = allow_edit
         self.config = config
         self.fee_info = fee_info
+        self.enable_approximate_fee_label = enable_approximate_fee_label
 
         fee_rate = fee_rate if fee_rate else (mempool_data.get_prio_fee_rates()[TxPrio.low])
 
@@ -220,7 +222,7 @@ class FeeGroup(QObject):
         self._confirmed_block = ConfirmedBlock(
             mempool_data=mempool_data,
             url=url,
-            confirmation_time=confirmation_time,
+            chain_position=chain_position,
             fee_rate=fee_rate,
         )
         self._mempool_projected_block = MempoolProjectedBlock(
@@ -252,6 +254,11 @@ class FeeGroup(QObject):
         self.rbf_fee_label.setWordWrap(True)
         self.rbf_fee_label.setHidden(True)
         self.groupBox_Fee_layout.addWidget(self.rbf_fee_label, alignment=Qt.AlignmentFlag.AlignHCenter)
+
+        self.cpfp_fee_label = QLabel()
+        self.cpfp_fee_label.setWordWrap(True)
+        self.cpfp_fee_label.setHidden(True)
+        self.groupBox_Fee_layout.addWidget(self.cpfp_fee_label, alignment=Qt.AlignmentFlag.AlignHCenter)
 
         self.widget_around_spin_box = QWidget()
         self.widget_around_spin_box_layout = QVBoxLayout(self.widget_around_spin_box)
@@ -310,14 +317,14 @@ class FeeGroup(QObject):
         self.update_spin_fee_range(fee_rate)
         self.spin_fee_rate.setValue(fee_rate)
 
-    def set_confirmation_time(self, confirmation_time: bdk.BlockTime | None = None):
-        self._confirmed_block.confirmation_time = confirmation_time
+    def set_confirmation_time(self, chain_position: bdk.ChainPosition | None = None):
+        self._confirmed_block.chain_position = chain_position
         self.set_mempool_visibility()
 
     def set_mempool_visibility(self):
         self.visible_mempool_buttons: BaseBlock
 
-        if self._confirmed_block.confirmation_time:
+        if self._confirmed_block.chain_position and self._confirmed_block.chain_position.is_confirmed():
             self.visible_mempool_buttons = self._confirmed_block
         elif self.is_viewer:
             self.visible_mempool_buttons = self._mempool_projected_block
@@ -346,7 +353,9 @@ class FeeGroup(QObject):
                 )
             )
 
-        self.approximate_fee_label.setVisible(self.fee_info.is_estimated if self.fee_info else False)
+        self.approximate_fee_label.setVisible(
+            self.enable_approximate_fee_label and (self.fee_info.is_estimated if self.fee_info else False)
+        )
         if self.fee_info:
             self.approximate_fee_label.setToolTip(
                 f'<html><body>The {"approximate " if   self.fee_info.is_estimated else "" }fee is {Satoshis( self.fee_info.fee_amount  , self.config.network).str_with_unit()}</body></html>'
@@ -387,6 +396,51 @@ class FeeGroup(QObject):
             self.rbf_fee_label.setTextFormat(Qt.TextFormat.RichText)
             self.rbf_fee_label.setOpenExternalLinks(True)  # Enable opening links
 
+    def combined_fee_info(self, txs: List[TransactionDetails]) -> FeeInfo:
+        combined_info = FeeInfo(fee_amount=0, vsize=0, is_estimated=False)
+        if not txs:
+            return combined_info
+        for tx in txs:
+            info = FeeInfo.from_txdetails(tx)
+            if info:
+                combined_info += info
+        return combined_info
+
+    def set_cpfp_label(
+        self, unconfirmed_ancestors: List[TransactionDetails] | None, this_fee_info: FeeInfo
+    ) -> None:
+
+        self.cpfp_fee_label.setVisible(bool(unconfirmed_ancestors))
+        if not unconfirmed_ancestors:
+            return
+
+        unconfirmed_parents_fee_info = self.combined_fee_info(txs=unconfirmed_ancestors)
+        if not unconfirmed_parents_fee_info:
+            self.cpfp_fee_label.setVisible(False)
+            return
+
+        combined_fee_info = this_fee_info + unconfirmed_parents_fee_info
+
+        self.cpfp_fee_label.setText(
+            (
+                self.tr("{rate} combined fee rate").format(
+                    rate=format_fee_rate(combined_fee_info.fee_rate(), self.config.network),
+                )
+            )
+        )
+        self.cpfp_fee_label.setToolTip(
+            self.tr(
+                "This transaction has {number} unconfirmed parents with a combined fee rate of {parents_fee_rate}"
+            ).format(
+                parents_fee_rate=format_fee_rate(
+                    unconfirmed_parents_fee_info.fee_rate(), network=self.config.network
+                ),
+                number=len(unconfirmed_ancestors or []),
+            )
+        )
+        self.cpfp_fee_label.setTextFormat(Qt.TextFormat.RichText)
+        self.cpfp_fee_label.setOpenExternalLinks(True)  # Enable opening links
+
     def set_fee_info(self, fee_info: FeeInfo | None):
         self.fee_info = fee_info
 
@@ -407,21 +461,21 @@ class FeeGroup(QObject):
     def set_fee_infos(
         self,
         fee_info: FeeInfo,
+        chain_position: bdk.ChainPosition | None,
         url: str | None = None,
-        confirmation_time: bdk.BlockTime | None = None,
         chain_height: int | None = None,
     ) -> None:
         # this has to be done first, because it will trigger signals
         # that will also set self.fee_amount from the spin edit
         fee_rate = fee_info.fee_rate()
         self.set_spin_fee_value(fee_rate)
-        self.set_confirmation_time(confirmation_time)
+        self.set_confirmation_time(chain_position)
         self.spin_fee_rate.setHidden(fee_rate is None)
         self.spin_label.setHidden(fee_rate is None)
 
         self.visible_mempool_buttons.refresh(
             fee_rate=fee_rate,
-            confirmation_time=confirmation_time,
+            chain_position=chain_position,
             chain_height=chain_height,
         )
 

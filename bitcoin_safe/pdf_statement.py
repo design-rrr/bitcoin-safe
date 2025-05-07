@@ -35,6 +35,7 @@ from typing import Any, List, Tuple
 import bdkpython as bdk
 import numpy as np
 from bitcoin_qr_tools.qr_generator import QRGenerator
+from bitcoin_tools.gui.qt.satoshis import Satoshis, unit_str
 from bitcoin_usb.address_types import DescriptorInfo
 from PyQt6.QtCore import QDateTime, QLocale
 from reportlab.lib import colors
@@ -52,7 +53,6 @@ from reportlab.platypus import (
 
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.pdfrecovery import pilimage_to_reportlab, register_font, white_space
-from bitcoin_safe.util import Satoshis, unit_str
 from bitcoin_safe.util_os import xdg_open_file
 
 from .wallet import Wallet
@@ -357,7 +357,7 @@ class PdfStatement:
 
 
 def make_and_open_pdf_statement(wallet: Wallet, lang_code: str, label_sync_nsec: str | None = None) -> None:
-    info = DescriptorInfo.from_str(wallet.multipath_descriptor.as_string())
+    info = DescriptorInfo.from_str(str(wallet.multipath_descriptor))
 
     addresses_and_balances: List[Tuple[str, str, int]] = []  # category, address, amount
     total_amount = 0
@@ -395,7 +395,7 @@ def make_and_open_pdf_statement(wallet: Wallet, lang_code: str, label_sync_nsec:
     ).format(id=wallet.id)
     pdf_statement.create_pdf(
         title=title,
-        wallet_descriptor_string=wallet.multipath_descriptor.as_string(),
+        wallet_descriptor_string=str(wallet.multipath_descriptor),
         address_info=[
             (
                 category,

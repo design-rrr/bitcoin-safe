@@ -27,23 +27,18 @@
 # SOFTWARE.
 
 
-import logging
-from abc import abstractmethod
-from pathlib import Path
-from typing import Any, Callable, Dict, Optional, Union
-
-logger = logging.getLogger(__name__)
-
-
 import enum
 import json
+import logging
 import os
 
 # from https://stackoverflow.com/questions/2490334/simple-way-to-encode-a-string-according-to-a-password
 import secrets
+from abc import abstractmethod
 from base64 import urlsafe_b64decode as b64d
 from base64 import urlsafe_b64encode as b64e
-from typing import Callable, Dict, Iterable, Type
+from pathlib import Path
+from typing import Any, Callable, Dict, Iterable, Optional, Type, Union
 
 import bdkpython as bdk
 from cryptography.fernet import Fernet
@@ -51,6 +46,8 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from packaging import version
+
+logger = logging.getLogger(__name__)
 
 
 def varnames(method: Callable) -> Iterable[str]:
@@ -134,11 +131,11 @@ class Storage:
 class ClassSerializer:
     @classmethod
     def general_deserializer(cls, known_classes, class_kwargs) -> Callable:
-        def deserializer(dct) -> Dict:
+        def deserializer(dct: Dict) -> Dict:
             cls_string = dct.get("__class__")  # e.g. KeyStore
             if cls_string:
                 if cls_string in known_classes:
-                    obj_cls = known_classes[cls_string]
+                    obj_cls = known_classes.get(cls_string)
                     if hasattr(obj_cls, "from_dump"):  # is there KeyStore.from_dump ?
                         if class_kwargs.get(cls_string):  #  apply additional arguments to the class from_dump
                             dct.update(class_kwargs.get(cls_string))
@@ -148,7 +145,11 @@ class ClassSerializer:
                     else:
                         raise Exception(f"{obj_cls} doesnt have a from_dump classmethod.")
                 else:
-                    raise Exception(
+                    dct.clear()
+                    logger.error(
+                        f"""{cls_string} not in known_classes {known_classes}. The {cls_string} data will be dropped."""
+                    )
+                    logger.debug(
                         f"""{cls_string} not in known_classes {known_classes}."""
                         """Did you add the following to the child class?
                                             VERSION = "0.0.1"
@@ -157,8 +158,7 @@ class ClassSerializer:
                                             }"""
                         f"""And did you add
                                        "cls_string":{cls_string}
-                                       to the parent BaseSaveableClass ?
-    """
+                                       to the parent BaseSaveableClass ?"""
                     )
             elif dct.get("__enum__"):
                 obj_cls = known_classes.get(dct["name"])
@@ -197,14 +197,22 @@ class BaseSaveableClass:
 
     @classmethod
     @abstractmethod
-    def from_dump_migration(cls, dct):
+    def from_dump_migration(cls, dct: Dict[str, Any]):
         "this class should be overwritten in child classes"
         return dct
 
     @classmethod
-    def _from_dump(cls, dct: Dict, class_kwargs: Dict | None = None):
+    def from_dump_downgrade_migration(cls, dct: Dict[str, Any]):
+        "this class can be overwritten in child classes"
+        return dct
+
+    @classmethod
+    def _from_dump(cls, dct: Dict[str, Any], class_kwargs: Dict | None = None):
         assert dct.get("__class__") == cls.__name__
         del dct["__class__"]
+
+        if version.parse(cls.VERSION) < version.parse(str(dct.get("VERSION", 0))):
+            dct = cls.from_dump_downgrade_migration(dct)
 
         if version.parse(cls.VERSION) > version.parse(str(dct.get("VERSION", 0))):
             dct = cls.from_dump_migration(dct)
@@ -214,7 +222,7 @@ class BaseSaveableClass:
 
     @classmethod
     @abstractmethod
-    def from_dump(cls, dct: Dict, class_kwargs: Dict | None = None):
+    def from_dump(cls, dct: Dict[str, Any], class_kwargs: Dict | None = None):
         raise NotImplementedError()
 
     def clone(self, class_kwargs: Dict | None = None):

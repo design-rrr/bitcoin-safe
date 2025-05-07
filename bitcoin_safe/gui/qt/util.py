@@ -30,20 +30,20 @@
 import enum
 import hashlib
 import logging
-import os
 import platform
 import sys
 import traceback
 import webbrowser
 from functools import partial
-from pathlib import Path
-from typing import Any, Callable, Iterable, List, Optional, Tuple, Union
+from typing import Any, Callable, Iterable, List, Literal, Optional, Tuple, Union
 from urllib.parse import urlparse
 
 import bdkpython as bdk
-import numpy as np
 import PIL.Image as PilImage
 from bitcoin_qr_tools.data import ConverterAddress
+from bitcoin_tools.caching import register_cache
+from bitcoin_tools.gui.qt.icons import SvgTools
+from bitcoin_tools.gui.qt.util import adjust_brightness, is_dark_mode
 from PyQt6.QtCore import QByteArray, QCoreApplication, QSize, Qt, QTimer, QUrl
 from PyQt6.QtGui import (
     QColor,
@@ -80,16 +80,10 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe.execute_config import ENABLE_TIMERS
 from bitcoin_safe.gui.qt.custom_edits import AnalyzerState
-from bitcoin_safe.gui.qt.icons import SvgTools
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
-from bitcoin_safe.util import (
-    adjust_brightness,
-    is_dark_mode,
-    register_cache,
-    resource_path,
-)
+from bitcoin_safe.util import resource_path
 
 logger = logging.getLogger(__name__)
 
@@ -123,6 +117,53 @@ TX_ICONS: List[str] = [
     "clock5.svg",
     "confirmed.svg",
 ]
+
+
+def get_icon_path(icon_basename: str) -> str:
+    return resource_path("gui", "icons", icon_basename)
+
+
+svg_tools = SvgTools(get_icon_path=get_icon_path, theme_file=get_icon_path("theme.csv"))
+
+
+def get_hardware_signer_path(signer_basename: str) -> str:
+    return resource_path("gui", "icons", "hardware_signers", signer_basename)
+
+
+svg_tools_hardware_signer = SvgTools(
+    get_icon_path=get_hardware_signer_path, theme_file=get_icon_path("theme.csv")
+)
+
+
+def get_generated_hardware_signer_path(signer_basename: str) -> str:
+    return resource_path("gui", "icons", "hardware_signers", "generated", signer_basename)
+
+
+svg_tools_generated_hardware_signer = SvgTools(
+    get_icon_path=get_generated_hardware_signer_path, theme_file=get_icon_path("theme.csv")
+)
+
+
+def block_explorer_URL(mempool_url: str, kind: Literal["tx", "addr"], item: str) -> Optional[str]:
+    explorer_url, explorer_dict = mempool_url, {
+        "tx": "tx/",
+        "addr": "address/",
+    }
+    kind_str = explorer_dict.get(kind)
+    if kind_str is None:
+        return None
+    if explorer_url[-1] != "/":
+        explorer_url += "/"
+    url_parts = [explorer_url, kind_str, item]
+    return "".join(url_parts)
+
+
+def block_explorer_URL_of_projected_block(mempool_url: str, block_index: int) -> Optional[str]:
+    explorer_url = mempool_url
+    if explorer_url[-1] != "/":
+        explorer_url += "/"
+    explorer_url = explorer_url.replace("/api", "")
+    return f"{explorer_url}mempool-block/{block_index}"
 
 
 class QtWalletBase(QWidget):
@@ -182,6 +223,20 @@ def center_in_widget(
     return outer_layout
 
 
+def generate_help_website_open(url: str, title=translate("help", "Help"), tooltip: str = "") -> QPushButton:
+    # add the help buttonbox
+    button_help = QPushButton()
+    button_help.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+    button_help.setText(title)
+    button_help.setToolTip(tooltip)
+    button_help.setIcon(
+        (button_help.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_MessageBoxQuestion)
+    )
+
+    button_help.clicked.connect(partial(open_website, url))
+    return button_help
+
+
 def generate_help_button(help_widget: QWidget, title=translate("help", "Help")) -> QPushButton:
     # add the help buttonbox
     button_help = QPushButton()
@@ -211,41 +266,20 @@ def generate_help_message_button(message, title=translate("help", "Help")) -> QP
 
 
 class AspectRatioSvgWidget(QSvgWidget):
-    def __init__(self, svg_path: str, max_width: int, max_height: int, parent=None):
+    def __init__(self, svg_content: str, max_width: int, max_height: int, parent=None):
         super().__init__(parent)
-        self.svg_path = svg_path
-        self._auto_theme_load(SvgTools.read_source_file(self.svg_path))
+        self.svg_content = svg_content
         self._max_width = max_width
         self._max_height = max_height
-        # self.setMinimumSize(max_width, max_height)
-
-        # self.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.setFixedSize(self.calculate_proportional_size())
 
-    def load(self, file: Optional[str]) -> None:  # type: ignore
-        if not file:
-            return super().load(file)
-        self._auto_theme_load(SvgTools.read_source_file(file))
-
-    def _load_raw(self, svg_content: str):
+    def load_svg_content(self, svg_content: str):
         modified_svg_content = QByteArray(svg_content.encode())  # type: ignore[call-overload]
         super().load(modified_svg_content)
-
-    def _auto_theme_load(self, svg_content: str):
-        self._load_raw(SvgTools.auto_theme_svg(svg_content))
 
     def calculate_proportional_size(self):
         qsize = qresize(self.sizeHint(), (self._max_width, self._max_height))
         return qsize
-
-    def modify_svg_text(self, *replace_tuples: Tuple[str, str]):
-        "auto_theme is automatically included"
-        original_svg_content = SvgTools.read_source_file(self.svg_path)
-
-        for old_text, new_text in replace_tuples:
-            original_svg_content = original_svg_content.replace(old_text, new_text)
-
-        self._auto_theme_load(original_svg_content)
 
 
 def add_centered_icons(
@@ -260,7 +294,10 @@ def add_centered_icons(
         max_sizes = max_sizes * len(paths)  # type: ignore
 
     svg_widgets = [
-        AspectRatioSvgWidget(icon_path(path), *max_size) for max_size, path in zip(max_sizes, paths)
+        AspectRatioSvgWidget(
+            svg_content=svg_tools.get_svg_content(path), max_width=max_size[0], max_height=max_size[1]
+        )
+        for max_size, path in zip(max_sizes, paths)
     ]
 
     widget1 = QWidget()
@@ -284,7 +321,7 @@ def add_to_buttonbox(
     if isinstance(icon_name, QIcon):
         button.setIcon(icon_name)
     elif icon_name:
-        button.setIcon(SvgTools.get_QIcon(icon_name))
+        button.setIcon(svg_tools.get_QIcon(icon_name))
 
     # Add the button to the QDialogButtonBox
     buttonBox.addButton(button, role)
@@ -391,7 +428,12 @@ class Message:
         self.create().exec()
 
     def create(self) -> QMessageBox:
-        logger.warning(str(self.__dict__))
+        if self.type == MessageType.Info:
+            logger.info(str(self.__dict__))
+        elif self.type == MessageType.Warning:
+            logger.warning(str(self.__dict__))
+        elif self.type == MessageType.Error:
+            logger.error(str(self.__dict__))
 
         icon, title = self.get_icon_and_title()
 
@@ -475,7 +517,8 @@ def custom_exception_handler(exc_type, exc_value, exc_traceback=None):
 
 
 def caught_exception_message(e: Exception, title=None, log_traceback=True) -> Message:
-    exception_text = str(e).replace("\\", "")
+    exception_msg = str(e).replace("\\", "")
+    exception_text = f"{e.__class__}: {exception_msg}"
 
     logger.error(exception_text, exc_info=sys.exc_info() if log_traceback else None)
 
@@ -644,6 +687,9 @@ class ColorScheme:
     DEFAULT = ColorSchemeItem("black", "white")
     GRAY = ColorSchemeItem("gray", "gray")
 
+    Purple = ColorSchemeItem("#7616ff", "#7616ff")
+    OrangeBitcoin = ColorSchemeItem("#f7931a", "#f7931a")
+
     @staticmethod
     def has_dark_background(widget: QWidget):
         background_color = widget.palette().color(QPalette.ColorGroup.Normal, QPalette.ColorRole.Window)
@@ -654,30 +700,6 @@ class ColorScheme:
     @staticmethod
     def update_from_widget(widget, force_dark=False):
         ColorScheme.dark_scheme = bool(force_dark or ColorScheme.has_dark_background(widget))
-
-
-def resource_path_auto_darkmode(*parts: str):
-    if is_dark_mode():
-        filename = parts[-1]
-        name, extension = os.path.splitext(filename)
-        modified_parts = list(parts)[:-1] + [f"{name}_darkmode{extension}"]
-        combined_path = resource_path(*modified_parts)
-        if Path(combined_path).exists():
-            return combined_path
-
-    return resource_path(*parts)
-
-
-def icon_path(icon_basename: str) -> str:
-    return resource_path_auto_darkmode("gui", "icons", icon_basename)
-
-
-def hardware_signer_path(signer_basename: str) -> str:
-    return resource_path_auto_darkmode("gui", "icons", "hardware_signers", signer_basename)
-
-
-def generated_hardware_signer_path(signer_basename: str) -> str:
-    return resource_path_auto_darkmode("gui", "icons", "hardware_signers", "generated", signer_basename)
 
 
 def screenshot_path(basename: str):
@@ -820,50 +842,52 @@ def clear_layout(layout: QLayout) -> None:
             widget.setParent(None)  # Remove widget from parent to fully disconnect it
 
 
-def svg_widgets_hardware_signers(
-    num_keystores: int, parent: QWidget, sticker=False, max_width=200, max_height=200
-) -> List[AspectRatioSvgWidget]:
-    def stretch(l: List) -> List:
-        new = [l[0]] * int(np.ceil(num_keystores / len(l))) + l[1:] * int(np.ceil(num_keystores / len(l)))
-        return new[:num_keystores]
+def svg_widget_hardware_signer(
+    index: int,
+    parent: QWidget,
+    sticker=False,
+    max_width=200,
+    max_height=200,
+    replace_tuples: List[Tuple[str, str]] | None = None,
+) -> AspectRatioSvgWidget:
 
-    hardware_signers = [
+    base_hardware_signers = [
         {
-            "path": hardware_signer_path("coldcard-sticker.svg"),
+            "svg_basename": ("coldcard-sticker.svg"),
             "max_width": max_width,
             "max_height": max_height,
         },
         {
-            "path": hardware_signer_path("jade-sticker.svg"),
+            "svg_basename": ("jade-sticker.svg"),
             "max_width": max_width,
             "max_height": max_height,
         },
         {
-            "path": hardware_signer_path("bitbox02-sticker.svg"),
+            "svg_basename": ("bitbox02-sticker.svg"),
             "max_width": max_width,
             "max_height": max_height,
         },
         {
-            "path": hardware_signer_path("passport-sticker.svg"),
+            "svg_basename": ("passport-sticker.svg"),
             "max_width": max_width,
             "max_height": max_height,
         },
     ]
 
-    widgets = [
-        AspectRatioSvgWidget(
-            hardware_signer["path"],
-            max_width=hardware_signer["max_width"],
-            max_height=hardware_signer["max_height"],
-            parent=parent,
-        )
-        for hardware_signer in stretch(hardware_signers)
-    ]
+    hardware_signer = base_hardware_signers[index % len(base_hardware_signers)]
 
     if not sticker:
-        for widget in widgets:
-            widget.modify_svg_text(('id="rect304"', 'visibility="hidden" id="rect304"'), ("Label", ""))
-    return widgets
+        replace_tuples = replace_tuples if replace_tuples else []
+        replace_tuples += [('id="rect304"', 'visibility="hidden" id="rect304"'), ("Label", "")]
+
+    return AspectRatioSvgWidget(
+        svg_content=svg_tools_hardware_signer.get_svg_content(
+            icon_basename=hardware_signer.get("svg_basename"), replace_tuples=replace_tuples
+        ),
+        max_width=hardware_signer["max_width"],
+        max_height=hardware_signer["max_height"],
+        parent=parent,
+    )
 
 
 def create_tool_button(parent: QWidget) -> Tuple[QToolButton, Menu]:
@@ -917,3 +941,26 @@ def create_color_circle(color: QColor, size=24, margin=1):
     painter.drawEllipse(margin, margin, size - 2 * margin, size - 2 * margin)
     painter.end()
     return QIcon(pixmap)
+
+
+def blend_qcolors(c1: QColor, c2: QColor, t: float = 0.5) -> QColor:
+    """
+    Linearly interpolate between two QColors.
+
+    Args:
+        c1: First QColor.
+        c2: Second QColor.
+        t:  Blend factor in [0.0, 1.0]. 0.0→c1, 1.0→c2, 0.5→midpoint.
+
+    Returns:
+        A new QColor whose components are (1-t)*c1 + t*c2.
+    """
+    # clamp t
+    t = max(0.0, min(1.0, t))
+
+    r = int(c1.red() * (1 - t) + c2.red() * t)
+    g = int(c1.green() * (1 - t) + c2.green() * t)
+    b = int(c1.blue() * (1 - t) + c2.blue() * t)
+    a = int(c1.alpha() * (1 - t) + c2.alpha() * t)
+
+    return QColor(r, g, b, a)

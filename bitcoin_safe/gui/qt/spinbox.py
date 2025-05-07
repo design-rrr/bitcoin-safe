@@ -30,13 +30,12 @@
 from typing import Optional, Tuple
 
 import bdkpython as bdk
+from bitcoin_tools.gui.qt.satoshis import Satoshis
 from PyQt6 import QtGui, QtWidgets
 from PyQt6.QtWidgets import QWidget
 
 from bitcoin_safe.gui.qt.analyzers import AmountAnalyzer
 from bitcoin_safe.gui.qt.custom_edits import AnalyzerState
-
-from ...util import Satoshis
 
 
 class AnalyzerSpinBox(QtWidgets.QDoubleSpinBox):
@@ -100,7 +99,7 @@ class BTCSpinBox(AnalyzerSpinBox):
     def valueFromText(self, text: str | None) -> int:
         if self._is_max:
             return 0
-        return Satoshis(text if text else 0, self.network).value
+        return Satoshis.from_btc_str(text if text else "0", self.network).value
 
     def validate(self, text: str | None, pos: int) -> Tuple[QtGui.QValidator.State, str, int]:
         if text is None:

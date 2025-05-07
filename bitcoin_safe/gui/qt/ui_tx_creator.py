@@ -32,6 +32,8 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import bdkpython as bdk
 import numpy as np
+from bitcoin_tools.gui.qt.satoshis import format_fee_rate
+from bitcoin_tools.util import clean_list, time_logger
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import (
@@ -47,13 +49,14 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from bitcoin_safe.execute_config import GENERAL_RBF_AVAILABLE
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.block_change_signals import BlockChangesSignals
 from bitcoin_safe.gui.qt.dialogs import question_dialog
 from bitcoin_safe.gui.qt.fee_group import FeeGroup
-from bitcoin_safe.gui.qt.icons import SvgTools
 from bitcoin_safe.gui.qt.spinning_button import SpinningButton
 from bitcoin_safe.gui.qt.ui_tx_base import UITx_Base
+from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.warning_bars import LinkingWarningBar
 from bitcoin_safe.signal_tracker import SignalTools
 from bitcoin_safe.typestubs import TypedPyQtSignal
@@ -61,10 +64,15 @@ from bitcoin_safe.typestubs import TypedPyQtSignal
 from ...config import MIN_RELAY_FEE, UserConfig
 from ...mempool import MempoolData, TxPrio
 from ...psbt_util import FeeInfo
-from ...pythonbdk_types import OutPoint, PythonUtxo, UtxosForInputs, python_utxo_balance
+from ...pythonbdk_types import (
+    OutPoint,
+    PythonUtxo,
+    TransactionDetails,
+    UtxosForInputs,
+    python_utxo_balance,
+)
 from ...signals import Signals, TypedPyQtSignalNo, UpdateFilter, UpdateFilterReason
 from ...tx import TxUiInfos, calc_minimum_rbf_fee_info
-from ...util import clean_list, format_fee_rate, time_logger
 from ...wallet import ToolsTxUiInfo, TxConfirmationStatus, Wallet, get_wallets
 from .category_list import CategoryList
 from .dialog_import import ImportDialog
@@ -101,6 +109,7 @@ class UITx_Creator(UITx_Base):
 
         self.additional_outpoints: List[OutPoint] = []
         utxo_list.outpoints = self.get_outpoints()
+        self.replace_tx: TransactionDetails | None = None
 
         self.searchable_list = utxo_list
 
@@ -141,7 +150,9 @@ class UITx_Creator(UITx_Base):
         self.recipients.signal_clicked_send_max_button.connect(self.on_signal_amount_changed)
         self.recipients.add_recipient()
 
-        self.fee_group = FeeGroup(mempool_data=mempool_data, fx=fx, config=self.config)
+        self.fee_group = FeeGroup(
+            mempool_data=mempool_data, fx=fx, config=self.config, enable_approximate_fee_label=False
+        )
         self.widget_right_top_layout.addWidget(
             self.fee_group.groupBox_Fee, alignment=Qt.AlignmentFlag.AlignHCenter
         )
@@ -152,7 +163,7 @@ class UITx_Creator(UITx_Base):
         self.button_ok = SpinningButton(
             "",
             enable_signal=self.signals.wallet_signals[self.wallet.id].finished_psbt_creation,
-            enabled_icon=SvgTools.get_QIcon("checkmark.svg"),
+            enabled_icon=svg_tools.get_QIcon("checkmark.svg"),
         )
         self.button_box.addButton(self.button_ok, QDialogButtonBox.ButtonRole.AcceptRole)
         if self.button_ok:
@@ -199,6 +210,7 @@ class UITx_Creator(UITx_Base):
             max_reasonable_fee_rate=self.mempool_data.max_reasonable_fee_rate(),
             confirmation_status=TxConfirmationStatus.LOCAL,
         )
+        self.handle_cpfp()
 
     def on_fee_rate_change(self, fee_rate: float) -> None:
         self.on_input_changed()
@@ -214,7 +226,7 @@ class UITx_Creator(UITx_Base):
         if not should_update:
             return
 
-        logger.debug(f"{self.__class__.__name__} update_with_filter {update_filter}")
+        logger.debug(f"{self.__class__.__name__} update_with_filter")
         self.update_balance_label()
         self.on_input_changed_and_categories()
         self.utxo_list.set_outpoints(self.get_outpoints())
@@ -296,7 +308,7 @@ class UITx_Creator(UITx_Base):
             network=self.config.network,
             # if checked_max_amount, then the user might not notice a 0 output amount, and i better show a warning
             force_show_fee_warning_on_0_amont=any([r.checked_max_amount for r in self.recipients.recipients]),
-            confirmation_time=self.fee_group.visible_mempool_buttons.confirmation_time,
+            chain_position=None,
         )
 
     def update_categories(self):
@@ -466,7 +478,6 @@ class UITx_Creator(UITx_Base):
     def click_add_utxo(self) -> None:
         def process_input(s: str) -> None:
             outpoints = [OutPoint.from_str(row.strip()) for row in s.strip().split("\n")]
-            logger.debug(self.tr("Adding outpoints {outpoints}").format(outpoints=outpoints))
             self.add_outpoints(outpoints)
             self.utxo_list.update_content()
             self.utxo_list.select_rows(outpoints, self.utxo_list.key_column, role=MyItemDataRole.ROLE_KEY)
@@ -546,6 +557,7 @@ class UITx_Creator(UITx_Base):
 
     def get_ui_tx_infos(self, use_this_tab=None) -> TxUiInfos:
         infos = TxUiInfos()
+        infos.replace_tx = self.replace_tx
         infos.opportunistic_merge_utxos = self.checkBox_reduce_future_fees.isChecked()
 
         for recipient in self.recipients.recipients:
@@ -569,16 +581,6 @@ class UITx_Creator(UITx_Base):
                 infos, self.utxo_list.get_selected_outpoints(), wallets
             )
             infos.spend_all_utxos = True
-
-        # fill the xpub dict
-        # but bitbox02 will show a wrong message if I include too many xpubs
-        # So I include JUST of this wallet
-        # Unclear how bitbox02 behaves if the psbt  has inputs
-        # from different quorums that the bitbox belongs to
-        # Ideally I would just include all xpubs, but
-        # bitbox02 message shows n-of-(len(global_xpub_dict))
-        infos.global_xpubs = self.get_global_xpub_dict(wallets=[self.wallet])
-
         return infos
 
     def get_global_xpub_dict(self, wallets: List[Wallet]) -> Dict[str, Tuple[str, str]]:
@@ -650,7 +652,7 @@ class UITx_Creator(UITx_Base):
         utxo_names = [utxo.outpoint for utxo in utxos_for_input.utxos]
         self.utxo_list.select_rows(utxo_names, column=self.utxo_list.key_column)
 
-    def set_ui(self, txinfos: TxUiInfos) -> None:
+    def handle_conflicting_utxo(self, txinfos: TxUiInfos) -> None:
         ##################
         # detect and handle rbf
         conflicting_python_txos = self.wallet.get_conflicting_python_txos(txinfos.utxo_dict.keys())
@@ -661,15 +663,13 @@ class UITx_Creator(UITx_Base):
             if conflicting_python_txo.is_spent_by_txid
         ]
         tx_details = [self.wallet.get_tx(conflicting_txid) for conflicting_txid in conflicting_txids]
-        confirmation_times = [tx.confirmation_time for tx in tx_details if tx]
+        chain_positions = [tx.chain_position for tx in tx_details if tx]
 
         conflicting_confirmed = set(
             [
                 conflicting_python_utxo
-                for conflicting_python_utxo, confirmation_time in zip(
-                    conflicting_python_txos, confirmation_times
-                )
-                if confirmation_time
+                for conflicting_python_utxo, chain_position in zip(conflicting_python_txos, chain_positions)
+                if chain_position.is_confirmed()
             ]
         )
         if conflicting_confirmed:
@@ -685,7 +685,7 @@ class UITx_Creator(UITx_Base):
             # these involved txs i can do rbf
 
             # for each conflicted_unconfirmed, get all roots and dependents
-            dependents_to_be_replaced: List[bdk.TransactionDetails] = []
+            dependents_to_be_replaced: List[TransactionDetails] = []
             for utxo in conflicted_unconfirmed:
                 if utxo.is_spent_by_txid:
                     dependents_to_be_replaced += [
@@ -710,21 +710,52 @@ class UITx_Creator(UITx_Base):
                         for fulltx in self.wallet.get_fulltxdetail_and_dependents(utxo.is_spent_by_txid)
                     ]
 
-            fee_amount = sum([tx_details.fee for tx_details in txs_to_be_replaced])
+            fee_amount = sum([(tx_details.fee or 0) for tx_details in txs_to_be_replaced])
 
-            builder_infos = self.wallet.create_psbt(txinfos)
-            fee_info = FeeInfo.estimate_segwit_fee_rate_from_psbt(builder_infos.builder_result.psbt)
+            # because BumpFeeTxBuilder cannot build tx with too low fee,
+            # we have to raise errors, if fee cannot be calculated
+            fee_info = None
+            if GENERAL_RBF_AVAILABLE:
+                try:
+                    builder_infos = self.wallet.create_psbt(txinfos)
+                    fee_info = FeeInfo.estimate_segwit_fee_rate_from_psbt(builder_infos.psbt)
+                except Exception:
+                    pass
+            else:
+                assert txinfos.replace_tx, "No replace_tx provided"
+                fee_info = FeeInfo.from_txdetails(txinfos.replace_tx)
+
+            if not fee_info:
+                raise Exception("General RBF is currently not provided by bdk")
 
             txinfos.fee_rate = calc_minimum_rbf_fee_info(
                 fee_amount, fee_info.vsize, self.mempool_data
             ).fee_rate()
+            if not GENERAL_RBF_AVAILABLE:
+                # the BumpFeeTxBuilder disallows the minimum rbf fee, and requires a slightly higer fee
+                # the error message by BumpFeeTxBuilder is unfortunately completely wrong (and giving a >=2*minimum_rbf_fee_rate)
+                txinfos.fee_rate += 0.1
 
             self.fee_group.set_rbf_label(txinfos.fee_rate)
-            self.fee_group.set_fee_infos(fee_info=fee_info)
+            self.fee_group.set_fee_infos(fee_info=fee_info, chain_position=None)
 
             self.add_outpoints([python_utxo.outpoint for python_utxo in txinfos.utxo_dict.values()])
         else:
             self.fee_group.set_rbf_label(None)
+
+    def handle_cpfp(self) -> None:
+        utxos = list(self.get_ui_tx_infos().utxo_dict.values())
+        parent_txids = set(utxo.outpoint.txid for utxo in utxos)
+        self.set_fee_group_cpfp_label(
+            parent_txids=parent_txids,
+            this_fee_info=self.estimate_fee_info(),
+            fee_group=self.fee_group,
+            chain_position=None,
+        )
+
+    def set_ui(self, txinfos: TxUiInfos) -> None:
+        self.handle_conflicting_utxo(txinfos=txinfos)
+        self.handle_cpfp()
 
         if txinfos.fee_rate:
             self.fee_group.set_spin_fee_value(txinfos.fee_rate)
@@ -746,11 +777,15 @@ class UITx_Creator(UITx_Base):
 
         # do the recipients after the utxo list setting. otherwise setting the uxtos,
         # will reduce the sent amount to what is maximally possible, by the selected utxos
+        self.recipients.set_allow_edit(not txinfos.recipient_read_only)
         self.recipients.recipients = txinfos.recipients
         if not self.recipients.recipients:
             self.recipients.add_recipient()
 
         self.recipients.set_allow_edit(not txinfos.recipient_read_only)
+        self.utxo_list.set_allow_edit(not txinfos.utxos_read_only)
+        self.tabs_inputs.setEnabled(not txinfos.utxos_read_only)
+        self.replace_tx = txinfos.replace_tx
 
     def close(self):
         self.signal_tracker.disconnect_all()
