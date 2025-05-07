@@ -27,8 +27,14 @@
 # SOFTWARE.
 
 
+import copy
+import json
 import logging
 from datetime import datetime
+from typing import Any, Dict, List, Literal, Union
+
+from bitcoin_qr_tools.data import Data, DataType
+from packaging import version
 
 from bitcoin_safe.util import (
     jsonlines_to_list_of_dict,
@@ -36,17 +42,10 @@ from bitcoin_safe.util import (
     list_of_dict_to_jsonlines,
 )
 
-logger = logging.getLogger(__name__)
-import copy
-import json
-from typing import Any, Dict, List, Literal, Union
-
-from bitcoin_qr_tools.data import Data, DataType
-from packaging import version
-
 from .pythonbdk_types import *
 from .storage import BaseSaveableClass, filtered_for_init
 
+logger = logging.getLogger(__name__)
 # see https://github.com/bitcoin/bips/blob/master/bip-0329.mediawiki
 
 

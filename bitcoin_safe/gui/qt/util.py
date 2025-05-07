@@ -35,7 +35,7 @@ import platform
 import sys
 import traceback
 import webbrowser
-from functools import lru_cache, partial
+from functools import partial
 from pathlib import Path
 from typing import Any, Callable, Iterable, List, Optional, Tuple, Union
 from urllib.parse import urlparse
@@ -80,6 +80,7 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe.execute_config import ENABLE_TIMERS
 from bitcoin_safe.gui.qt.custom_edits import AnalyzerState
+from bitcoin_safe.gui.qt.icons import SvgTools
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.typestubs import TypedPyQtSignal, TypedPyQtSignalNo
@@ -114,12 +115,12 @@ TRANSACTION_FILE_EXTENSION_FILTER_SEPARATE = (
 
 
 TX_ICONS: List[str] = [
-    "unconfirmed.svg",
-    "clock1.png",
-    "clock2.png",
-    "clock3.png",
-    "clock4.png",
-    "clock5.png",
+    "clock0.svg",
+    "clock1.svg",
+    "clock2.svg",
+    "clock3.svg",
+    "clock4.svg",
+    "clock5.svg",
     "confirmed.svg",
 ]
 
@@ -130,7 +131,7 @@ class QtWalletBase(QWidget):
 
 def sort_id_to_icon(sort_id: int) -> str:
     if sort_id < 0:
-        return "offline_tx.png"
+        return "offline_tx.svg"
     if sort_id > len(TX_ICONS) - 1:
         sort_id = len(TX_ICONS) - 1
 
@@ -213,7 +214,7 @@ class AspectRatioSvgWidget(QSvgWidget):
     def __init__(self, svg_path: str, max_width: int, max_height: int, parent=None):
         super().__init__(parent)
         self.svg_path = svg_path
-        self.load(svg_path)
+        self._auto_theme_load(SvgTools.read_source_file(self.svg_path))
         self._max_width = max_width
         self._max_height = max_height
         # self.setMinimumSize(max_width, max_height)
@@ -221,20 +222,30 @@ class AspectRatioSvgWidget(QSvgWidget):
         # self.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.setFixedSize(self.calculate_proportional_size())
 
+    def load(self, file: Optional[str]) -> None:  # type: ignore
+        if not file:
+            return super().load(file)
+        self._auto_theme_load(SvgTools.read_source_file(file))
+
+    def _load_raw(self, svg_content: str):
+        modified_svg_content = QByteArray(svg_content.encode())  # type: ignore[call-overload]
+        super().load(modified_svg_content)
+
+    def _auto_theme_load(self, svg_content: str):
+        self._load_raw(SvgTools.auto_theme_svg(svg_content))
+
     def calculate_proportional_size(self):
         qsize = qresize(self.sizeHint(), (self._max_width, self._max_height))
         return qsize
 
     def modify_svg_text(self, *replace_tuples: Tuple[str, str]):
-        # Load the original SVG content
-        with open(self.svg_path, "r", encoding="utf-8") as file:
-            original_svg_content = file.read()
+        "auto_theme is automatically included"
+        original_svg_content = SvgTools.read_source_file(self.svg_path)
 
         for old_text, new_text in replace_tuples:
             original_svg_content = original_svg_content.replace(old_text, new_text)
 
-        modified_svg_content = QByteArray(original_svg_content.encode())  # type: ignore[call-overload]
-        self.load(modified_svg_content)
+        self._auto_theme_load(original_svg_content)
 
 
 def add_centered_icons(
@@ -273,7 +284,7 @@ def add_to_buttonbox(
     if isinstance(icon_name, QIcon):
         button.setIcon(icon_name)
     elif icon_name:
-        button.setIcon(QIcon(icon_path(icon_name)))
+        button.setIcon(SvgTools.get_QIcon(icon_name))
 
     # Add the button to the QDialogButtonBox
     buttonBox.addButton(button, role)
@@ -671,13 +682,6 @@ def generated_hardware_signer_path(signer_basename: str) -> str:
 
 def screenshot_path(basename: str):
     return resource_path("gui", "screenshots", basename)
-
-
-@lru_cache(maxsize=1000)
-def read_QIcon(icon_basename: Optional[str]) -> QIcon:
-    if not icon_basename:
-        return QIcon()
-    return QIcon(icon_path(icon_basename))
 
 
 def char_width_in_lineedit() -> int:

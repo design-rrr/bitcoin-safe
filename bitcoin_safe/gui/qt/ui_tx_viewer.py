@@ -48,6 +48,7 @@ from bitcoin_safe.address_comparer import AddressComparer
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.extended_tabwidget import ExtendedTabWidget
 from bitcoin_safe.gui.qt.fee_group import FeeGroup
+from bitcoin_safe.gui.qt.icons import SvgTools
 from bitcoin_safe.gui.qt.labeledit import WalletLabelAndCategoryEdit
 from bitcoin_safe.gui.qt.packaged_tx_like import UiElements
 from bitcoin_safe.gui.qt.sankey_bitcoin import SankeyBitcoin
@@ -95,7 +96,6 @@ from .util import (
     add_to_buttonbox,
     caught_exception_message,
     clear_layout,
-    read_QIcon,
 )
 from .utxo_list import UtxoListWithToolbar
 
@@ -184,13 +184,17 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
         # inputs
         self.tab_inputs = QWidget()
         self.tab_inputs_layout = QVBoxLayout(self.tab_inputs)
-        self.tabs_inputs_outputs.addTab(self.tab_inputs, description="")
+        self.tabs_inputs_outputs.addTab(
+            self.tab_inputs, description="", icon=SvgTools.get_QIcon("bi--inputs.svg")
+        )
         self.tab_inputs_layout.addWidget(widget_utxo_with_toolbar)
 
         # outputs
         self.tab_outputs = QWidget()
         self.tab_outputs_layout = QVBoxLayout(self.tab_outputs)
-        self.tabs_inputs_outputs.addTab(self.tab_outputs, description="")
+        self.tabs_inputs_outputs.addTab(
+            self.tab_outputs, description="", icon=SvgTools.get_QIcon("bi--recipients.svg")
+        )
         self.tabs_inputs_outputs.setCurrentWidget(self.tab_outputs)
 
         self.recipients = self.create_recipients(
@@ -280,7 +284,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
             on_clicked=self.edit,
             role=QDialogButtonBox.ButtonRole.ResetRole,
         )
-        self.button_save_tx = add_to_buttonbox(self.buttonBox, "Save", "sd-card.svg")
+        self.button_save_tx = add_to_buttonbox(self.buttonBox, "Save", "bi--sd-card.svg")
         self.button_previous = add_to_buttonbox(
             self.buttonBox,
             "",
@@ -298,7 +302,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
         self.button_send = add_to_buttonbox(
             self.buttonBox,
             "",
-            "send.svg",
+            "bi--send.svg",
             on_clicked=self.broadcast,
             role=QDialogButtonBox.ButtonRole.AcceptRole,
         )
@@ -934,7 +938,7 @@ class UITx_Viewer(UITx_Base, ThreadingManager):
         def on_success(success) -> None:
             if success:
                 self.tabs_inputs_outputs.addTab(
-                    self.sankey_bitcoin, icon=read_QIcon("flows.svg"), description=self.tr("Diagram")
+                    self.sankey_bitcoin, icon=SvgTools.get_QIcon("flows.svg"), description=self.tr("Diagram")
                 )
                 self.set_tab_focus(self.focus_ui_element)
 

@@ -34,7 +34,7 @@ import shutil
 import tempfile
 from pathlib import Path
 from typing import Any, Dict, List, Optional
-
+from bitcoin_safe.gui.qt.icons import SvgTools 
 from packaging import version
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QHBoxLayout, QStyle, QWidget
@@ -88,7 +88,7 @@ class UpdateNotificationBar(NotificationBar, ThreadingManager):
             threading_parent=threading_parent,
         )
         self.signals_min = signals_min
-        refresh_icon = (self.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_BrowserReload)
+        refresh_icon = SvgTools.get_QIcon("bi--arrow-clockwise.svg")
         self.optionalButton.setIcon(refresh_icon)
 
         self.verifyer = SignatureVerifyer(list_of_known_keys=[self.key], proxies=self.proxies)
