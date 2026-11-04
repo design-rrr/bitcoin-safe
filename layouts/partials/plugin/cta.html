@@ -8,7 +8,7 @@
   "url" ($download.RelPermalink | default (relLangURL "download"))
   "style" "primary") }}
 {{ $items := .Params.cta | default $default }}
-<div class="plugin-cta d-flex flex-column align-items-start gap-1">
+<div class="plugin-cta d-flex flex-column align-items-center gap-1">
   <div class="d-flex gap-2 flex-wrap">
     {{ range $items }}
       {{ $url := .url }}
