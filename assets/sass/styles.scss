@@ -415,4 +415,27 @@ body.plugins {
       rgba(var(--bs-primary-rgb), 0.08),
       rgba(var(--bs-primary-rgb), 0) 60%);
   }
+
+  .plugin-plan {
+    --plugin-accent: var(--bs-primary);
+
+    .plugin-plan-name {
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .plugin-plan-price {
+      font-size: 1.75rem;
+      font-weight: 700;
+    }
+
+    .plugin-plan-trial {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--plugin-accent);
+    }
+  }
 }

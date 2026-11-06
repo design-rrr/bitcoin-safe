@@ -1,0 +1,35 @@
+{{/* Paid-plugin pricing plans. Input: the page; reads .Params.pricing =
+     { title, plans: [{ name, price, period, trial, note }], footnote } */}}
+{{ $page := . }}
+{{ $pricing := $page.Params.pricing }}
+{{ with $pricing }}
+  {{ with .plans }}
+    <section class="plugin-pricing mt-5">
+      <h2 class="h4 mb-3">{{ $pricing.title | default "Pricing" }}</h2>
+      {{ $span := cond (eq (len .) 1) "col-12 col-lg-6" "col-md-6 col-lg-4" }}
+      <div class="row g-3">
+        {{ range . }}
+          <div class="{{ $span }}">
+            <div class="plugin-plan h-100 border rounded-4 bg-body-tertiary p-4 d-flex flex-column">
+              {{ with .name }}<p class="plugin-plan-name text-body-secondary mb-1">{{ . }}</p>{{ end }}
+              <p class="plugin-plan-price mb-1">{{ .price }}</p>
+              {{ with .period }}<p class="text-body-secondary small mb-2">{{ . }}</p>{{ end }}
+              {{ with .trial }}
+                <p class="plugin-plan-trial small mb-0">
+                  <svg aria-hidden="true" viewBox="0 0 16 16" width="14" height="14">
+                    <path fill="currentColor" d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0-1a6 6 0 1 0 0-12 6 6 0 0 0 0 12zM7.25 4h1.5v4.25l2.85 1.68-.75 1.27L7.25 9V4z"/>
+                  </svg>
+                  <span>{{ . }}</span>
+                </p>
+              {{ end }}
+              {{ with .note }}<div class="plugin-plan-note mt-auto pt-3 small">{{ . | markdownify }}</div>{{ end }}
+            </div>
+          </div>
+        {{ end }}
+      </div>
+      {{ with $pricing.footnote }}
+        <p class="text-body-secondary small mt-3 mb-0">{{ . | markdownify }}</p>
+      {{ end }}
+    </section>
+  {{ end }}
+{{ end }}

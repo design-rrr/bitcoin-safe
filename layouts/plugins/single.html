@@ -23,6 +23,7 @@
     {{ with $page.Content }}<div class="plugin-body">{{ . }}</div>{{ end }}
 
     {{ if $structured }}
+      {{ partial "plugin/pricing.html" $page }}
       {{ partial "plugin/faq.html" $page }}
       {{ partial "plugin/links.html" $page }}
       <section class="plugin-cta-band border rounded-4 bg-body-tertiary p-4 mt-5 text-center">

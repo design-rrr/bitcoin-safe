@@ -18,9 +18,20 @@ media:
     src: "schedule.mp4"
     heading: "Schedule a recurring payment"
     caption: "Creating a schedule and preparing its first payout in the wallet."
+cta_note: "Free app · plugins need a subscription"
+pricing:
+  title: "Pricing"
+  plans:
+    - name: "Annual subscription"
+      price: "$1,299 USD"
+      period: "per year"
+      trial: "30-day free trial"
+  footnote: "Bitcoin-Safe is free and open source. After the trial ends, an active subscription is required to keep using Schedule. You can review and manage it from the plugin list in the app."
 faq:
   title: "Scheduled Payments questions"
   items:
+    - question: "What does Schedule cost?"
+      answer: "Schedule starts with a 30-day free trial. After it ends, continuing to use the plugin requires an annual subscription of $1,299 USD. Bitcoin-Safe itself stays free and open source."
     - question: "Can I schedule a single payment or only recurring ones?"
       answer: "Both. You can create a one-time payment, a fixed number of repeats, or an ongoing schedule."
     - question: "How often can a schedule repeat?"

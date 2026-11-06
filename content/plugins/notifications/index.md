@@ -27,9 +27,24 @@ media:
     src: "calendar.mp4"
     heading: "Calendar notifications"
     caption: "Adding Bitcoin-Safe events to a CalDAV calendar."
+cta_note: "Free app · plugins need a subscription"
+pricing:
+  title: "Pricing"
+  plans:
+    - name: "Monthly"
+      price: "$6.99 USD"
+      period: "per month"
+      trial: "7-day free trial"
+    - name: "Yearly"
+      price: "$59.99 USD"
+      period: "per year"
+      trial: "7-day free trial"
+  footnote: "Bitcoin-Safe is free and open source. After the trial ends, an active subscription is required to keep using Notifications. You can review and manage it from the plugin list in the app."
 faq:
   title: "Wallet Notifications questions"
   items:
+    - question: "What does Wallet Notifications cost?"
+      answer: "Notifications starts with a 7-day free trial. After it ends, continuing to use the plugin requires a subscription of $6.99 USD per month or $59.99 USD per year. Bitcoin-Safe itself stays free and open source."
     - question: "Where can Bitcoin-Safe send notifications?"
       answer: "To webhooks (generic JSON or Slack-compatible, Discord, Google Chat, Microsoft Teams, Telegram Bot API, ntfy, and Gotify formats), Nostr direct messages, Telegram bots, email over SMTP, and CalDAV calendars."
     - question: "Can I keep sensitive details out of the alerts?"
